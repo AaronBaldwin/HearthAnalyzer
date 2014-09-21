@@ -9,12 +9,17 @@ namespace HearthAnalyzer.Core.Cards
     /// <summary>
     /// Represents the base card type
     /// </summary>
-    public abstract class BaseCard
+    public abstract class BaseCard : IEquatable<BaseCard>
     {
         /// <summary>
-        /// The id of this card
+        /// The unique id of this card for this game instance
         /// </summary>
         public int Id;
+
+        /// <summary>
+        /// Blizard's internal name of this card
+        /// </summary>
+        public string CardId;
 
         /// <summary>
         /// The name of this card
@@ -35,22 +40,30 @@ namespace HearthAnalyzer.Core.Cards
         /// The current mana cost for this card
         /// </summary>
         public int CurrentManaCost;
-    }
 
-    /// <summary>
-    /// Represents the types of status effects that can be applied to a card
-    /// </summary>
-    [Flags]
-    public enum CardStatusEffects
-    {
-        DIVINE_SHIELD = 0,
-        CANT_ATTACK = 1,
-        TAUNT = 2,
-        STEALTHED = 4,
-        SUMMONING_SICKNESS = 8,
-        WINDFURY = 16,
-        FROZEN = 32,
-        SILENCED = 64
+        /// <summary>
+        /// The time that the card was first played on the board
+        /// </summary>
+        public DateTime TimePlayed;
+
+        #region IComparable
+
+        public override int GetHashCode()
+        {
+            return this.Id ^ this.Name.GetHashCode();
+        }
+
+        public bool Equals(BaseCard other)
+        {
+            return this.Id == other.Id;    
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0} [{1}]", this.Name, this.Id);
+        }
+
+        #endregion IComparable
     }
 
     /// <summary>

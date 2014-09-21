@@ -34,6 +34,22 @@ namespace HearthAnalyzer.Core.Cards
         /// <summary>
         /// Represents the current status effects applied to the card
         /// </summary>
-        public CardStatusEffects StatusEffects;
+        public MinionStatusEffects StatusEffects;
+    }
+
+    /// <summary>
+    /// Represents the types of status effects that can be applied to a card
+    /// </summary>
+    [Flags]
+    public enum MinionStatusEffects
+    {
+        DIVINE_SHIELD = 0,
+        CANT_ATTACK = 1,
+        TAUNT = 2,
+        STEALTHED = 4,
+        EXHAUSTED = 8,
+        WINDFURY = 16,
+        FROZEN = 32,
+        SILENCED = 64
     }
 }

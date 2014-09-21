@@ -30,6 +30,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Common.Logging">
+      <HintPath>packages\Common.Logging.2.2.0\lib\net40\Common.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.Logging.Core">
+      <HintPath>packages\Common.Logging.Core.2.2.0\lib\net40\Common.Logging.Core.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -41,17 +47,22 @@
   <ItemGroup>
     <Compile Include="Cards\BaseCard.cs" />
     <Compile Include="Cards\BaseMinion.cs" />
+    <Compile Include="Cards\Minions\Abomination.cs" />
+    <Compile Include="Cards\UnknownCard.cs" />
     <Compile Include="GameBoard.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="BasePlayer.cs" />
     <Compile Include="Heroes\Warlock.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Cards\HeroPowers\" />
-    <Folder Include="Cards\Minions\" />
     <Folder Include="Cards\Spells\" />
     <Folder Include="Cards\Weapons\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

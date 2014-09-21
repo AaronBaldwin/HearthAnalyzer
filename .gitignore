@@ -1,0 +1,12 @@
+# ignore output folders
+/obj
+/bin
+*/obj
+*/bin
+
+# ignore visual studio files
+*.suo
+
+# ignore downloaded NuGet packages
+/packages
+*/packages

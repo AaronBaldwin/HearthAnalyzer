@@ -1,0 +1,10 @@
+1. Design an eventing system that can handle:
+	- Deathrattles
+	- Card powers (like Undertaker)
+	- Attacking
+
+2. Implement some sample cards
+
+3. Get a sample game working
+
+4. Implement the log reading
