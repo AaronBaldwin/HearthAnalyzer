@@ -50,6 +50,7 @@
     <Compile Include="Cards\Minions\Abomination.cs" />
     <Compile Include="Cards\UnknownCard.cs" />
     <Compile Include="GameBoard.cs" />
+    <Compile Include="GameEventManager.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="BasePlayer.cs" />
     <Compile Include="Heroes\Warlock.cs" />

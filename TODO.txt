@@ -3,6 +3,10 @@
 	- Card powers (like Undertaker)
 	- Attacking
 
+	- Hey, Blessing of Wisdom and Soul of the Forest stacks!!!
+	- Interesting interaction with Inner Rage and Pyromancer. Inner Rage will actually kill the Pyromancer without triggering 
+      Pyromancer's triggered effect.
+
 2. Implement some sample cards
 
 3. Get a sample game working
