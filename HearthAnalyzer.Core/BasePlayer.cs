@@ -11,7 +11,7 @@ namespace HearthAnalyzer.Core
     /// <summary>
     /// Represents a player in Hearthstone
     /// </summary>
-    public abstract class BasePlayer
+    public abstract class BasePlayer : IDamageableEntity, IAttacker
     {
         /// <summary>
         /// The game board the player is playing on
@@ -34,7 +34,7 @@ namespace HearthAnalyzer.Core
         public List<BaseCard> Graveyard;
 
         /// <summary>
-        /// The player's remaining health
+        /// The player's health
         /// </summary>
         public int Health;
 
@@ -123,6 +123,16 @@ namespace HearthAnalyzer.Core
         }
 
         /// <summary>
+        /// Returns whether or not the player is frozen
+        /// </summary>
+        public bool IsFrozen { get { return this.StatusEffects.HasFlag(PlayerStatusEffects.FROZEN); } }
+
+        /// <summary>
+        /// Returns whether or not the player is immune to damage
+        /// </summary>
+        public bool IsImmuneToDamage { get { return this.StatusEffects.HasFlag(PlayerStatusEffects.IMMUNE_TO_DAMAGE); } }
+
+        /// <summary>
         /// Status effects for the player
         /// </summary>
         [Flags]
@@ -131,5 +141,45 @@ namespace HearthAnalyzer.Core
             FROZEN = 0,
             IMMUNE_TO_DAMAGE = 1
         }
+
+        #region IAttacker
+
+        public void Attack(IDamageableEntity target, GameState gameState)
+        {
+            if (this.Weapon != null)
+            {
+                
+            }
+        }
+
+        #endregion
+
+        #region IDamageableEntity
+
+        public void TakeDamage(int damage)
+        {
+            this.Health -= damage;
+
+            // Fire damage dealt event
+
+            if (this.Health <= 0)
+            {
+                this.Die();
+            }
+        }
+
+        public void TakeHealing(int healAmount)
+        {
+            this.Health += healAmount;
+
+            // Fire heal dealt event
+        }
+
+        public void TakeBuff(int attackBuff, int healthBuff)
+        {
+            throw new InvalidOperationException("Player's can't receive buffs.");
+        }
+
+        #endregion
     }
 }

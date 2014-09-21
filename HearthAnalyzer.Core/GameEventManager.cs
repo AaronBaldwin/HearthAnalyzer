@@ -29,11 +29,10 @@ namespace HearthAnalyzer.Core
         public static void Initialize()
         {
             MinionPlayed += OnMinionPlayed;
-            
             _minionPlayedListeners = new List<Tuple<BaseCard, MinionPlayedEventHandler>>();
 
-            MinionAttacking += OnMinionAttacking;
-            _minionAttackingListeners = new List<Tuple<BaseCard, MinionAttackingEventHandler>>();
+            Attacking += OnAttacking;
+            _minionAttackingListeners = new List<Tuple<BaseCard, AttackingEventHandler>>();
         }
 
         #region Event Definitions
@@ -51,18 +50,18 @@ namespace HearthAnalyzer.Core
         private static List<Tuple<BaseCard, MinionPlayedEventHandler>> _minionPlayedListeners;
 
         /// <summary>
-        /// Handler for when a minion is attacking but before damage is dealt
+        /// Handler for when a card is attacking but before damage is dealt
         /// </summary>
-        /// <param name="attacker">The attacking minion</param>
+        /// <param name="attacker">The attacking card</param>
         /// <param name="target">The unfortunate target</param>
         /// <param name="gameState">The current state of the game</param>
         /// <param name="shouldAbort">Whether or not this event should abort</param>
         /// <remarks>
         /// Handlers include Misdirection Trap, Vaporize, and the game engine itself.
         /// </remarks>
-        public delegate void MinionAttackingEventHandler(BaseMinion attacker, object target, GameState gameState, bool isRetaliation, out bool shouldAbort);
-        public static MinionAttackingEventHandler MinionAttacking;
-        private static List<Tuple<BaseCard, MinionAttackingEventHandler>> _minionAttackingListeners; 
+        public delegate void AttackingEventHandler(BaseCard attacker, IDamageableEntity target, GameState gameState, bool isRetaliation, out bool shouldAbort);
+        public static AttackingEventHandler Attacking;
+        private static List<Tuple<BaseCard, AttackingEventHandler>> _minionAttackingListeners; 
 
         #endregion
 
@@ -78,9 +77,9 @@ namespace HearthAnalyzer.Core
             _minionPlayedListeners.Add(new Tuple<BaseCard, MinionPlayedEventHandler>(self, callback));
         }
 
-        public static void RegisterForEvent(BaseCard self, MinionAttackingEventHandler callback)
+        public static void RegisterForEvent(BaseCard self, AttackingEventHandler callback)
         {
-            _minionAttackingListeners.Add(new Tuple<BaseCard, MinionAttackingEventHandler>(self, callback));
+            _minionAttackingListeners.Add(new Tuple<BaseCard, AttackingEventHandler>(self, callback));
         }
 
         /// <summary>
@@ -111,7 +110,7 @@ namespace HearthAnalyzer.Core
             }
         }
 
-        public static void OnMinionAttacking(BaseMinion attacker, object target, GameState gameState, bool isRetaliation, out bool shouldAbort)
+        public static void OnAttacking(BaseCard attacker, IDamageableEntity target, GameState gameState, bool isRetaliation, out bool shouldAbort)
         {
             shouldAbort = false;
 

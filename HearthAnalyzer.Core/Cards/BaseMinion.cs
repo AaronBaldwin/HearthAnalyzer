@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,7 +10,7 @@ namespace HearthAnalyzer.Core.Cards
     /// <summary>
     /// Represents a minion at the most basic level
     /// </summary>
-    public abstract class BaseMinion : BaseCard
+    public abstract class BaseMinion : BaseCard, IAttacker, IDamageableEntity
     {
         /// <summary>
         /// The maximum health of this card
@@ -32,6 +33,59 @@ namespace HearthAnalyzer.Core.Cards
         public MinionStatusEffects StatusEffects;
 
         /// <summary>
+        /// Whether or not this minion has Divine Shield
+        /// </summary>
+        public bool HasDivineShield { get { return this.StatusEffects.HasFlag(MinionStatusEffects.DIVINE_SHIELD); } }
+
+        /// <summary>
+        /// Whether or not this minion is frozen
+        /// </summary>
+        public bool IsFrozen { get { return this.StatusEffects.HasFlag(MinionStatusEffects.FROZEN); } }
+
+        /// <summary>
+        /// Whether or not this minion can attack
+        /// </summary>
+        public bool CanAttack 
+        { 
+            get
+            {
+                return !this.IsFrozen
+                    && !this.StatusEffects.HasFlag(MinionStatusEffects.CANT_ATTACK)
+                    && !this.StatusEffects.HasFlag(MinionStatusEffects.EXHAUSTED);
+            }
+        }
+
+        /// <summary>
+        /// Whether or not this minion has taunt
+        /// </summary>
+        public bool HasTaunt { get { return this.StatusEffects.HasFlag(MinionStatusEffects.TAUNT); } }
+
+        /// <summary>
+        /// Whether or not this minion is stealthed
+        /// </summary>
+        public bool IsStealthed { get { return this.StatusEffects.HasFlag(MinionStatusEffects.STEALTHED); } }
+
+        /// <summary>
+        /// Whether or not this minion has windfury
+        /// </summary>
+        public bool HasWindfury { get { return this.StatusEffects.HasFlag(MinionStatusEffects.WINDFURY); } }
+
+        /// <summary>
+        /// Whether or not this minion was silenced
+        /// </summary>
+        public bool IsSilenced { get { return this.StatusEffects.HasFlag(MinionStatusEffects.SILENCED); } }
+
+        /// <summary>
+        /// Whether or not this minion is immune to death
+        /// </summary>
+        public bool IsImmuneToDeath { get { return this.StatusEffects.HasFlag(MinionStatusEffects.IMMUNE_TO_DEATH); } }
+
+        /// <summary>
+        /// Whether or not this minion is immune to damage
+        /// </summary>
+        public bool IsImmuneToDamage { get { return this.StatusEffects.HasFlag(MinionStatusEffects.IMMUNE_TO_DAMAGE); } }
+
+        /// <summary>
         /// Applies the provided effects to the minion
         /// </summary>
         /// <param name="effects">The effects to apply</param>
@@ -50,8 +104,9 @@ namespace HearthAnalyzer.Core.Cards
             // Unregister all event listeners, including death rattles
             GameEventManager.UnregisterForEvents(this, unregisterDeathRattle: true);
 
-            // Remove any effects
-            this.StatusEffects = MinionStatusEffects.EXHAUSTED;
+            // Remove any effects but keep it exhausted if it was already
+            bool wasExhausted = this.StatusEffects.HasFlag(MinionStatusEffects.EXHAUSTED);
+            this.StatusEffects = MinionStatusEffects.SILENCED | (wasExhausted ? MinionStatusEffects.EXHAUSTED : 0);
 
             // Remove any bonus health
             this.CurrentHealth = Math.Min(this.MaxHealth - this.BonusHealth, this.CurrentHealth);
@@ -75,6 +130,48 @@ namespace HearthAnalyzer.Core.Cards
 
             // Let GameEngine clean up minions from the baord
         }
+
+        /// <summary>
+        /// Attacks another target
+        /// </summary>
+        /// <param name="target"></param>
+        public void Attack(IDamageableEntity target, GameState gameState)
+        {
+            // Fire attacking event
+            bool shouldAbort;
+            GameEventManager.Attacking(this, target, gameState, isRetaliation: false, shouldAbort: out shouldAbort);
+        }
+
+        #region IDamageableEntity
+
+        public void TakeDamage(int damage)
+        {
+            this.CurrentHealth -= damage;
+
+            // fire damage dealt event
+
+            if (this.CurrentHealth <= 0 && !this.IsImmuneToDeath)
+            {
+                this.Die();
+            }
+        }
+
+        public void TakeHealing(int healAmount)
+        {
+            this.CurrentHealth = Math.Min(this.CurrentHealth + healAmount, this.MaxHealth);
+
+            // fire healing dealt event
+        }
+
+        public void TakeBuff(int attackBuff, int healthBuff)
+        {
+            this.CurrentAttackPower += attackBuff;
+
+            this.MaxHealth += healthBuff;
+            this.CurrentHealth = Math.Min(this.CurrentHealth + healthBuff, this.MaxHealth);
+        }
+
+        #endregion
     }
 
     /// <summary>

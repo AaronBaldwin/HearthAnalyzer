@@ -67,7 +67,7 @@ namespace HearthAnalyzer.Core
         /// <param name="attacker">The card doing the attacking</param>
         /// <param name="target">The object receiving the attack</param>
         /// <param name="isRetaliation">Whether or not the attack is a retaliation</param>
-        public static void ApplyDamage(BaseCard attacker, object target, bool isRetaliation = false)
+        public static void ApplyDamage(BaseCard attacker, IDamageableEntity target, bool isRetaliation = false)
         {
             // If the attacker is a spell card or hero power, you can't retaliate
             // If the target is a hero, he can't retaliate
@@ -75,39 +75,32 @@ namespace HearthAnalyzer.Core
             {
                 var targetMinion = (BaseMinion) target;
 
-                if ((targetMinion.StatusEffects & MinionStatusEffects.IMMUNE_TO_DAMAGE) == 0)
+                if (!targetMinion.IsImmuneToDamage)
                 {
-                    targetMinion.CurrentHealth -= attacker.CurrentAttackPower;
-                    
-                    // Fire DamageTaken event
+                    targetMinion.TakeDamage(attacker.CurrentAttackPower);
                 }
 
-                if (!isRetaliation)
+                if (!isRetaliation && (attacker is BaseMinion || attacker is BaseWeapon))
                 {
-                    ApplyDamage(targetMinion, attacker, isRetaliation: true);
-                }
-
-                if (targetMinion.CurrentHealth < 0 &&
-                    (targetMinion.StatusEffects & MinionStatusEffects.IMMUNE_TO_DEATH) == 0)
-                {
-                    targetMinion.Die();
+                    if (attacker is BaseWeapon)
+                    {
+                        var weapon = (BaseWeapon) attacker;
+                        ApplyDamage(targetMinion, weapon.Owner, isRetaliation: true);
+                    }
+                    else
+                    {
+                        // Then we must be attacking a minion
+                        ApplyDamage(targetMinion, (IDamageableEntity)attacker, isRetaliation: true);
+                    }
                 }
             }
             else if (target is BasePlayer)
             {
                 var targetPlayer = (BasePlayer) target;
 
-                if ((targetPlayer.StatusEffects & BasePlayer.PlayerStatusEffects.IMMUNE_TO_DAMAGE) == 0)
+                if (!targetPlayer.IsImmuneToDamage)
                 {
-                    targetPlayer.Health -= attacker.CurrentAttackPower;
-
-                    // Fire DamageTaken event
-                }
-
-                // Players can't retaliate
-                if (targetPlayer.Health < 0)
-                {
-                    targetPlayer.Die();
+                    targetPlayer.TakeDamage(attacker.CurrentAttackPower);
                 }
             }
         }

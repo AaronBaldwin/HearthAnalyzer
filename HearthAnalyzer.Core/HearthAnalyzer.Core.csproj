@@ -45,6 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cards\BaseWeapon.cs" />
+    <Compile Include="IDamageableEntity.cs" />
     <Compile Include="Cards\BaseCard.cs" />
     <Compile Include="Cards\BaseMinion.cs" />
     <Compile Include="Cards\Minions\Abomination.cs" />
@@ -55,6 +57,7 @@
     <Compile Include="GameState.cs" />
     <Compile Include="BasePlayer.cs" />
     <Compile Include="Heroes\Warlock.cs" />
+    <Compile Include="IAttacker.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
