@@ -34,12 +34,22 @@ namespace HearthAnalyzer.Core.Cards
         /// <summary>
         /// The mana cost for this card
         /// </summary>
-        public int ManaCost;
+        public int OriginalManaCost;
 
         /// <summary>
         /// The current mana cost for this card
         /// </summary>
         public int CurrentManaCost;
+
+        /// <summary>
+        /// The original attack power for this card
+        /// </summary>
+        public int OriginalAttackPower;
+
+        /// <summary>
+        /// The current attack power for this card
+        /// </summary>
+        public int CurrentAttackPower;
 
         /// <summary>
         /// The time that the card was first played on the board
@@ -78,6 +88,8 @@ namespace HearthAnalyzer.Core.Cards
         TOTEM,
         NORMAL_MINION,
         SPELL,
-        WEAPON
+        WEAPON,
+        ACTIVE_WEAPON,
+        ACTIVE_SECRET
     }
 }

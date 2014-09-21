@@ -20,8 +20,9 @@ namespace HearthAnalyzer.Core
     /// 
     /// Good references:
     ///  - General sequencing of events: http://us.battle.net/hearthstone/en/forum/topic/13681168564
-	///  - Order of AOE events: http://www.liquidhearth.com/forum/hearthstone/456767-myth-busted-redemption-revive-minion-randomly
+    ///  - Order of AOE events: http://www.liquidhearth.com/forum/hearthstone/456767-myth-busted-redemption-revive-minion-randomly
     ///  - Triggered effects: http://hearthstone.gamepedia.com/Triggered_effect
+    ///  - Deathrattle: http://imgur.com/a/jJhb2
     public static class GameEventManager
     {
 
@@ -59,7 +60,7 @@ namespace HearthAnalyzer.Core
         /// <remarks>
         /// Handlers include Misdirection Trap, Vaporize, and the game engine itself.
         /// </remarks>
-        public delegate void MinionAttackingEventHandler(BaseMinion attacker, object target, GameState gameState, out bool shouldAbort);
+        public delegate void MinionAttackingEventHandler(BaseMinion attacker, object target, GameState gameState, bool isRetaliation, out bool shouldAbort);
         public static MinionAttackingEventHandler MinionAttacking;
         private static List<Tuple<BaseCard, MinionAttackingEventHandler>> _minionAttackingListeners; 
 
@@ -86,7 +87,8 @@ namespace HearthAnalyzer.Core
         /// Unregister from all events
         /// </summary>
         /// <param name="self">The instance to be unregistered</param>
-        public static void UnregisterForEvents(BaseCard self)
+        /// <param name="unregisterDeathRattle">Whether or not deathrattles should be unregistered</param>
+        public static void UnregisterForEvents(BaseCard self, bool unregisterDeathRattle = false)
         {
             _minionPlayedListeners.RemoveAll(kvp => kvp.Item1.Id == self.Id);
             _minionAttackingListeners.RemoveAll(kvp => kvp.Item1.Id == self.Id);
@@ -109,24 +111,26 @@ namespace HearthAnalyzer.Core
             }
         }
 
-        public static void OnMinionAttacking(BaseMinion attacker, object target, GameState gameState, out bool shouldAbort)
+        public static void OnMinionAttacking(BaseMinion attacker, object target, GameState gameState, bool isRetaliation, out bool shouldAbort)
         {
             shouldAbort = false;
 
             if (_minionAttackingListeners.Any())
             {
-                // Secrets get called first, then the game engine
-                // TODO: If a card is hit with
-                var sortedListeners = _minionAttackingListeners.OrderBy(kvp => kvp.Item1.TimePlayed).ToList();
+                // Triggered Effects get called first, then Secrets, then the game engine
+                var sortedListeners = _minionAttackingListeners.Where(kvp => kvp.Item1.Type != CardType.ACTIVE_SECRET).OrderBy(kvp => kvp.Item1.TimePlayed).ToList();
+                var secrets = _minionAttackingListeners.Where(kvp => kvp.Item1.Type == CardType.ACTIVE_SECRET).OrderBy(kvp => kvp.Item1.TimePlayed).ToList();
+                sortedListeners.AddRange(secrets);
+
                 foreach (var handler in sortedListeners.Select(kvp => kvp.Item2))
                 {
-                    handler(attacker, target, gameState, out shouldAbort);
+                    handler(attacker, target, gameState, isRetaliation, out shouldAbort);
                 }
             }
 
             if (!shouldAbort)
             {
-                // TODO: Fire damage event
+                GameEngine.ApplyDamage(attacker, target, isRetaliation);
             }
         }
 

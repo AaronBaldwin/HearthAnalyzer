@@ -54,6 +54,11 @@ namespace HearthAnalyzer.Core
         public int MaxMana;
 
         /// <summary>
+        /// The player's status effects
+        /// </summary>
+        public PlayerStatusEffects StatusEffects;
+
+        /// <summary>
         /// The player's weapon
         /// </summary>
         public BaseCard Weapon;
@@ -91,12 +96,40 @@ namespace HearthAnalyzer.Core
         }
 
         /// <summary>
+        /// Applies the provided effects to the player
+        /// </summary>
+        /// <param name="effects">The effects to apply to the player</param>
+        public void ApplyStatusEffects(PlayerStatusEffects effects)
+        {
+            this.StatusEffects |= effects;
+        }
+
+        /// <summary>
+        /// This kills the player
+        /// </summary>
+        public void Die()
+        {
+            // Oh no, we died, inform the Game Engine.
+            GameEngine.DeadPlayersThisTurn.Add(this);
+        }
+
+        /// <summary>
         /// Returns a list of playable cards given the player's current mana
         /// </summary>
         /// <returns>The list of playable cards given the player's current mana</returns>
         public List<BaseCard> GetPlayableCards()
         {
-            return this.Hand.Where(c => c.ManaCost <= this.Mana).ToList();
+            return this.Hand.Where(c => c.OriginalManaCost <= this.Mana).ToList();
+        }
+
+        /// <summary>
+        /// Status effects for the player
+        /// </summary>
+        [Flags]
+        public enum PlayerStatusEffects
+        {
+            FROZEN = 0,
+            IMMUNE_TO_DAMAGE = 1
         }
     }
 }

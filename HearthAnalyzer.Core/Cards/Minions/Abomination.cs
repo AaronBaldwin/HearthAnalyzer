@@ -23,8 +23,8 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.Id = id;
             this.CardId = "FILLMEIN";
             this.Name = "Abomination";
-            this.ManaCost = 5;
-            this.CurrentAttack = 4;
+            this.OriginalManaCost = 5;
+            this.CurrentAttackPower = 4;
             this.CurrentHealth = 4;
         }
     }

@@ -6,6 +6,15 @@
 	- Hey, Blessing of Wisdom and Soul of the Forest stacks!!!
 	- Interesting interaction with Inner Rage and Pyromancer. Inner Rage will actually kill the Pyromancer without triggering 
       Pyromancer's triggered effect.
+	- What happens when a Haunted Creeper and an Abomination kill each other?
+		- Theory says that whichever was played first will trigger their deathrattle first
+		- e.g. If haunted creeper was played first, then it will spawn spiders, and then abom rattle will kill the spiders
+		- However, I'm wondering if it is more based on who attacked first.
+		- e.g. Haunted creepr was played first, but abom initiated the attack and killed the creeper.
+			This the creeper dies but before it dies, it also kills the abomination. The abomination then death rattles, doing 2 damage
+			and finally the creeper spiders spawn.
+		- If it's the former, then we'll probably have to do something like keep a list of creatures that have died that turn and then
+			trigger the deathrattles for each dead creature in the correct order (in which the creatures were played).
 
 2. Implement some sample cards
 
