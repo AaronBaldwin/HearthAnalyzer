@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using HearthAnalyzer.Core.Cards;
+using HearthAnalyzer.Core.Deathrattles;
 
 namespace HearthAnalyzer.Core
 {
@@ -40,6 +41,7 @@ namespace HearthAnalyzer.Core
             Random = randomSeed != 0 ? new Random(randomSeed) : new Random();
 
             GameEventManager.Initialize();
+            Deathrattles = new Dictionary<BaseMinion, BaseDeathrattle>();
             GameState = new GameState(player, opponent, board, turnNumber, currentPlayer);
             DeadMinionsThisTurn = new List<BaseMinion>();
             DeadPlayersThisTurn = new List<BasePlayer>();
@@ -49,6 +51,9 @@ namespace HearthAnalyzer.Core
         {
             GameEventManager.Uninitialize();
             GameState = null;
+            DeadMinionsThisTurn = null;
+            DeadPlayersThisTurn = null;
+            Deathrattles = null;
         }
 
         /// <summary>
@@ -64,7 +69,12 @@ namespace HearthAnalyzer.Core
         /// <summary>
         /// The list of dead players this turn
         /// </summary>
-        public static List<BasePlayer> DeadPlayersThisTurn { get; private set; } 
+        public static List<BasePlayer> DeadPlayersThisTurn { get; private set; }
+
+        /// <summary>
+        /// The list of deathrattles active on the board
+        /// </summary>
+        public static Dictionary<BaseMinion, BaseDeathrattle> Deathrattles { get; private set; } 
 
         /// <summary>
         /// The GameEngine's random number generator
@@ -77,7 +87,7 @@ namespace HearthAnalyzer.Core
         /// <param name="attacker">The card doing the attacking</param>
         /// <param name="target">The object receiving the attack</param>
         /// <param name="isRetaliation">Whether or not the attack is a retaliation</param>
-        public static void ApplyDamage(BaseCard attacker, IDamageableEntity target, bool isRetaliation = false)
+        public static void ApplyAttackDamage(BaseCard attacker, IDamageableEntity target, bool isRetaliation = false)
         {
             // If the attacker is a spell card or hero power, you can't retaliate
             // If the target is a hero, he can't retaliate
@@ -85,22 +95,19 @@ namespace HearthAnalyzer.Core
             {
                 var targetMinion = (BaseMinion) target;
 
-                if (!targetMinion.IsImmuneToDamage)
-                {
-                    targetMinion.TakeDamage(attacker.CurrentAttackPower);
-                }
+                targetMinion.TakeDamage(attacker.CurrentAttackPower);
 
                 if (!isRetaliation && (attacker is BaseMinion || attacker is BaseWeapon))
                 {
                     if (attacker is BaseWeapon)
                     {
                         var weapon = (BaseWeapon) attacker;
-                        ApplyDamage(targetMinion, weapon.Owner, isRetaliation: true);
+                        ApplyAttackDamage(targetMinion, weapon.WeaponOwner, isRetaliation: true);
                     }
                     else
                     {
                         // Then we must be attacking a minion
-                        ApplyDamage(targetMinion, (IDamageableEntity)attacker, isRetaliation: true);
+                        ApplyAttackDamage(targetMinion, (IDamageableEntity)attacker, isRetaliation: true);
                     }
                 }
             }
@@ -108,10 +115,7 @@ namespace HearthAnalyzer.Core
             {
                 var targetPlayer = (BasePlayer) target;
 
-                if (!targetPlayer.IsImmuneToDamage)
-                {
-                    targetPlayer.TakeDamage(attacker.CurrentAttackPower);
-                }
+                targetPlayer.TakeDamage(attacker.CurrentAttackPower);
             }
         }
 
@@ -199,6 +203,53 @@ namespace HearthAnalyzer.Core
             srcZoneContainer[srcPos] = null;
 
             Logger.Instance.Debug(string.Format("Moving {0}[1}\tFROM {2}[{3}]\tTO {4}[{5}]", cardToMove, id, srcZone, srcPos, destZone, destPos));
+        }
+
+        /// <summary>
+        /// Register a baseDeathrattle with the game engine. If the source card dies, it will trigger.
+        /// </summary>
+        /// <param name="source">The triggering card</param>
+        /// <param name="baseDeathrattle">The baseDeathrattle to perform</param>
+        public static void RegisterDeathrattle(BaseMinion source, BaseDeathrattle baseDeathrattle)
+        {
+            GameEngine.Deathrattles.Add(source, baseDeathrattle);
+        }
+
+        /// <summary>
+        /// Removes all deathrattles registered by the source card.
+        /// </summary>
+        /// <param name="source">The triggering card</param>
+        public static void UnregisterDeathrattle(BaseMinion source)
+        {
+            GameEngine.Deathrattles.Remove(source);
+        }
+
+        /// <summary>
+        /// Triggers death rattles after damage has been calculated.
+        /// </summary>
+        public static void TriggerDeathrattles()
+        {
+            // Deathrattles trigger by TimePlayed first.
+            var sortedDeadMinions = GameEngine.DeadMinionsThisTurn.OrderBy(minion => minion.TimePlayed).ToList();
+
+            bool deathrattleTriggered = false;
+            foreach (var minion in sortedDeadMinions)
+            {
+                if (GameEngine.Deathrattles.ContainsKey(minion))
+                {
+                    GameEngine.Deathrattles[minion].Deathrattle();
+
+                    deathrattleTriggered = true;
+
+                    GameEngine.Deathrattles.Remove(minion);
+                }
+            }
+
+            // We may have actually triggered yet more deathrattles with this so we need to check for it
+            if (deathrattleTriggered)
+            {
+                GameEngine.TriggerDeathrattles();
+            }
         }
     }
 }

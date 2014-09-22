@@ -27,6 +27,11 @@ namespace HearthAnalyzer.Core.Cards
         public string Name;
 
         /// <summary>
+        /// Who owns this card
+        /// </summary>
+        public BasePlayer Owner;
+
+        /// <summary>
         /// The type of this card
         /// </summary>
         public CardType Type;

@@ -50,6 +50,8 @@
     <Compile Include="Cards\Minions\ChillwindYeti.cs" />
     <Compile Include="Cards\Weapons\FieryWarAxe.cs" />
     <Compile Include="Cards\Weapons\Gorehowl.cs" />
+    <Compile Include="Deathrattles\BaseDeathrattle.cs" />
+    <Compile Include="Deathrattles\DeathrattleDamageAllMinions.cs" />
     <Compile Include="IDamageableEntity.cs" />
     <Compile Include="Cards\BaseCard.cs" />
     <Compile Include="Cards\BaseMinion.cs" />

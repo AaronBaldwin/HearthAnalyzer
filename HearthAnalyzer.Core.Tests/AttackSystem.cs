@@ -38,7 +38,7 @@ namespace HearthAnalyzer.Core.Tests
                 Weapon = fieryWarAxe
             };
 
-            fieryWarAxe.Owner = player;
+            fieryWarAxe.WeaponOwner = player;
 
             GameEngine.Initialize(player, null, null);
         }
@@ -91,7 +91,7 @@ namespace HearthAnalyzer.Core.Tests
             yeti1.TakeBuff(0, 23);
 
             player.Weapon = gorehowl;
-            gorehowl.Owner = player;
+            gorehowl.WeaponOwner = player;
 
             int gorehowlAttack = 7;
             int yetiHealth = 28;

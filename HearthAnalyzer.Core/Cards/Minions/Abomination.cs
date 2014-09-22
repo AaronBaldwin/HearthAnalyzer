@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HearthAnalyzer.Core.Deathrattles;
 
 namespace HearthAnalyzer.Core.Cards.Minions
 {
@@ -23,9 +24,12 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.Id = id;
             this.CardId = "FILLMEIN";
             this.Name = "Abomination";
-            this.OriginalManaCost = 5;
-            this.CurrentAttackPower = 4;
-            this.CurrentHealth = 4;
+            this.OriginalManaCost = MANA;
+            this.CurrentManaCost = MANA;
+            this.CurrentAttackPower = ATTACK;
+            this.CurrentHealth = HEALTH;
+
+            GameEngine.RegisterDeathrattle(this, new DeathrattleDamageAllMinions(DEATHRATTLE_DAMAGE));
         }
     }
 }

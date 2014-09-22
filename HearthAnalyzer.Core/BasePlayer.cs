@@ -158,6 +158,8 @@ namespace HearthAnalyzer.Core
 
         public void TakeDamage(int damage)
         {
+            if (this.IsImmuneToDamage) return;
+
             this.Health -= damage;
 
             // Fire damage dealt event

@@ -15,7 +15,7 @@ namespace HearthAnalyzer.Core.Cards
         /// <summary>
         /// Back reference to the player that owns and has this weapon equipped
         /// </summary>
-        public BasePlayer Owner;
+        public BasePlayer WeaponOwner;
 
         /// <summary>
         /// The amount of durability remaining on this weapon.
@@ -27,10 +27,10 @@ namespace HearthAnalyzer.Core.Cards
         /// </summary>
         public void Die()
         {
-            this.Owner.Graveyard.Add(this);
+            this.WeaponOwner.Graveyard.Add(this);
 
-            this.Owner.Weapon = null;
-            this.Owner = null;
+            this.WeaponOwner.Weapon = null;
+            this.WeaponOwner = null;
         }
 
         #region IAttacker

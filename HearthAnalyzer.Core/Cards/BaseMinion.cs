@@ -102,7 +102,8 @@ namespace HearthAnalyzer.Core.Cards
             Logger.Instance.Debug(string.Format("Minion {0}[{1}] has been silenced!", this.Name, this.Id));
 
             // Unregister all event listeners, including death rattles
-            GameEventManager.UnregisterForEvents(this, unregisterDeathRattle: true);
+            GameEventManager.UnregisterForEvents(this);
+            GameEngine.UnregisterDeathrattle(this);
 
             // Remove any effects but keep it exhausted if it was already
             bool wasExhausted = this.StatusEffects.HasFlag(MinionStatusEffects.EXHAUSTED);
@@ -146,14 +147,17 @@ namespace HearthAnalyzer.Core.Cards
 
         public void TakeDamage(int damage)
         {
-            this.CurrentHealth -= damage;
-
-            // fire damage dealt event
-            GameEventManager.DamageDealt(this, damage);
-
-            if (this.CurrentHealth <= 0 && !this.IsImmuneToDeath)
+            if (!this.IsImmuneToDamage)
             {
-                this.Die();
+                this.CurrentHealth -= damage;
+
+                // fire damage dealt event
+                GameEventManager.DamageDealt(this, damage);
+
+                if (this.CurrentHealth <= 0 && !this.IsImmuneToDeath)
+                {
+                    this.Die();
+                }
             }
         }
 

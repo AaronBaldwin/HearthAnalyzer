@@ -81,7 +81,7 @@ namespace HearthAnalyzer.Core
         /// <param name="gameState">the current state of the game</param>
         public delegate void DamageDealtEventHandler(IDamageableEntity target, int damageDealt);
         public static DamageDealtEventHandler DamageDealt;
-        private static List<Tuple<BaseCard, DamageDealtEventHandler>> _damageDealtListeners; 
+        private static List<Tuple<BaseCard, DamageDealtEventHandler>> _damageDealtListeners;
 
         #endregion
 
@@ -111,11 +111,11 @@ namespace HearthAnalyzer.Core
         /// Unregister from all events
         /// </summary>
         /// <param name="self">The instance to be unregistered</param>
-        /// <param name="unregisterDeathRattle">Whether or not deathrattles should be unregistered</param>
-        public static void UnregisterForEvents(BaseCard self, bool unregisterDeathRattle = false)
+        public static void UnregisterForEvents(BaseCard self)
         {
             _minionPlayedListeners.RemoveAll(kvp => kvp.Item1.Id == self.Id);
             _minionAttackingListeners.RemoveAll(kvp => kvp.Item1.Id == self.Id);
+            _damageDealtListeners.RemoveAll(kvp => kvp.Item1.Id == self.Id);
         }
 
         #endregion
@@ -154,7 +154,10 @@ namespace HearthAnalyzer.Core
 
             if (!shouldAbort)
             {
-                GameEngine.ApplyDamage(attacker, target, isRetaliation);
+                GameEngine.ApplyAttackDamage(attacker, target, isRetaliation);
+
+                // Time to trigger deathrattles
+                GameEngine.TriggerDeathrattles();
             }
         }
 
