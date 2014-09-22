@@ -35,7 +35,7 @@ namespace HearthAnalyzer.Core.Cards
 
         #region IAttacker
 
-        public void Attack(IDamageableEntity target, GameState gameState)
+        public virtual void Attack(IDamageableEntity target, GameState gameState)
         {
             // Fire attacking event
             bool shouldAbort;
@@ -50,7 +50,7 @@ namespace HearthAnalyzer.Core.Cards
 
         #endregion
 
-        public void TakeDamage(int damage)
+        public virtual void TakeDamage(int damage)
         {
             // Nobody cares about weapons taking damage yet so no need to fire an event
             this.Durability -= damage;
@@ -61,13 +61,13 @@ namespace HearthAnalyzer.Core.Cards
             }
         }
 
-        public void TakeHealing(int healAmount)
+        public virtual void TakeHealing(int healAmount)
         {
             // Nobody cares about if a weapon got healed  yet so no need to fire an event
             this.Durability += healAmount;
         }
 
-        public void TakeBuff(int attackBuff, int healthBuff)
+        public virtual void TakeBuff(int attackBuff, int healthBuff)
         {
             this.CurrentAttackPower += attackBuff;
 

@@ -35,6 +35,12 @@ namespace HearthAnalyzer.Core
             _minionAttackingListeners = new List<Tuple<BaseCard, AttackingEventHandler>>();
         }
 
+        public static void Uninitialize()
+        {
+            MinionPlayed -= OnMinionPlayed;
+            Attacking -= OnAttacking;
+        }
+
         #region Event Definitions
 
         /// <summary>

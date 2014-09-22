@@ -28,7 +28,7 @@ namespace HearthAnalyzer.Core.Cards.Weapons
             this.Durability = DURABILITY;
         }
 
-        public new void TakeDamage(int damage)
+        public override void TakeDamage(int damage)
         {
             // Gorehowl decreases in attack power isntead of durability each time it attacks
             this.CurrentAttackPower -= damage;

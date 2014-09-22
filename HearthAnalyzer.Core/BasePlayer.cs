@@ -61,7 +61,7 @@ namespace HearthAnalyzer.Core
         /// <summary>
         /// The player's weapon
         /// </summary>
-        public BaseCard Weapon;
+        public BaseWeapon Weapon;
 
         /// <summary>
         /// The player's hero power
@@ -148,7 +148,7 @@ namespace HearthAnalyzer.Core
         {
             if (this.Weapon != null)
             {
-                
+                this.Weapon.Attack(target, gameState);
             }
         }
 

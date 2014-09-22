@@ -45,6 +45,12 @@ namespace HearthAnalyzer.Core
             DeadPlayersThisTurn = new List<BasePlayer>();
         }
 
+        public static void Uninitialize()
+        {
+            GameEventManager.Uninitialize();
+            GameState = null;
+        }
+
         /// <summary>
         /// The current state of the game
         /// </summary>
