@@ -113,5 +113,14 @@ namespace HearthAnalyzer.Core.Tests
             Assert.IsNull(player.Weapon, "Verify that gorehowl broke");
             Assert.IsTrue(player.Graveyard.Contains(gorehowl));
         }
+
+        [TestMethod]
+        public void MinionsAttackingHero()
+        {
+            yeti1.Attack(player, GameEngine.GameState);
+
+            Assert.AreEqual(5, yeti1.CurrentHealth, "Verify yeti is at full health");
+            Assert.AreEqual(26, player.Health, "Verify the player took damage");
+        }
     }
 }
