@@ -26,8 +26,6 @@ namespace HearthAnalyzer.Core
             OPPOSING_GRAVEYARD
         }
 
-        private static GameState _gameState;
-
         /// <summary>
         /// Initialize the game engine
         /// </summary>
@@ -41,10 +39,16 @@ namespace HearthAnalyzer.Core
         {
             Random = randomSeed != 0 ? new Random(randomSeed) : new Random();
 
-            _gameState = new GameState(player, opponent, board, turnNumber, currentPlayer);
+            GameEventManager.Initialize();
+            GameState = new GameState(player, opponent, board, turnNumber, currentPlayer);
             DeadMinionsThisTurn = new List<BaseMinion>();
             DeadPlayersThisTurn = new List<BasePlayer>();
         }
+
+        /// <summary>
+        /// The current state of the game
+        /// </summary>
+        public static GameState GameState { get; private set; }
 
         /// <summary>
         /// The list of dead minions this turn
@@ -123,23 +127,23 @@ namespace HearthAnalyzer.Core
             switch (srcZone)
             {
                 case Zones.FRIENDLY_HAND:
-                    srcZoneContainer = _gameState.Player.Hand;
-                    cardToMove = _gameState.Player.Hand.ElementAtOrDefault(srcPos);
+                    srcZoneContainer = GameState.Player.Hand;
+                    cardToMove = GameState.Player.Hand.ElementAtOrDefault(srcPos);
                     break;
 
                 case Zones.FRIENDLY_PLAY:
-                    srcZoneContainer = _gameState.Board.PlayerZone;
-                    cardToMove = _gameState.Board.PlayerZone.ElementAtOrDefault(srcPos);
+                    srcZoneContainer = GameState.Board.PlayerZone;
+                    cardToMove = GameState.Board.PlayerZone.ElementAtOrDefault(srcPos);
                     break;
 
                 case Zones.OPPOSING_HAND:
-                    srcZoneContainer = _gameState.Opponent.Hand;
-                    cardToMove = _gameState.Opponent.Hand.ElementAtOrDefault(srcPos);
+                    srcZoneContainer = GameState.Opponent.Hand;
+                    cardToMove = GameState.Opponent.Hand.ElementAtOrDefault(srcPos);
                     break;
 
                 case Zones.OPPOSING_PLAY:
-                    srcZoneContainer = _gameState.Board.OpponentZone;
-                    cardToMove = _gameState.Board.OpponentZone.ElementAtOrDefault(srcPos);
+                    srcZoneContainer = GameState.Board.OpponentZone;
+                    cardToMove = GameState.Board.OpponentZone.ElementAtOrDefault(srcPos);
                     break;
 
                 default:
@@ -156,27 +160,27 @@ namespace HearthAnalyzer.Core
             switch (destZone)
             {
                 case Zones.FRIENDLY_PLAY:
-                    destZoneContainer = _gameState.Board.PlayerZone;
+                    destZoneContainer = GameState.Board.PlayerZone;
                     break;
 
                 case Zones.FRIENDLY_HAND:
-                    destZoneContainer = _gameState.Player.Hand;
+                    destZoneContainer = GameState.Player.Hand;
                     break;
 
                 case Zones.FRIENDLY_GRAVEYARD:
-                    destZoneContainer = _gameState.Player.Graveyard;
+                    destZoneContainer = GameState.Player.Graveyard;
                     break;
 
                 case Zones.OPPOSING_PLAY:
-                    destZoneContainer = _gameState.Board.OpponentZone;
+                    destZoneContainer = GameState.Board.OpponentZone;
                     break;
 
                 case Zones.OPPOSING_HAND:
-                    destZoneContainer = _gameState.Opponent.Hand;
+                    destZoneContainer = GameState.Opponent.Hand;
                     break;
 
                 case Zones.OPPOSING_GRAVEYARD:
-                    destZoneContainer = _gameState.Opponent.Graveyard;
+                    destZoneContainer = GameState.Opponent.Graveyard;
                     break;
             }
 

@@ -46,6 +46,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cards\BaseWeapon.cs" />
+    <Compile Include="Cards\Minions\BloodfenRaptor.cs" />
+    <Compile Include="Cards\Minions\ChillwindYeti.cs" />
+    <Compile Include="Cards\Weapons\FieryWarAxe.cs" />
+    <Compile Include="Cards\Weapons\Gorehowl.cs" />
     <Compile Include="IDamageableEntity.cs" />
     <Compile Include="Cards\BaseCard.cs" />
     <Compile Include="Cards\BaseMinion.cs" />
@@ -64,7 +68,6 @@
   <ItemGroup>
     <Folder Include="Cards\HeroPowers\" />
     <Folder Include="Cards\Spells\" />
-    <Folder Include="Cards\Weapons\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
