@@ -33,12 +33,16 @@ namespace HearthAnalyzer.Core
 
             Attacking += OnAttacking;
             _minionAttackingListeners = new List<Tuple<BaseCard, AttackingEventHandler>>();
+
+            DamageDealt += OnDamageDealt;
+            _damageDealtListeners = new List<Tuple<BaseCard, DamageDealtEventHandler>>();
         }
 
         public static void Uninitialize()
         {
             MinionPlayed -= OnMinionPlayed;
             Attacking -= OnAttacking;
+            DamageDealt -= OnDamageDealt;
         }
 
         #region Event Definitions
@@ -51,7 +55,7 @@ namespace HearthAnalyzer.Core
         /// <remarks>
         /// Typically called by Secrets like Mirror Entity
         /// </remarks>
-        public delegate void MinionPlayedEventHandler(BaseMinion minionPlayed, GameState gameState);
+        public delegate void MinionPlayedEventHandler(BaseMinion minionPlayed);
         public static MinionPlayedEventHandler MinionPlayed;
         private static List<Tuple<BaseCard, MinionPlayedEventHandler>> _minionPlayedListeners;
 
@@ -65,9 +69,19 @@ namespace HearthAnalyzer.Core
         /// <remarks>
         /// Handlers include Misdirection Trap, Vaporize, and the game engine itself.
         /// </remarks>
-        public delegate void AttackingEventHandler(BaseCard attacker, IDamageableEntity target, GameState gameState, bool isRetaliation, out bool shouldAbort);
+        public delegate void AttackingEventHandler(BaseCard attacker, IDamageableEntity target, bool isRetaliation, out bool shouldAbort);
         public static AttackingEventHandler Attacking;
-        private static List<Tuple<BaseCard, AttackingEventHandler>> _minionAttackingListeners; 
+        private static List<Tuple<BaseCard, AttackingEventHandler>> _minionAttackingListeners;
+
+        /// <summary>
+        /// Handler for when damage is dealt
+        /// </summary>
+        /// <param name="target">The target of the damage</param>
+        /// <param name="damageDealt">How much damage was dealt</param>
+        /// <param name="gameState">the current state of the game</param>
+        public delegate void DamageDealtEventHandler(IDamageableEntity target, int damageDealt);
+        public static DamageDealtEventHandler DamageDealt;
+        private static List<Tuple<BaseCard, DamageDealtEventHandler>> _damageDealtListeners; 
 
         #endregion
 
@@ -88,6 +102,11 @@ namespace HearthAnalyzer.Core
             _minionAttackingListeners.Add(new Tuple<BaseCard, AttackingEventHandler>(self, callback));
         }
 
+        public static void RegisterForEvent(BaseCard self, DamageDealtEventHandler callback)
+        {
+            _damageDealtListeners.Add(new Tuple<BaseCard, DamageDealtEventHandler>(self, callback));
+        }
+
         /// <summary>
         /// Unregister from all events
         /// </summary>
@@ -103,7 +122,7 @@ namespace HearthAnalyzer.Core
 
         #region Handlers
 
-        public static void OnMinionPlayed(BaseMinion minionPlayed, GameState gameState)
+        public static void OnMinionPlayed(BaseMinion minionPlayed)
         {
             // If a tree falls in a forest without any one listening...
             if (!_minionPlayedListeners.Any()) return;
@@ -112,11 +131,11 @@ namespace HearthAnalyzer.Core
             var sortedListeners = _minionPlayedListeners.OrderBy(kvp => kvp.Item1.TimePlayed).ToList();
             foreach (var handler in sortedListeners.Select(kvp => kvp.Item2))
             {
-                handler(minionPlayed, gameState);
+                handler(minionPlayed);
             }
         }
 
-        public static void OnAttacking(BaseCard attacker, IDamageableEntity target, GameState gameState, bool isRetaliation, out bool shouldAbort)
+        public static void OnAttacking(BaseCard attacker, IDamageableEntity target, bool isRetaliation, out bool shouldAbort)
         {
             shouldAbort = false;
 
@@ -129,13 +148,25 @@ namespace HearthAnalyzer.Core
 
                 foreach (var handler in sortedListeners.Select(kvp => kvp.Item2))
                 {
-                    handler(attacker, target, gameState, isRetaliation, out shouldAbort);
+                    handler(attacker, target, isRetaliation, out shouldAbort);
                 }
             }
 
             if (!shouldAbort)
             {
                 GameEngine.ApplyDamage(attacker, target, isRetaliation);
+            }
+        }
+
+        public static void OnDamageDealt(IDamageableEntity target, int damageDealt)
+        {
+            if (!_damageDealtListeners.Any()) return;
+
+            // Listeners for this are called in the order in which they were played on the board
+            var sortedListeners = _damageDealtListeners.OrderBy(kvp => kvp.Item1.TimePlayed).ToList();
+            foreach (var handler in sortedListeners.Select(kvp => kvp.Item2))
+            {
+                handler(target, damageDealt);
             }
         }
 

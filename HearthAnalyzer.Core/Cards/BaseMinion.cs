@@ -134,12 +134,12 @@ namespace HearthAnalyzer.Core.Cards
         /// <summary>
         /// Attacks another target
         /// </summary>
-        /// <param name="target"></param>
-        public void Attack(IDamageableEntity target, GameState gameState)
+        /// <param name="target">The target to attack</param>
+        public void Attack(IDamageableEntity target)
         {
             // Fire attacking event
             bool shouldAbort;
-            GameEventManager.Attacking(this, target, gameState, isRetaliation: false, shouldAbort: out shouldAbort);
+            GameEventManager.Attacking(this, target, isRetaliation: false, shouldAbort: out shouldAbort);
         }
 
         #region IDamageableEntity
@@ -149,6 +149,7 @@ namespace HearthAnalyzer.Core.Cards
             this.CurrentHealth -= damage;
 
             // fire damage dealt event
+            GameEventManager.DamageDealt(this, damage);
 
             if (this.CurrentHealth <= 0 && !this.IsImmuneToDeath)
             {

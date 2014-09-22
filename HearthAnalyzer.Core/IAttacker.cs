@@ -16,7 +16,6 @@ namespace HearthAnalyzer.Core
         /// Attacks the target
         /// </summary>
         /// <param name="target">The target to attack</param>
-        /// <param name="state">The current game state</param>
-        void Attack(IDamageableEntity target, GameState state);
+        void Attack(IDamageableEntity target);
     }
 }

@@ -1,7 +1,8 @@
 1. Design an eventing system that can handle:
 	- Deathrattles
 	- Card powers (like Undertaker)
-	- Attacking
+	- [DONE] Attacking - basic attack system with minions and heros
+	- Spells attacking
 
 	- Hey, Blessing of Wisdom and Soul of the Forest stacks!!!
 	- Interesting interaction with Inner Rage and Pyromancer. Inner Rage will actually kill the Pyromancer without triggering 

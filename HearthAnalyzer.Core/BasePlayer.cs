@@ -144,11 +144,11 @@ namespace HearthAnalyzer.Core
 
         #region IAttacker
 
-        public void Attack(IDamageableEntity target, GameState gameState)
+        public void Attack(IDamageableEntity target)
         {
             if (this.Weapon != null)
             {
-                this.Weapon.Attack(target, gameState);
+                this.Weapon.Attack(target);
             }
         }
 
@@ -161,6 +161,7 @@ namespace HearthAnalyzer.Core
             this.Health -= damage;
 
             // Fire damage dealt event
+            GameEventManager.DamageDealt(this, damage);
 
             if (this.Health <= 0)
             {

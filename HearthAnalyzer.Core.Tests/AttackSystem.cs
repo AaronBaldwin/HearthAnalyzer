@@ -53,13 +53,13 @@ namespace HearthAnalyzer.Core.Tests
         public void BasicMinionsAttacking()
         {
             // 4/5 attacking into another 4/5 should yeild two 4/1s
-            yeti1.Attack(yeti2, GameEngine.GameState);
+            yeti1.Attack(yeti2);
 
             Assert.AreEqual(1, yeti1.CurrentHealth, "Verify Yeti_1 is at 1 health.");
             Assert.AreEqual(1, yeti2.CurrentHealth, "Verify Yeti_2 is at 1 health.");
 
             // Now, kill yeti 1 with raptor 1. This should kill both the yeti and the raptor
-            raptor1.Attack(yeti1, GameEngine.GameState);
+            raptor1.Attack(yeti1);
 
             Assert.IsTrue(GameEngine.DeadMinionsThisTurn.Contains(yeti1), "Verify Yeti_1 is dead");
             Assert.IsTrue(GameEngine.DeadMinionsThisTurn.Contains(raptor1), "Verify Raptor_1 is dead");
@@ -70,12 +70,12 @@ namespace HearthAnalyzer.Core.Tests
         [TestMethod]
         public void BasicWeaponsAttacking()
         {
-            player.Attack(yeti1, GameEngine.GameState);
+            player.Attack(yeti1);
             Assert.AreEqual(2, yeti1.CurrentHealth, "Verify Yeti_1 is at 2 health");
             Assert.AreEqual(26, player.Health, "Verify the player is now at 26 health");
             Assert.AreEqual(1, fieryWarAxe.Durability, "Verify the war axe is now at 1 durability");
 
-            player.Attack(yeti1, GameEngine.GameState);
+            player.Attack(yeti1);
             Assert.AreEqual(-1, yeti1.CurrentHealth, "Verify Yeti_1 is at -1 health");
             Assert.AreEqual(22, player.Health, "Verify the player is now at 22 health");
             Assert.AreEqual(0, fieryWarAxe.Durability, "Verify the war axe is now at 0 durability");
@@ -99,7 +99,7 @@ namespace HearthAnalyzer.Core.Tests
 
             for (int i = 0; i < 7; i++)
             {
-                player.Attack(yeti1, GameEngine.GameState);
+                player.Attack(yeti1);
 
                 yetiHealth -= gorehowlAttack;
                 gorehowlAttack--;
@@ -117,7 +117,7 @@ namespace HearthAnalyzer.Core.Tests
         [TestMethod]
         public void MinionsAttackingHero()
         {
-            yeti1.Attack(player, GameEngine.GameState);
+            yeti1.Attack(player);
 
             Assert.AreEqual(5, yeti1.CurrentHealth, "Verify yeti is at full health");
             Assert.AreEqual(26, player.Health, "Verify the player took damage");

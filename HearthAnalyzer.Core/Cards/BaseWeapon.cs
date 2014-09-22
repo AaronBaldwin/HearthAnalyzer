@@ -35,11 +35,11 @@ namespace HearthAnalyzer.Core.Cards
 
         #region IAttacker
 
-        public virtual void Attack(IDamageableEntity target, GameState gameState)
+        public virtual void Attack(IDamageableEntity target)
         {
             // Fire attacking event
             bool shouldAbort;
-            GameEventManager.Attacking(this, target, gameState, isRetaliation: false, shouldAbort: out shouldAbort);
+            GameEventManager.Attacking(this, target, isRetaliation: false, shouldAbort: out shouldAbort);
 
             if (!shouldAbort)
             {
