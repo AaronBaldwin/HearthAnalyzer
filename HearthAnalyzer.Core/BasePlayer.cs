@@ -74,7 +74,6 @@ namespace HearthAnalyzer.Core
         /// <param name="card">The card to play</param>
         /// <param name="subTarget">The sub target for this card, usually for targeting batlle cry spells</param>
         /// <param name="gameboardPos">The position on the gameboard to place the card (if applicable)</param>
-        /// <remarks>Only really needed for simulation. We can read the logs to determine where a card got placed.</remarks>
         public void PlayCard(BaseCard card, IDamageableEntity subTarget, int gameboardPos = 0)
         {
             // Is it even our turn to play?
@@ -97,6 +96,27 @@ namespace HearthAnalyzer.Core
                 throw new InvalidOperationException(string.Format("Not enough mana {0} to play that card {1}!", this.Mana, card.CurrentManaCost));
             }
 
+            var minionCard = cardInHand as BaseMinion;
+            if (minionCard != null)
+            {
+                this.PlayMinion(minionCard, subTarget, gameboardPos);
+                return;
+            }
+
+            // TODO: Play spell card
+
+        }
+
+        /// <summary>
+        /// Plays a minion onto the game board
+        /// </summary>
+        /// <param name="minion">The minion to be played on the game board</param>
+        /// <param name="subTarget">The sub target for this card, usually for targetting battle cry spells</param>
+        /// <param name="gameboardPos">The position on the gameboard to place the card</param>
+        public void PlayMinion(BaseMinion minion, IDamageableEntity subTarget, int gameboardPos = 0)
+        {
+            var gameState = GameEngine.GameState;
+
             // Check if there are too many minions on the board
             var playZone = gameState.CurrentPlayerPlayZone;
             var playZoneCount = playZone.Count(slot => slot != null);
@@ -114,25 +134,29 @@ namespace HearthAnalyzer.Core
                 }
             }
 
-            playZone[gameboardPos] = cardInHand;
+            // Set the time the card was played
+            minion.TimePlayed = DateTime.Now;
+
+            playZone[gameboardPos] = minion;
 
             // Remove it from the player's hand
-            this.Hand.Remove(cardInHand);
+            this.Hand.Remove(minion);
 
             // Remove mana from the player
-            this.Mana -= cardInHand.CurrentManaCost;
+            this.Mana -= minion.CurrentManaCost;
 
-            // Fire card placed event
+            // Fire minion placed event
+            GameEventManager.MinionPlaced(minion);
 
             // call the card's battlecry 
-            var battlecryCard = card as IBattlecry;
+            var battlecryCard = minion as IBattlecry;
             if (battlecryCard != null)
             {
                 battlecryCard.Battlecry(subTarget);
             }
 
             // Fire card played event
-
+            GameEventManager.MinionPlayed(minion);
         }
 
         /// <summary>
