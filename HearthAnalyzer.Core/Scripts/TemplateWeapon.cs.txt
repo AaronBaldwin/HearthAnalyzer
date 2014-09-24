@@ -1,0 +1,34 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace HearthAnalyzer.Core.Cards.Weapons
+{
+    /// <summary>
+    /// Implements the _NAME_ Weapon
+    /// </summary>
+    /// <remarks>
+    /// TODO: NOT YET COMPLETELY IMPLEMENTED
+    /// </remarks>
+    public class _CLASS_NAME_ : BaseWeapon
+    {
+        private const int MANA_COST = _MANA_COST_;
+        private const int ATTACK_POWER = _ATTACK_POWER_;
+        private const int DURABILITY = _DURABILITY_;
+
+        public _CLASS_NAME_(int id = -1)
+        {
+            this.Id = id;
+            this.Name = "_NAME_";
+
+            this.OriginalManaCost = MANA_COST;
+            this.CurrentManaCost = MANA_COST;
+
+            this.CurrentAttackPower = ATTACK_POWER;
+
+            this.Durability = DURABILITY;
+        }
+    }
+}
