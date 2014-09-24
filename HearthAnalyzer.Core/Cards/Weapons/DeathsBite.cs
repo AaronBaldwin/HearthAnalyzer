@@ -14,7 +14,7 @@ namespace HearthAnalyzer.Core.Cards.Weapons
     /// </remarks>
     public class DeathsBite : BaseWeapon
     {
-        private const int MANA_COST = 0;
+        private const int MANA_COST = 4;
         private const int ATTACK_POWER = 4;
         private const int DURABILITY = 0;
 

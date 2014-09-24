@@ -15,7 +15,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// </remarks>
     public class Thaddius : BaseMinion
     {
-        private const int MANA_COST = 0;
+        private const int MANA_COST = 10;
         private const int ATTACK_POWER = 11;
         private const int HEALTH = 11;
 

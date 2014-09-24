@@ -15,7 +15,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// </remarks>
     public class RagnarostheFirelord : BaseMinion
     {
-        private const int MANA_COST = 0;
+        private const int MANA_COST = 8;
         private const int ATTACK_POWER = 8;
         private const int HEALTH = 8;
 

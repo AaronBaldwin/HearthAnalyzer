@@ -12,7 +12,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// </summary>
     public class StormpikeCommando : BaseMinion, IBattlecry
     {
-        private const int MANA_COST = 0;
+        private const int MANA_COST = 5;
         private const int ATTACK_POWER = 4;
         private const int HEALTH = 2;
         private const int BATTLECRY_DAMAGE = 2;

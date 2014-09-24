@@ -15,7 +15,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// </remarks>
     public class Onyxia : BaseMinion
     {
-        private const int MANA_COST = 0;
+        private const int MANA_COST = 9;
         private const int ATTACK_POWER = 8;
         private const int HEALTH = 8;
 

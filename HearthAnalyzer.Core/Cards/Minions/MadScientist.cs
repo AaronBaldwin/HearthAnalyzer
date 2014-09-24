@@ -15,7 +15,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// </remarks>
     public class MadScientist : BaseMinion
     {
-        private const int MANA_COST = 0;
+        private const int MANA_COST = 2;
         private const int ATTACK_POWER = 2;
         private const int HEALTH = 2;
 

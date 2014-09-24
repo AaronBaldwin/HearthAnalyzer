@@ -36,7 +36,7 @@ namespace HearthAnalyzer.Core
         /// <summary>
         /// The player's health
         /// </summary>
-        public int Health;
+        public int Health = 30;
 
         /// <summary>
         /// The player's armor value
@@ -46,12 +46,12 @@ namespace HearthAnalyzer.Core
         /// <summary>
         /// The player's remaining mana
         /// </summary>
-        public int Mana;
+        public int Mana = 1;
 
         /// <summary>
         /// The player's maximum mana
         /// </summary>
-        public int MaxMana;
+        public int MaxMana = 1;
 
         /// <summary>
         /// The player's status effects
@@ -91,6 +91,12 @@ namespace HearthAnalyzer.Core
                 throw new InvalidOperationException(string.Format("You can't play a card that's not in hand! {0}", card));
             }
 
+            // Check if we have enough mana to make the play
+            if (this.Mana < cardInHand.CurrentManaCost)
+            {
+                throw new InvalidOperationException(string.Format("Not enough mana {0} to play that card {1}!", this.Mana, card.CurrentManaCost));
+            }
+
             // Check if there are too many minions on the board
             var playZone = gameState.CurrentPlayerPlayZone;
             var playZoneCount = playZone.Count(slot => slot != null);
@@ -108,10 +114,15 @@ namespace HearthAnalyzer.Core
                 }
             }
 
-            playZone[gameboardPos] = card;
+            playZone[gameboardPos] = cardInHand;
 
             // Remove it from the player's hand
-            this.Hand.Remove(card);
+            this.Hand.Remove(cardInHand);
+
+            // Remove mana from the player
+            this.Mana -= cardInHand.CurrentManaCost;
+
+            // Fire card placed event
 
             // call the card's battlecry 
             var battlecryCard = card as IBattlecry;

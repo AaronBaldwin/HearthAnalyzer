@@ -14,7 +14,7 @@ namespace HearthAnalyzer.Core.Cards.Weapons
     /// </remarks>
     public class GladiatorsLongbow : BaseWeapon
     {
-        private const int MANA_COST = 0;
+        private const int MANA_COST = 7;
         private const int ATTACK_POWER = 5;
         private const int DURABILITY = 0;
 

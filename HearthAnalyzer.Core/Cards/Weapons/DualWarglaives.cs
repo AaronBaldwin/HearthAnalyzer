@@ -14,7 +14,7 @@ namespace HearthAnalyzer.Core.Cards.Weapons
     /// </remarks>
     public class DualWarglaives : BaseWeapon
     {
-        private const int MANA_COST = 0;
+        private const int MANA_COST = 6;
         private const int ATTACK_POWER = 4;
         private const int DURABILITY = 0;
 

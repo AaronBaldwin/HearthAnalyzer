@@ -15,7 +15,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// </remarks>
     public class SpiritWolf : BaseMinion
     {
-        private const int MANA_COST = 0;
+        private const int MANA_COST = 2;
         private const int ATTACK_POWER = 2;
         private const int HEALTH = 3;
 

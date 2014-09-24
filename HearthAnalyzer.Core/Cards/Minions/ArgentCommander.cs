@@ -15,7 +15,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// </remarks>
     public class ArgentCommander : BaseMinion
     {
-        private const int MANA_COST = 0;
+        private const int MANA_COST = 6;
         private const int ATTACK_POWER = 4;
         private const int HEALTH = 2;
 

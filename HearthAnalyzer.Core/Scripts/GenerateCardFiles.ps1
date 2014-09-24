@@ -18,7 +18,7 @@ function GenerateCodeFile($card)
 
     $attack = @{$true=0;$false=$card.attack}[$card.attack -eq $null]
     $health = @{$true=0;$false=$card.health}[$card.health -eq $null]
-    $mana = @{$true=0;$false=$card.mana}[$card.mana -eq $null]
+    $mana = @{$true=0;$false=$card.cost}[$card.cost -eq $null]
 
     if ($card.type -eq 'minion')
     {

@@ -15,7 +15,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// </remarks>
     public class EmperorCobra : BaseMinion
     {
-        private const int MANA_COST = 0;
+        private const int MANA_COST = 3;
         private const int ATTACK_POWER = 2;
         private const int HEALTH = 3;
 

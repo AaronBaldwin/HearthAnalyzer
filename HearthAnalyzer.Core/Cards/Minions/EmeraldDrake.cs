@@ -15,7 +15,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// </remarks>
     public class EmeraldDrake : BaseMinion
     {
-        private const int MANA_COST = 0;
+        private const int MANA_COST = 4;
         private const int ATTACK_POWER = 7;
         private const int HEALTH = 6;
 

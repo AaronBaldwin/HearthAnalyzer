@@ -15,7 +15,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// </remarks>
     public class Boar : BaseMinion
     {
-        private const int MANA_COST = 0;
+        private const int MANA_COST = 1;
         private const int ATTACK_POWER = 1;
         private const int HEALTH = 1;
 

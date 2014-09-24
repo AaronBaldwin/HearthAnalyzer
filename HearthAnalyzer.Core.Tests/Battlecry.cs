@@ -32,6 +32,8 @@ namespace HearthAnalyzer.Core.Tests
                 commando1
             };
 
+            player.Mana = 5;
+
             GameEngine.Initialize(player, null);
 
             var playerPlayZone = new List<BaseCard>(GameBoard.MAX_CARDS_IN_PLAY_ZONE);
