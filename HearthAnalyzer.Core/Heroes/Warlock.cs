@@ -9,9 +9,8 @@ namespace HearthAnalyzer.Core.Heroes
 {
     public class Warlock : BasePlayer
     {
-        public Warlock()
+        public Warlock():base()
         {
-            this.Graveyard = new List<BaseCard>();
         }
     }
 }

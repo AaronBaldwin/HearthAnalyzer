@@ -13,7 +13,19 @@ namespace HearthAnalyzer.Core
     /// </summary>
     public class GameBoard
     {
+        /// <summary>
+        /// The max number of cards in the play zones
+        /// </summary>
         public const int MAX_CARDS_IN_PLAY_ZONE = 7;
+
+        public GameBoard()
+        {
+            this.PlayerPlayZone = new List<BaseCard>(MAX_CARDS_IN_PLAY_ZONE);
+            this.PlayerPlayZone.AddRange(Enumerable.Repeat<BaseCard>(null, MAX_CARDS_IN_PLAY_ZONE));
+
+            this.OpponentPlayZone = new List<BaseCard>(MAX_CARDS_IN_PLAY_ZONE);
+            this.OpponentPlayZone.AddRange(Enumerable.Repeat<BaseCard>(null, MAX_CARDS_IN_PLAY_ZONE));
+        }
 
         /// <summary>
         /// The player's side of the board

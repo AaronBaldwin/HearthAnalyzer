@@ -13,6 +13,18 @@ namespace HearthAnalyzer.Core
     /// </summary>
     public abstract class BasePlayer : IDamageableEntity, IAttacker
     {
+        protected BasePlayer()
+        {
+            this.Hand = new List<BaseCard>();
+            this.Health = 30;
+            this.Armor = 0;
+            this.Mana = 0;
+            this.MaxMana = 0;
+            this.Graveyard = new List<BaseCard>();
+            this.Weapon = null;
+            this.HeroPower = null;
+        }
+
         /// <summary>
         /// The game board the player is playing on
         /// </summary>
@@ -36,7 +48,7 @@ namespace HearthAnalyzer.Core
         /// <summary>
         /// The player's health
         /// </summary>
-        public int Health = 30;
+        public int Health;
 
         /// <summary>
         /// The player's armor value
@@ -46,12 +58,12 @@ namespace HearthAnalyzer.Core
         /// <summary>
         /// The player's remaining mana
         /// </summary>
-        public int Mana = 1;
+        public int Mana;
 
         /// <summary>
         /// The player's maximum mana
         /// </summary>
-        public int MaxMana = 1;
+        public int MaxMana;
 
         /// <summary>
         /// The player's status effects
