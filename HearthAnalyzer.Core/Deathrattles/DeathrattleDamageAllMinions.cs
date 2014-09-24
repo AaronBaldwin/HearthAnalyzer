@@ -21,15 +21,15 @@ namespace HearthAnalyzer.Core.Deathrattles
 
         public override void Deathrattle()
         {
-            var gameBoard = GameEngine.GameState.Board;
+            var gameState = GameEngine.GameState;
 
-            foreach (var card in gameBoard.PlayerZone)
+            foreach (var card in gameState.CurrentPlayerPlayZone)
             {
                 var minion = card as BaseMinion;
                 minion.TakeDamage(this._damage);
             }
 
-            foreach (var card in gameBoard.OpponentZone)
+            foreach (var card in gameState.WaitingPlayerPlayZone)
             {
                 var minion = card as BaseMinion;
                 minion.TakeDamage(this._damage);
