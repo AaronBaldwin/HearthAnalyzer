@@ -142,8 +142,8 @@ namespace HearthAnalyzer.Core
                     break;
 
                 case Zones.FRIENDLY_PLAY:
-                    srcZoneContainer = GameState.Board.PlayerZone;
-                    cardToMove = GameState.Board.PlayerZone.ElementAtOrDefault(srcPos);
+                    srcZoneContainer = GameState.Board.PlayerPlayZone;
+                    cardToMove = GameState.Board.PlayerPlayZone.ElementAtOrDefault(srcPos);
                     break;
 
                 case Zones.OPPOSING_HAND:
@@ -152,8 +152,8 @@ namespace HearthAnalyzer.Core
                     break;
 
                 case Zones.OPPOSING_PLAY:
-                    srcZoneContainer = GameState.Board.OpponentZone;
-                    cardToMove = GameState.Board.OpponentZone.ElementAtOrDefault(srcPos);
+                    srcZoneContainer = GameState.Board.OpponentPlayZone;
+                    cardToMove = GameState.Board.OpponentPlayZone.ElementAtOrDefault(srcPos);
                     break;
 
                 default:
@@ -170,7 +170,7 @@ namespace HearthAnalyzer.Core
             switch (destZone)
             {
                 case Zones.FRIENDLY_PLAY:
-                    destZoneContainer = GameState.Board.PlayerZone;
+                    destZoneContainer = GameState.Board.PlayerPlayZone;
                     break;
 
                 case Zones.FRIENDLY_HAND:
@@ -182,7 +182,7 @@ namespace HearthAnalyzer.Core
                     break;
 
                 case Zones.OPPOSING_PLAY:
-                    destZoneContainer = GameState.Board.OpponentZone;
+                    destZoneContainer = GameState.Board.OpponentPlayZone;
                     break;
 
                 case Zones.OPPOSING_HAND:
