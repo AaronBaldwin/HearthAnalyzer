@@ -34,14 +34,14 @@ namespace HearthAnalyzer.Core.Tests
 
             var gameBoard = new GameBoard()
             {
-                PlayerZone = new List<BaseCard>()
+                PlayerPlayZone = new List<BaseCard>()
                 {
                     yeti1,
                     yeti2,
                     abom1
                 },
 
-                OpponentZone = new List<BaseCard>()
+                OpponentPlayZone = new List<BaseCard>()
                 {
                     yeti3,
                     yeti4
