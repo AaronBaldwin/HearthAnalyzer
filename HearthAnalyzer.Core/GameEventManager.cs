@@ -45,9 +45,10 @@ namespace HearthAnalyzer.Core
 
         public static void Uninitialize()
         {
-            MinionPlayed -= OnMinionPlayed;
             Attacking -= OnAttacking;
             DamageDealt -= OnDamageDealt;
+            MinionPlaced -= OnMinionPlaced;
+            MinionPlayed -= OnMinionPlayed;
         }
 
         #region Event Definitions
