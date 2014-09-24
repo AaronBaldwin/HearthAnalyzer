@@ -48,5 +48,27 @@ namespace HearthAnalyzer.Core
         /// The current player
         /// </summary>
         public BasePlayer CurrentPlayer;
+
+        /// <summary>
+        /// The current player's play zone on the board
+        /// </summary>
+        public List<BaseCard> CurrentPlayerPlayZone
+        {
+            get
+            {
+                return (this.CurrentPlayer == this.Player) ? this.Board.PlayerPlayZone : this.Board.OpponentPlayZone;
+            }
+        }
+
+        /// <summary>
+        /// The waiting player's play zone on the board
+        /// </summary>
+        public List<BaseCard> WaitingPlayerPlayZone
+        {
+            get
+            {
+                return (this.CurrentPlayer == this.Player) ? this.Board.OpponentPlayZone : this.Board.PlayerPlayZone;
+            }
+        }
     }
 }

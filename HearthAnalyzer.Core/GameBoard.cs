@@ -16,11 +16,11 @@ namespace HearthAnalyzer.Core
         /// <summary>
         /// The player's side of the board
         /// </summary>
-        public List<BaseCard> PlayerZone;
+        public List<BaseCard> PlayerPlayZone;
 
         /// <summary>
         /// The opponent's side of the baord
         /// </summary>
-        public List<BaseCard> OpponentZone;
+        public List<BaseCard> OpponentPlayZone;
     }
 }
