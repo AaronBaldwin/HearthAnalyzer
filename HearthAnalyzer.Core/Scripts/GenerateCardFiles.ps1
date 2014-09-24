@@ -6,6 +6,8 @@ This script generates basic code for cards if the code file doesn't exist yet.
 This script generates basic code for cards if the code file doesn't exist yet. It takes
 a json file containing details about the card and uses it to generate
 .cs files based on template files for that card type.
+
+NOTE: Dependency on Powershell 4.0+
 #>
 
 function GenerateCodeFile($card)
