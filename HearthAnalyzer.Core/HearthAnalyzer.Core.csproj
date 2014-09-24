@@ -396,6 +396,7 @@
     <Compile Include="Cards\Weapons\WickedKnife.cs" />
     <Compile Include="Deathrattles\BaseDeathrattle.cs" />
     <Compile Include="Deathrattles\DeathrattleDamageAllMinions.cs" />
+    <Compile Include="IBattlecry.cs" />
     <Compile Include="IDamageableEntity.cs" />
     <Compile Include="Cards\BaseCard.cs" />
     <Compile Include="Cards\BaseMinion.cs" />

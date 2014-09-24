@@ -51,6 +51,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="AttackSystem.cs" />
+    <Compile Include="Battlecry.cs" />
     <Compile Include="Deathrattles.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

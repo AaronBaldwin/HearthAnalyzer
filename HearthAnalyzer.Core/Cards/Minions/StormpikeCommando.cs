@@ -10,14 +10,12 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// Implements the Stormpike Commando
     /// Basic Minion
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
-    public class StormpikeCommando : BaseMinion
+    public class StormpikeCommando : BaseMinion, IBattlecry
     {
         private const int MANA_COST = 0;
         private const int ATTACK_POWER = 4;
         private const int HEALTH = 2;
+        private const int BATTLECRY_DAMAGE = 2;
 
         public StormpikeCommando(int id = -1)
         {
@@ -29,5 +27,27 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
         }
+
+        #region IBattlecry
+
+        /// <summary>
+        /// Battlecry: Deal 2 damage
+        /// </summary>
+        /// <param name="subTarget">The target to deal damage to</param>
+        public void Battlecry(IDamageableEntity subTarget)
+        {
+            var minion = subTarget as BaseMinion;
+            if (minion != null)
+            {
+                if (minion.IsStealthed)
+                {
+                    throw new InvalidOperationException(string.Format("{0} can't target stealthed minions with his battlecry!", this.Name));
+                }
+            }
+
+            subTarget.TakeDamage(BATTLECRY_DAMAGE);
+        }
+
+        #endregion
     }
 }

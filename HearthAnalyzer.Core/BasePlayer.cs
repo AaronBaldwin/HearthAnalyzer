@@ -72,10 +72,18 @@ namespace HearthAnalyzer.Core
         /// Plays a card
         /// </summary>
         /// <param name="card">The card to play</param>
+        /// <param name="subTarget">The sub target for this card, usually for targeting batlle cry spells</param>
         /// <param name="gameboardPos">The position on the gameboard to place the card (if applicable)</param>
         /// <remarks>Only really needed for simulation. We can read the logs to determine where a card got placed.</remarks>
-        public void PlayCard(BaseCard card, int gameboardPos = 0)
+        public void PlayCard(BaseCard card, IDamageableEntity subTarget, int gameboardPos = 0)
         {
+            // Is it even our turn to play?
+            var gameState = GameEngine.GameState;
+            if (gameState.CurrentPlayer != this)
+            {
+                throw new InvalidOperationException(string.Format("You can't play out of turn! It is currently {0}'s turn", gameState.CurrentPlayer));
+            }
+
             // Check if it exists in the player's hand
             var cardInHand = this.Hand.FirstOrDefault(c => c.Equals(card));
             if (cardInHand == null)
@@ -83,16 +91,37 @@ namespace HearthAnalyzer.Core
                 throw new InvalidOperationException(string.Format("You can't play a card that's not in hand! {0}", card));
             }
 
-            // if so, remove it
-            this.Hand.Remove(cardInHand);
+            // Check if there are too many minions on the board
+            var playZone = gameState.CurrentPlayerPlayZone;
+            var playZoneCount = playZone.Count(slot => slot != null);
+            if (playZoneCount >= GameBoard.MAX_CARDS_IN_PLAY_ZONE)
+            {
+                throw new InvalidOperationException(string.Format("There are too many cards ({0}) in the playzone!", playZoneCount));
+            }
 
-            // then put it on the game board
+            // If there is a card already in the target gameboard position, shift everything to the right and place it there
+            if (playZone[gameboardPos] != null)
+            {
+                for (int i = playZone.Count - 1; i > gameboardPos; i--)
+                {
+                    playZone[i] = playZone[i - 1];
+                }
+            }
+
+            playZone[gameboardPos] = card;
+
+            // Remove it from the player's hand
+            this.Hand.Remove(card);
 
             // call the card's battlecry 
+            var battlecryCard = card as IBattlecry;
+            if (battlecryCard != null)
+            {
+                battlecryCard.Battlecry(subTarget);
+            }
 
-            // Buff / Damage / kill check
+            // Fire card played event
 
-            // place it on the board
         }
 
         /// <summary>

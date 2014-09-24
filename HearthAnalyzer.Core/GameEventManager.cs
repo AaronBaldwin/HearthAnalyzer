@@ -23,6 +23,8 @@ namespace HearthAnalyzer.Core
     ///  - Order of AOE events: http://www.liquidhearth.com/forum/hearthstone/456767-myth-busted-redemption-revive-minion-randomly
     ///  - Triggered effects: http://hearthstone.gamepedia.com/Triggered_effect
     ///  - Deathrattle: http://imgur.com/a/jJhb2
+    ///  - Events: https://github.com/danielyule/hearthbreaker/blob/master/events.md
+    ///  - Ordering: https://github.com/danielyule/hearthbreaker/issues/42
     public static class GameEventManager
     {
 

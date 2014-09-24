@@ -13,6 +13,8 @@ namespace HearthAnalyzer.Core
     /// </summary>
     public class GameBoard
     {
+        public const int MAX_CARDS_IN_PLAY_ZONE = 7;
+
         /// <summary>
         /// The player's side of the board
         /// </summary>
