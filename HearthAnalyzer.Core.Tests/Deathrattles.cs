@@ -64,6 +64,7 @@ namespace HearthAnalyzer.Core.Tests
             // The yeti should also die from the deathrattle
             yeti3.Attack(abom1);
 
+            // The rest of the yetis should have taken 2 damage from the abom deathrattle
             Assert.IsTrue(GameEngine.DeadMinionsThisTurn.Contains(abom1));
             Assert.IsTrue(GameEngine.DeadMinionsThisTurn.Contains(yeti3));
             Assert.AreEqual(3, yeti1.CurrentHealth, "Verify that the other yetis are hurt from the deathrattle");

@@ -173,7 +173,7 @@ namespace HearthAnalyzer.Core
 
         public void TakeHealing(int healAmount)
         {
-            this.Health += healAmount;
+            this.Health = Math.Min(this.Health + healAmount, 30);
 
             // Fire heal dealt event
         }
