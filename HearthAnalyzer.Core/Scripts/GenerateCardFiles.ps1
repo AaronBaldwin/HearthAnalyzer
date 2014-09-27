@@ -12,6 +12,15 @@ NOTE: Dependency on Powershell 4.0+
 
 function GenerateCodeFile($card)
 {
+    $cardDir = "..\Cards"
+    $minionsDir = Join-Path $cardDir "Minions"
+    $spellsDir = Join-Path $cardDir "Spells"
+    $weaponsDir = Join-Path $cardDir "Weapons"
+
+    $minionTemplate = "TemplateMinion.cs.txt"
+    $spellTemplate = "TemplateSpell.cs.txt"
+    $weaponTemplate = "TemplateWeapon.cs.txt"
+
     $className = [System.Text.RegularExpressions.Regex]::Replace($card.name, "[\W]", "")
 
     $fileName = $className + '.cs'
@@ -31,7 +40,11 @@ function GenerateCodeFile($card)
 
         # File hasn't been created yet, so let's generate it
         (Get-Content $minionTemplate) | Foreach-Object {
-            $_.Replace("_CLASS_NAME_", $className).Replace("_NAME_", $card.name).Replace("_MANA_COST_", $mana).Replace("_ATTACK_POWER_", $attack).Replace("_HEALTH_", $health)
+            $_.Replace("_CLASS_NAME_", $className). `
+            Replace("_NAME_", $card.name). `
+            Replace("_MANA_COST_", $mana). `
+            Replace("_ATTACK_POWER_", $attack). `
+            Replace("_HEALTH_", $health)
         } | Set-Content $filePath
     }
     elseif ($card.type -eq 'weapon')
@@ -44,9 +57,45 @@ function GenerateCodeFile($card)
         }
 
         (Get-Content $weaponTemplate) | Foreach-Object {
-            $_.Replace("_CLASS_NAME_", $className).Replace("_NAME_", $card.name).Replace("_MANA_COST_", $mana).Replace("_ATTACK_POWER_", $attack).Replace("_DURABILITY_", $health)
+            $_.Replace("_CLASS_NAME_", $className). `
+            Replace("_NAME_", $card.name). `
+            Replace("_MANA_COST_", $mana). `
+            Replace("_ATTACK_POWER_", $attack). `
+            Replace("_DURABILITY_", $health)
         } | Set-Content $filePath
     }
+	elseif ($card.type -eq 'spell')
+	{
+		$filePath= Join-Path $spellsDir $fileName
+		if (Test-Path $filePath)
+		{
+			Write-Warning "$filePath already exists, skipping file generation."
+			continue
+		}
+
+		$minSpellPower = 0
+		$maxSpellPower = 0
+
+		if ($card.text -match '\$([0-9]+).+\$([0-9]+)')
+		{
+			$minSpellPower = $matches[1]
+			$maxSpellPower = $matches[1]
+
+			if ($matches.Count -eq 3)
+			{	
+				$maxSpellPower = $matches[2]
+			}
+		}
+
+        (Get-Content $spellTemplate) | Foreach-Object {
+            $_.Replace("_CLASS_NAME_", $className). `
+            Replace("_NAME_", $card.name). `
+            Replace("_MANA_COST_", $mana). `
+            Replace("_CARD_TEXT_", $card.text). `
+            Replace("_MIN_SPELL_POWER_", $minSpellPower). `
+            Replace("_MAX_SPELL_POWER_", $maxSpellPower)
+        } | Set-Content $filePath
+	}
     else
     {
         Write-Warning "Don't know how to handle $($card.type) yet."
@@ -54,15 +103,6 @@ function GenerateCodeFile($card)
 }
 
 $cards = (Get-Content all-cards.json) -join "`n" | ConvertFrom-Json
-
-$cardDir = "..\Cards"
-$minionsDir = Join-Path $cardDir "Minions"
-$spellsDir = Join-Path $cardDir "Spells"
-$weaponsDir = Join-Path $cardDir "Weapons"
-
-$minionTemplate = "TemplateMinion.cs.txt"
-$spellTemplate = "TemplateSpell.cs.txt"
-$weaponTemplate = "TemplateWeapon.cs.txt"
 
 foreach ($card in $cards.Basic)
 {

@@ -12,6 +12,11 @@ namespace HearthAnalyzer.Core.Cards
     /// </summary>
     public class BaseWeapon : BaseCard, IAttacker, IDamageableEntity
     {
+        protected BaseWeapon()
+        {
+            this.Type = CardType.WEAPON;
+        }
+
         /// <summary>
         /// Back reference to the player that owns and has this weapon equipped
         /// </summary>

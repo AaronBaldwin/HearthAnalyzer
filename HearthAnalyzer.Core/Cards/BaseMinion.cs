@@ -12,6 +12,11 @@ namespace HearthAnalyzer.Core.Cards
     /// </summary>
     public abstract class BaseMinion : BaseCard, IAttacker, IDamageableEntity
     {
+        protected BaseMinion()
+        {
+            this.Type = CardType.NORMAL_MINION;
+        }
+
         /// <summary>
         /// The maximum health of this card
         /// </summary>
