@@ -188,12 +188,16 @@ namespace HearthAnalyzer.Core
             this.Mana -= spell.CurrentManaCost;
 
             // Fire spell casting event
+            bool shouldAbort;
+            GameEventManager.SpellCasting(spell, subTarget, out shouldAbort);
 
             // Check if we need to abort the spell or redirect
+            if (!shouldAbort)
+            {
+                spell.Activate(subTarget);
+            }
 
-            spell.Activate(subTarget);
-
-            // Fire spell casted event
+            // Fire spell casted event (if we need to)
         }
 
         /// <summary>
