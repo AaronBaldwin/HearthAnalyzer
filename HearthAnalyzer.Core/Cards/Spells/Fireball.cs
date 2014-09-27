@@ -24,16 +24,20 @@ namespace HearthAnalyzer.Core.Cards.Spells
 
             this.OriginalManaCost = MANA_COST;
             this.CurrentManaCost = MANA_COST;
-        }
 
-        /// <summary>
-        /// The amount of bonus spell power to add
-        /// </summary>
-        public int BonusSpellPower;
+            this.BonusSpellPower = 0;
+        }
 
         public override void Activate(IDamageableEntity target = null)
         {
-            throw new NotImplementedException();
+            if (target == null)
+            {
+                throw new ArgumentNullException("Fireball must be cast with target in mind");
+            }
+
+            // Deal damage to the target
+            var damageToDeal = MAX_SPELL_POWER + this.BonusSpellPower;
+            target.TakeDamage(damageToDeal);
         }
     }
 }

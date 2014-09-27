@@ -115,8 +115,11 @@ namespace HearthAnalyzer.Core
                 return;
             }
 
-            // TODO: Play spell card
-
+            var spellCard = cardInHand as BaseSpell;
+            if (spellCard != null)
+            {
+                this.PlaySpell(spellCard, subTarget);
+            }
         }
 
         /// <summary>
@@ -169,6 +172,28 @@ namespace HearthAnalyzer.Core
 
             // Fire card played event
             GameEventManager.MinionPlayed(minion);
+        }
+
+        /// <summary>
+        /// Plays a spell
+        /// </summary>
+        /// <param name="spell">The spell to play</param>
+        /// <param name="subTarget">The sub target for this spell card if applicable</param>
+        public void PlaySpell(BaseSpell spell, IDamageableEntity subTarget = null)
+        {
+            // Remove it from the player's hand
+            this.Hand.Remove(spell);
+
+            // Remove mana from the player
+            this.Mana -= spell.CurrentManaCost;
+
+            // Fire spell casting event
+
+            // Check if we need to abort the spell or redirect
+
+            spell.Activate(subTarget);
+
+            // Fire spell casted event
         }
 
         /// <summary>

@@ -55,6 +55,7 @@
     <Compile Include="Deathrattles.cs" />
     <Compile Include="PlayingMinions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Spells.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HearthAnalyzer.Core\HearthAnalyzer.Core.csproj">
