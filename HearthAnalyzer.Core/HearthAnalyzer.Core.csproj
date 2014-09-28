@@ -47,6 +47,8 @@
   <ItemGroup>
     <Compile Include="Cards\BaseSpell.cs" />
     <Compile Include="Cards\BaseWeapon.cs" />
+    <Compile Include="Cards\Deck.cs" />
+    <Compile Include="Cards\FatigueCard.cs" />
     <Compile Include="Cards\Minions\AbusiveSergeant.cs" />
     <Compile Include="Cards\Minions\AcidicSwampOoze.cs" />
     <Compile Include="Cards\Minions\AcolyteofPain.cs" />
