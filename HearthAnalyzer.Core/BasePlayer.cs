@@ -16,6 +16,7 @@ namespace HearthAnalyzer.Core
         protected BasePlayer()
         {
             this.Hand = new List<BaseCard>();
+            this.Deck = new Deck();
             this.Health = 30;
             this.Armor = 0;
             this.Mana = 0;
@@ -38,7 +39,7 @@ namespace HearthAnalyzer.Core
         /// <summary>
         /// The player's deck
         /// </summary>
-        public List<BaseCard> Deck;
+        public Deck Deck;
 
         /// <summary>
         /// The player's graveyard

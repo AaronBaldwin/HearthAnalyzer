@@ -11,10 +11,31 @@ namespace HearthAnalyzer.Core.Cards
     /// </summary>
     public class Deck
     {
-        private int topDeckIndex = -1;
-        private int fatigueDamage = 0;
+        internal int topDeckIndex;
+        internal int fatigueDamage;
 
         public List<BaseCard> Cards;
+
+        /// <summary>
+        /// Initialize a new empty deck
+        /// </summary>
+        public Deck()
+        {
+            this.Cards = new List<BaseCard>();
+            this.topDeckIndex = -1;
+            this.fatigueDamage = 0;
+        }
+        
+        /// <summary>
+        /// Initialize a deck with a list of cards
+        /// </summary>
+        /// <param name="cards">The cards to fill the deck with</param>
+        public Deck(List<BaseCard> cards)
+        {
+            this.Cards = cards;
+            this.topDeckIndex = this.Cards.Count - 1;
+            this.fatigueDamage = 0;
+        }
 
         public BaseCard DrawCard()
         {
@@ -26,7 +47,7 @@ namespace HearthAnalyzer.Core.Cards
 
             BaseCard card = this.Cards[topDeckIndex];
             this.Cards.RemoveAt(topDeckIndex);
-            topDeckIndex--;
+            this.topDeckIndex--;
             return card;
         }
 
@@ -38,7 +59,7 @@ namespace HearthAnalyzer.Core.Cards
         public void AddCard(BaseCard card)
         {
             this.Cards.Add(card);
-            topDeckIndex++;
+            this.topDeckIndex++;
         }
 
         /// <summary>
@@ -49,7 +70,7 @@ namespace HearthAnalyzer.Core.Cards
         public void AddCards(List<BaseCard> cards)
         {
             this.Cards.AddRange(cards);
-            topDeckIndex = this.Cards.Count - 1;
+            this.topDeckIndex = this.Cards.Count - 1;
         }
 
         /// <summary>
