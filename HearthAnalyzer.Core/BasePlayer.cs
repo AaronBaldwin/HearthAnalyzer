@@ -142,6 +142,8 @@ namespace HearthAnalyzer.Core
             {
                 this.PlaySpell(spellCard, subTarget);
             }
+
+            GameEngine.CheckForGameEnd();
         }
 
         /// <summary>
@@ -174,6 +176,15 @@ namespace HearthAnalyzer.Core
             // Set the time the card was played
             minion.TimePlayed = DateTime.Now;
 
+            // Start the minion as exhausted unless it has charge
+            if (!minion.HasCharge)
+            {
+                minion.ApplyStatusEffects(MinionStatusEffects.EXHAUSTED);
+            }
+
+            minion.ResetAttacksThisRun();
+
+            // Place the minion on the board
             playZone[gameboardPos] = minion;
 
             // Remove it from the player's hand

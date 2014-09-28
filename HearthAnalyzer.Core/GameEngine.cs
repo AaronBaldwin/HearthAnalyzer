@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using HearthAnalyzer.Core.Cards;
+using HearthAnalyzer.Core.Cards.Spells;
 using HearthAnalyzer.Core.Deathrattles;
 
 namespace HearthAnalyzer.Core
@@ -25,6 +26,16 @@ namespace HearthAnalyzer.Core
             OPPOSING_PLAY,
             FRIENDLY_GRAVEYARD,
             OPPOSING_GRAVEYARD
+        }
+
+        /// <summary>
+        /// Represents the result of a game
+        /// </summary>
+        public enum GameResult
+        {
+            WIN,
+            LOSE,
+            DRAW
         }
 
         internal static bool PlayerMulliganed = false;
@@ -50,6 +61,9 @@ namespace HearthAnalyzer.Core
             DeadPlayersThisTurn = new List<BasePlayer>();
         }
 
+        /// <summary>
+        /// Uninitializes the game engine
+        /// </summary>
         public static void Uninitialize()
         {
             GameEventManager.Uninitialize();
@@ -57,6 +71,8 @@ namespace HearthAnalyzer.Core
             DeadMinionsThisTurn = null;
             DeadPlayersThisTurn = null;
             Deathrattles = null;
+            PlayerMulliganed = false;
+            OpponentMulliganed = false;
         }
 
         /// <summary>
@@ -83,6 +99,17 @@ namespace HearthAnalyzer.Core
         /// The GameEngine's random number generator
         /// </summary>
         internal static Random Random { get; private set; }
+
+        /// <summary>
+        /// Handler for when a game is ended
+        /// </summary>
+        /// <param name="result">The result of the game</param>
+        public delegate void GameEndedEventHandler(GameResult result);
+
+        /// <summary>
+        /// The event that gets fired when the game is over
+        /// </summary>
+        public static GameEndedEventHandler GameEnded;
 
         /// <summary>
         /// Apply damage from the attacker to the target
@@ -232,6 +259,9 @@ namespace HearthAnalyzer.Core
         /// </summary>
         public static void TriggerDeathrattles()
         {
+            // Before we fire trigger any deathrattles, we need to check if the game is over
+            if (GameEngine.CheckForGameEnd()) return;
+
             // Deathrattles trigger by TimePlayed first.
             var sortedDeadMinions = GameEngine.DeadMinionsThisTurn.OrderBy(minion => minion.TimePlayed).ToList();
 
@@ -309,6 +339,7 @@ namespace HearthAnalyzer.Core
 
             if (PlayerMulliganed && OpponentMulliganed)
             {
+                GameEngine.GameState.WaitingPlayer.Hand.Add(new TheCoin());
                 GameEngine.StartTurn(GameEngine.GameState.CurrentPlayer);
             }
         }
@@ -339,7 +370,7 @@ namespace HearthAnalyzer.Core
             // Draw a card
             currentPlayer.DrawCard();
 
-            // TODO: Check for Game End condition
+            GameEngine.CheckForGameEnd();
         }
 
         /// <summary>
@@ -356,8 +387,48 @@ namespace HearthAnalyzer.Core
             // Clear GameEngine graveyards
             DeadMinionsThisTurn.Clear();
 
+            // Unexhaust all player owned minions
+            foreach (var minion in GameEngine.GameState.CurrentPlayerPlayZone)
+            {
+                if (minion != null)
+                {
+                    ((BaseMinion)minion).RemoveStatusEffects(MinionStatusEffects.EXHAUSTED);
+                    ((BaseMinion)minion).ResetAttacksThisRun();
+                }
+            }
+
             // Start the turn for the next player
             GameEngine.StartTurn(GameEngine.GameState.WaitingPlayer);
+        }
+
+        /// <summary>
+        /// Checks to see if the game has ended
+        /// </summary>
+        /// <returns>Whether or not the game is over</returns>
+        public static bool CheckForGameEnd()
+        {
+            if (!DeadPlayersThisTurn.Any()) return false;
+
+            var subscribers = GameEnded.GetInvocationList().ToList();
+
+            // Asynchrnously inform the subscribers that the game has ended so we can start stabilizing the game state
+            if (DeadPlayersThisTurn.Count == 2)
+            {
+                // Draw!
+                subscribers.ForEach(handler => ((GameEndedEventHandler) handler).BeginInvoke(GameResult.DRAW, null, null));
+            }
+            else if (DeadPlayersThisTurn.First() == GameState.Player)
+            {
+                // Lose!
+                subscribers.ForEach(handler => ((GameEndedEventHandler)handler).BeginInvoke(GameResult.LOSE, null, null));
+            }
+            else
+            {
+                // Win!
+                subscribers.ForEach(handler => ((GameEndedEventHandler)handler).BeginInvoke(GameResult.WIN, null, null));
+            }
+
+            return true;
         }
     }
 }

@@ -12,6 +12,8 @@ namespace HearthAnalyzer.Core.Cards
     /// </summary>
     public abstract class BaseMinion : BaseCard, IAttacker, IDamageableEntity
     {
+        internal int attacksThisTurn = 0;
+
         protected BaseMinion()
         {
             this.Type = CardType.NORMAL_MINION;
@@ -91,12 +93,26 @@ namespace HearthAnalyzer.Core.Cards
         public bool IsImmuneToDamage { get { return this.StatusEffects.HasFlag(MinionStatusEffects.IMMUNE_TO_DAMAGE); } }
 
         /// <summary>
+        /// Whether or not the minion has charge
+        /// </summary>
+        public bool HasCharge { get { return this.StatusEffects.HasFlag(MinionStatusEffects.CHARGE); } }
+
+        /// <summary>
         /// Applies the provided effects to the minion
         /// </summary>
         /// <param name="effects">The effects to apply</param>
         public void ApplyStatusEffects(MinionStatusEffects effects)
         {
             this.StatusEffects |= effects;
+        }
+
+        /// <summary>
+        /// Removes the specified effects from the minion
+        /// </summary>
+        /// <param name="effects">The effects to remove</param>
+        public void RemoveStatusEffects(MinionStatusEffects effects)
+        {
+            this.StatusEffects = this.StatusEffects & ~effects;
         }
 
         /// <summary>
@@ -143,9 +159,24 @@ namespace HearthAnalyzer.Core.Cards
         /// <param name="target">The target to attack</param>
         public void Attack(IDamageableEntity target)
         {
+            this.attacksThisTurn++;
+
             // Fire attacking event
             bool shouldAbort;
             GameEventManager.Attacking(this, target, isRetaliation: false, shouldAbort: out shouldAbort);
+
+            if (this.HasWindfury && this.attacksThisTurn >= 2)
+            {
+                this.ApplyStatusEffects(MinionStatusEffects.EXHAUSTED);
+            }
+        }
+
+        /// <summary>
+        /// Resets the number of attacks this minion has performed this turn.
+        /// </summary>
+        public void ResetAttacksThisRun()
+        {
+            this.attacksThisTurn = 0;
         }
 
         #region IDamageableEntity
@@ -199,6 +230,7 @@ namespace HearthAnalyzer.Core.Cards
         FROZEN = 32,
         SILENCED = 64,
         IMMUNE_TO_DEATH = 128,
-        IMMUNE_TO_DAMAGE = 256
+        IMMUNE_TO_DAMAGE = 256,
+        CHARGE = 512
     }
 }
