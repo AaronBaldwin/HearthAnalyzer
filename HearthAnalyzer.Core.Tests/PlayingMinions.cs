@@ -98,7 +98,7 @@ namespace HearthAnalyzer.Core.Tests
             // Don't care about mana cost for this test
             player.Hand.ForEach(card => card.CurrentManaCost = 0);
 
-            GameEngine.GameState.Board.PlayerPlayZone = new List<BaseCard>(GameBoard.Constants.MAX_CARDS_ON_BOARD)
+            GameEngine.GameState.Board.PlayerPlayZone = new List<BaseCard>(Constants.MAX_CARDS_ON_BOARD)
             {
                 new BloodfenRaptor(10),
                 new BloodfenRaptor(11),

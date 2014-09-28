@@ -159,7 +159,7 @@ namespace HearthAnalyzer.Core
             // Check if there are too many minions on the board
             var playZone = gameState.CurrentPlayerPlayZone;
             var playZoneCount = playZone.Count(slot => slot != null);
-            if (playZoneCount >= GameBoard.Constants.MAX_CARDS_ON_BOARD)
+            if (playZoneCount >= Constants.MAX_CARDS_ON_BOARD)
             {
                 throw new InvalidOperationException(string.Format("There are too many cards ({0}) in the playzone!", playZoneCount));
             }

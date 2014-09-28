@@ -36,10 +36,10 @@ namespace HearthAnalyzer.Core.Tests
 
             GameEngine.Initialize(player, null);
 
-            var playerPlayZone = new List<BaseCard>(GameBoard.Constants.MAX_CARDS_ON_BOARD);
+            var playerPlayZone = new List<BaseCard>(Constants.MAX_CARDS_ON_BOARD);
             playerPlayZone.AddRange(Enumerable.Repeat<BaseCard>(null, playerPlayZone.Capacity));
 
-            var opponentPlayZone = new List<BaseCard>(GameBoard.Constants.MAX_CARDS_ON_BOARD);
+            var opponentPlayZone = new List<BaseCard>(Constants.MAX_CARDS_ON_BOARD);
             opponentPlayZone.AddRange(Enumerable.Repeat<BaseCard>(null, opponentPlayZone.Capacity));
             opponentPlayZone.Insert(0, raptor1);
 
