@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using HearthAnalyzer.Core.Cards;
 using HearthAnalyzer.Core.Cards.Minions;
 using HearthAnalyzer.Core.Heroes;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HearthAnalyzer.Core.Tests

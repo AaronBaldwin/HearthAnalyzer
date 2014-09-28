@@ -13,8 +13,9 @@ namespace HearthAnalyzer.Core
     /// </summary>
     public abstract class BasePlayer : IDamageableEntity, IAttacker
     {
-        protected BasePlayer()
+        protected BasePlayer(int id = -1)
         {
+            this.Id = id;
             this.Hand = new List<BaseCard>();
             this.Deck = new Deck();
             this.Health = 30;
@@ -25,6 +26,16 @@ namespace HearthAnalyzer.Core
             this.Weapon = null;
             this.HeroPower = null;
         }
+
+        /// <summary>
+        /// The id for this player
+        /// </summary>
+        public int Id;
+
+        /// <summary>
+        /// The name of this player's hero
+        /// </summary>
+        public string Name;
 
         /// <summary>
         /// The game board the player is playing on
@@ -65,6 +76,16 @@ namespace HearthAnalyzer.Core
         /// The player's maximum mana
         /// </summary>
         public int MaxMana;
+
+        /// <summary>
+        /// The player's current overload amount
+        /// </summary>
+        public int Overload;
+
+        /// <summary>
+        /// The player's pending overload amount
+        /// </summary>
+        public int PendingOverload;
 
         /// <summary>
         /// The player's status effects
@@ -202,6 +223,46 @@ namespace HearthAnalyzer.Core
         }
 
         /// <summary>
+        /// Draws a card from the player's deck and puts it into his hand
+        /// </summary>
+        public void DrawCard()
+        {
+            this.DrawCards(1);
+        }
+
+        /// <summary>
+        /// Draws n cards from the player's deck and puts it into his hand
+        /// </summary>
+        /// <param name="n"></param>
+        public void DrawCards(int n = 1)
+        {
+            var drawnCards = this.Deck.DrawCards(n);
+
+            foreach (var drawnCard in drawnCards)
+            {
+                if (drawnCard is FatigueCard)
+                {
+                    // Oh noes!
+                    this.TakeDamage(((FatigueCard)drawnCard).FatigueDamage);
+                }
+                else
+                {
+                    // If the hand is full, mill the card (graveyard it)
+                    if (this.Hand.Count >= 10)
+                    {
+                        Logger.Instance.Info(string.Format("{0}: {1} was milled because the hand is too full!", this.LogString(), drawnCard));
+                        this.Graveyard.Add(drawnCard);
+                    }
+                    else
+                    {
+                        Logger.Instance.Info(string.Format("{0}: Drew {1}", this.LogString(), drawnCard));
+                        this.Hand.Add(drawnCard);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Applies the provided effects to the player
         /// </summary>
         /// <param name="effects">The effects to apply to the player</param>
@@ -290,5 +351,13 @@ namespace HearthAnalyzer.Core
         }
 
         #endregion
+        
+        /// <summary>
+        /// Returns a log friendly string for this player
+        /// </summary>
+        public string LogString()
+        {
+            return string.Format("{0}[{1}]", (this == GameEngine.GameState.Player) ? "Player" : "Opponent", this.Id);
+        }
     }
 }

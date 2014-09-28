@@ -27,6 +27,9 @@ namespace HearthAnalyzer.Core
             OPPOSING_GRAVEYARD
         }
 
+        internal static bool PlayerMulliganed = false;
+        internal static bool OpponentMulliganed = false;
+
         /// <summary>
         /// Initialize the game engine
         /// </summary>
@@ -250,6 +253,111 @@ namespace HearthAnalyzer.Core
             {
                 GameEngine.TriggerDeathrattles();
             }
+        }
+
+        /// <summary>
+        /// Shuffles and deals the pre-mulligan hands
+        /// </summary>
+        public static void DealPreMulligan()
+        {
+            // First, shuffle each player's deck
+            GameState.Player.Deck.Shuffle();
+            GameState.Opponent.Deck.Shuffle();
+
+            // Deal cards to the players and give them a chance to mulligan
+            // First player gets 3 cards, second player gets 4 cards
+            GameState.CurrentPlayer.Hand.AddRange(GameState.CurrentPlayer.Deck.DrawCards(3));
+            GameState.WaitingPlayer.Hand.AddRange(GameState.WaitingPlayer.Deck.DrawCards(4));
+        }
+
+        /// <summary>
+        /// Performs a mulligan for the specified player
+        /// </summary>
+        /// <param name="player">The player performing the mulligan</param>
+        /// <param name="mulligans">The cards to toss if any</param>
+        public static void Mulligan(BasePlayer player, List<BaseCard> mulligans)
+        {
+            if (mulligans.Any())
+            {
+                foreach (var card in mulligans)
+                {
+                    if (!player.Hand.Contains(card))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Can't mulligan {0} because it could not be found it the player's hand!", card));
+                    }
+
+                    player.Hand.Remove(card);
+                }
+
+                // Draw new cards equal to the amount mulliganed
+                player.DrawCards(mulligans.Count);
+
+                // Shuffle the mulliganed cards back into the deck
+                player.Deck.AddCards(mulligans);
+                player.Deck.Shuffle();
+            }
+
+            if (player == GameEngine.GameState.Player)
+            {
+                PlayerMulliganed = true;
+            }
+            else
+            {
+                OpponentMulliganed = true;
+            }
+
+            if (PlayerMulliganed && OpponentMulliganed)
+            {
+                GameEngine.StartTurn(GameEngine.GameState.CurrentPlayer);
+            }
+        }
+
+        /// <summary>
+        /// Starts a turn for the specified player
+        /// </summary>
+        /// <param name="player">The player who is starting their turn</param>
+        public static void StartTurn(BasePlayer player)
+        {
+            GameEngine.GameState.CurrentPlayer = player;
+            GameEngine.GameState.TurnNumber++;
+
+            var currentPlayer = GameEngine.GameState.CurrentPlayer;
+
+            // Increment their max mana
+            currentPlayer.MaxMana = Math.Min(currentPlayer.MaxMana + 1, 10);
+
+            // Move any pending overload to active
+            currentPlayer.Overload = currentPlayer.PendingOverload;
+            currentPlayer.PendingOverload = 0;
+
+            // Set the mana to max - overload
+            currentPlayer.Mana = currentPlayer.MaxMana - currentPlayer.Overload;
+
+            // TODO: Fire Turn Start event
+
+            // Draw a card
+            currentPlayer.DrawCard();
+
+            // TODO: Check for Game End condition
+        }
+
+        /// <summary>
+        /// Ends the turn for the current player
+        /// </summary>
+        public static void EndTurn()
+        {
+            // TODO: Fire Turn End event
+
+            // Clear any overloads
+            var currentPlayer = GameEngine.GameState.CurrentPlayer;
+            currentPlayer.Overload = 0;
+
+            // Clear GameEngine graveyards
+            DeadMinionsThisTurn.Clear();
+
+            // Start the turn for the next player
+            GameEngine.StartTurn(GameEngine.GameState.WaitingPlayer);
         }
     }
 }
