@@ -356,7 +356,7 @@ namespace HearthAnalyzer.Core
             var currentPlayer = GameEngine.GameState.CurrentPlayer;
 
             // Increment their max mana
-            currentPlayer.MaxMana = Math.Min(currentPlayer.MaxMana + 1, 10);
+            currentPlayer.MaxMana = Math.Min(currentPlayer.MaxMana + 1, Constants.MAX_MANA_CAPACITY);
 
             // Move any pending overload to active
             currentPlayer.Overload = currentPlayer.PendingOverload;

@@ -593,6 +593,7 @@
     <Compile Include="Cards\Weapons\TruesilverChampion.cs" />
     <Compile Include="Cards\Weapons\WarglaiveofAzzinoth.cs" />
     <Compile Include="Cards\Weapons\WickedKnife.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="Deathrattles\BaseDeathrattle.cs" />
     <Compile Include="Deathrattles\DeathrattleDamageAllMinions.cs" />
     <Compile Include="IBattlecry.cs" />

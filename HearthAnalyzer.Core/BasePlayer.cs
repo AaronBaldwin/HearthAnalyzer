@@ -159,7 +159,7 @@ namespace HearthAnalyzer.Core
             // Check if there are too many minions on the board
             var playZone = gameState.CurrentPlayerPlayZone;
             var playZoneCount = playZone.Count(slot => slot != null);
-            if (playZoneCount >= GameBoard.MAX_CARDS_IN_PLAY_ZONE)
+            if (playZoneCount >= GameBoard.Constants.MAX_CARDS_ON_BOARD)
             {
                 throw new InvalidOperationException(string.Format("There are too many cards ({0}) in the playzone!", playZoneCount));
             }
@@ -259,7 +259,7 @@ namespace HearthAnalyzer.Core
                 else
                 {
                     // If the hand is full, mill the card (graveyard it)
-                    if (this.Hand.Count >= 10)
+                    if (this.Hand.Count >= Constants.MAX_CARDS_IN_HAND)
                     {
                         Logger.Instance.Info(string.Format("{0}: {1} was milled because the hand is too full!", this.LogString(), drawnCard));
                         this.Graveyard.Add(drawnCard);
