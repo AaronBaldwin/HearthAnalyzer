@@ -13,7 +13,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace HearthAnalyzer.Core.Tests
 {
     [TestClass]
-    public class Spells
+    public class SpellTests : BaseTestSuite
     {
         private BasePlayer player;
         private BasePlayer opponent;

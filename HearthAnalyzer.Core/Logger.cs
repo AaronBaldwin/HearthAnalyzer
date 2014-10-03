@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 
 using Common.Logging;
+using Common.Logging.Configuration;
+using Common.Logging.Simple;
 
 namespace HearthAnalyzer.Core
 {

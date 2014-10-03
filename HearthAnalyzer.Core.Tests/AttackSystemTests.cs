@@ -12,7 +12,7 @@ namespace HearthAnalyzer.Core.Tests
 {
 
     [TestClass]
-    public class AttackSystem
+    public class AttackSystemTests : BaseTestSuite
     {
         private ChillwindYeti yeti1;
         private ChillwindYeti yeti2;

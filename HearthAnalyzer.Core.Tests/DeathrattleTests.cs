@@ -13,7 +13,7 @@ using HearthAnalyzer.Core.Heroes;
 namespace HearthAnalyzer.Core.Tests
 {
     [TestClass]
-    public class Deathrattles
+    public class DeathrattleTests : BaseTestSuite
     {
         private BaseMinion yeti1;
         private BaseMinion yeti2;

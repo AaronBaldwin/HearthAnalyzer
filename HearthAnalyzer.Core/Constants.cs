@@ -22,5 +22,10 @@ namespace HearthAnalyzer.Core
         /// The maximum mana capacity a player can have
         /// </summary>
         public static int MAX_MANA_CAPACITY = 10;
+
+        /// <summary>
+        /// The maximum number of cards in a deck
+        /// </summary>
+        public static int MAX_CARDS_IN_DECK = 30;
     }
 }

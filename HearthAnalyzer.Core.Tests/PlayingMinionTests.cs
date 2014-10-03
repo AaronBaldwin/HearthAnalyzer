@@ -11,7 +11,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace HearthAnalyzer.Core.Tests
 {
     [TestClass]
-    public class PlayingMinions
+    public class PlayingMinionTests : BaseTestSuite
     {
         private BasePlayer player;
 

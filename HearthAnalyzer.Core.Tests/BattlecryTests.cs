@@ -13,7 +13,7 @@ using HearthAnalyzer.Core.Heroes;
 namespace HearthAnalyzer.Core.Tests
 {
     [TestClass]
-    public class Battlecry
+    public class BattlecryTests : BaseTestSuite
     {
         private BaseMinion raptor1;
         private BaseMinion commando1;
