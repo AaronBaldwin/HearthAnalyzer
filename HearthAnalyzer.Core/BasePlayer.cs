@@ -338,7 +338,19 @@ namespace HearthAnalyzer.Core
         {
             if (this.IsImmuneToDamage) return;
 
-            this.Health -= damage;
+            // Take damage to armor first
+            int damageToTake = damage;
+            int armorDamage = Math.Min(this.Armor, damageToTake);
+            if (armorDamage > 0)
+            {
+                this.Armor -= armorDamage;
+                damageToTake -= armorDamage;
+            }
+
+            if (damageToTake > 0)
+            {
+                this.Health -= damageToTake;
+            }
 
             // Fire damage dealt event
             GameEventManager.DamageDealt(this, damage);
