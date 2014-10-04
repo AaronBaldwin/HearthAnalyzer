@@ -11,10 +11,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// 
     /// <b>Battlecry:</b> Destroy your opponent's weapon.
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
-    public class AcidicSwampOoze : BaseMinion
+    public class AcidicSwampOoze : BaseMinion, IBattlecry
     {
         private const int MANA_COST = 2;
         private const int ATTACK_POWER = 3;
@@ -30,6 +27,15 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
 			this.Type = CardType.NORMAL_MINION;
+        }
+
+        public void Battlecry(IDamageableEntity subTarget)
+        {
+            var enemy = GameEngine.GameState.WaitingPlayer;
+            if (enemy.Weapon != null)
+            {
+                enemy.Weapon.Die();
+            }
         }
     }
 }

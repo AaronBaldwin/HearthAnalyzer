@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using HearthAnalyzer.Core.Cards;
+using HearthAnalyzer.Core.Cards.Weapons;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using HearthAnalyzer.Core.Cards.Minions;
@@ -72,6 +73,29 @@ namespace HearthAnalyzer.Core.Tests
             {
             }
             
+        }
+
+        /// <summary>
+        /// Destroy opponent's weapon
+        /// </summary>
+        [TestMethod]
+        public void AcidicSwampOoze()
+        {
+            var ooze = HearthEntityFactory.CreateCard<AcidicSwampOoze>();
+            ooze.CurrentManaCost = 0;
+
+            var weapon = HearthEntityFactory.CreateCard<Gorehowl>();
+            opponent.Weapon = weapon;
+            opponent.Weapon.WeaponOwner = opponent;
+
+            player.Hand.Add(ooze);
+            player.PlayCard(ooze, null);
+
+            Assert.IsNull(opponent.Weapon, "Verify opponent weapon got destroyed");
+
+            // Just make sure it doesn't poop itself if there are no weapons to destroy
+            player.Hand.Add(ooze);
+            player.PlayCard(ooze, null);
         }
 
         /// <summary>
