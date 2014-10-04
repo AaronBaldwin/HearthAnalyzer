@@ -39,7 +39,7 @@ namespace HearthAnalyzer.Core.Tests
         [TestMethod]
         public void AcolyteOfPain()
         {
-            var acolyte = HearthEntityFactory.CreateCard<AcolyteofPain>();
+            var acolyte = HearthEntityFactory.CreateCard<AcolyteOfPain>();
             acolyte.Owner = player;
             acolyte.CurrentManaCost = 0;
 

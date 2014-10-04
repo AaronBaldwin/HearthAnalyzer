@@ -11,13 +11,13 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// 
     /// Whenever this minion takes damage, draw a card.
     /// </summary>
-    public class AcolyteofPain : BaseMinion, ITriggeredEffectOwner
+    public class AcolyteOfPain : BaseMinion, ITriggeredEffectOwner
     {
         private const int MANA_COST = 3;
         private const int ATTACK_POWER = 1;
         private const int HEALTH = 3;
 
-        public AcolyteofPain(int id = -1)
+        public AcolyteOfPain(int id = -1)
         {
             this.Id = id;
             this.Name = "Acolyte of Pain";
