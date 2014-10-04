@@ -11,7 +11,7 @@ namespace HearthAnalyzer.Core
     /// <summary>
     /// Represents a player in Hearthstone
     /// </summary>
-    public abstract class BasePlayer : IDamageableEntity, IAttacker
+    public abstract class BasePlayer : IDamageableEntity, IAttacker, IEquatable<BasePlayer>
     {
         protected BasePlayer(int id = -1)
         {
@@ -382,5 +382,14 @@ namespace HearthAnalyzer.Core
         {
             return string.Format("{0}[{1}]", (this == GameEngine.GameState.Player) ? "Player" : "Opponent", this.Id);
         }
+
+        #region IEquatable
+
+        public bool Equals(BasePlayer other)
+        {
+            return this.Id == other.Id;
+        }
+
+        #endregion
     }
 }

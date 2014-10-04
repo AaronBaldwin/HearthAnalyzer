@@ -63,6 +63,7 @@
     <Compile Include="BattlecryTests.cs" />
     <Compile Include="DeathrattleTests.cs" />
     <Compile Include="DeckTests.cs" />
+    <Compile Include="GameEngineTests.cs" />
     <Compile Include="PlayingMinionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpellTests.cs" />

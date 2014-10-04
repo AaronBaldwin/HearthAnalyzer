@@ -98,40 +98,40 @@ namespace HearthAnalyzer.Core.Tests
             var zooLockDeckFile = Path.Combine(DeckTestDataPath, "ZooLock.txt");
             var actualDeck = Deck.FromDeckFile(zooLockDeckFile);
 
-            CardManager.Reset();
+            HearthEntityFactory.Reset();
 
             var expectedDeck = new Deck(new List<BaseCard>()
             {
-                CardManager.CreateCard<Soulfire>(),
-                CardManager.CreateCard<Soulfire>(),
-                CardManager.CreateCard<AbusiveSergeant>(),
-                CardManager.CreateCard<AbusiveSergeant>(),
-                CardManager.CreateCard<ArgentSquire>(),
-                CardManager.CreateCard<ArgentSquire>(),
-                CardManager.CreateCard<ElvenArcher>(),
-                CardManager.CreateCard<FlameImp>(),
-                CardManager.CreateCard<FlameImp>(),
-                CardManager.CreateCard<Voidwalker>(),
-                CardManager.CreateCard<Voidwalker>(),
-                CardManager.CreateCard<DireWolfAlpha>(),
-                CardManager.CreateCard<DireWolfAlpha>(),
-                CardManager.CreateCard<KnifeJuggler>(),
-                CardManager.CreateCard<KnifeJuggler>(),
-                CardManager.CreateCard<LorewalkerCho>(),
-                CardManager.CreateCard<BloodKnight>(),
-                CardManager.CreateCard<HarvestGolem>(),
-                CardManager.CreateCard<HarvestGolem>(),
-                CardManager.CreateCard<ScarletCrusader>(),
-                CardManager.CreateCard<ScarletCrusader>(),
-                CardManager.CreateCard<ShatteredSunCleric>(),
-                CardManager.CreateCard<ShatteredSunCleric>(),
-                CardManager.CreateCard<DarkIronDwarf>(),
-                CardManager.CreateCard<DarkIronDwarf>(),
-                CardManager.CreateCard<DefenderofArgus>(),
-                CardManager.CreateCard<DefenderofArgus>(),
-                CardManager.CreateCard<Doomguard>(),
-                CardManager.CreateCard<Doomguard>(),
-                CardManager.CreateCard<ArgentCommander>()
+                HearthEntityFactory.CreateCard<Soulfire>(),
+                HearthEntityFactory.CreateCard<Soulfire>(),
+                HearthEntityFactory.CreateCard<AbusiveSergeant>(),
+                HearthEntityFactory.CreateCard<AbusiveSergeant>(),
+                HearthEntityFactory.CreateCard<ArgentSquire>(),
+                HearthEntityFactory.CreateCard<ArgentSquire>(),
+                HearthEntityFactory.CreateCard<ElvenArcher>(),
+                HearthEntityFactory.CreateCard<FlameImp>(),
+                HearthEntityFactory.CreateCard<FlameImp>(),
+                HearthEntityFactory.CreateCard<Voidwalker>(),
+                HearthEntityFactory.CreateCard<Voidwalker>(),
+                HearthEntityFactory.CreateCard<DireWolfAlpha>(),
+                HearthEntityFactory.CreateCard<DireWolfAlpha>(),
+                HearthEntityFactory.CreateCard<KnifeJuggler>(),
+                HearthEntityFactory.CreateCard<KnifeJuggler>(),
+                HearthEntityFactory.CreateCard<LorewalkerCho>(),
+                HearthEntityFactory.CreateCard<BloodKnight>(),
+                HearthEntityFactory.CreateCard<HarvestGolem>(),
+                HearthEntityFactory.CreateCard<HarvestGolem>(),
+                HearthEntityFactory.CreateCard<ScarletCrusader>(),
+                HearthEntityFactory.CreateCard<ScarletCrusader>(),
+                HearthEntityFactory.CreateCard<ShatteredSunCleric>(),
+                HearthEntityFactory.CreateCard<ShatteredSunCleric>(),
+                HearthEntityFactory.CreateCard<DarkIronDwarf>(),
+                HearthEntityFactory.CreateCard<DarkIronDwarf>(),
+                HearthEntityFactory.CreateCard<DefenderofArgus>(),
+                HearthEntityFactory.CreateCard<DefenderofArgus>(),
+                HearthEntityFactory.CreateCard<Doomguard>(),
+                HearthEntityFactory.CreateCard<Doomguard>(),
+                HearthEntityFactory.CreateCard<ArgentCommander>()
             });
 
             Assert.IsTrue(actualDeck.Cards.SequenceEqual(expectedDeck.Cards), "Verify the generated deck is the same.");

@@ -54,7 +54,7 @@ namespace HearthAnalyzer.Core
         /// </summary>
         public BasePlayer WaitingPlayer
         {
-            get { return (this.CurrentPlayer == this.Player) ? this.Player : this.Opponent; }
+            get { return (this.CurrentPlayer == this.Player) ? this.Opponent : this.Player; }
         }
 
         /// <summary>

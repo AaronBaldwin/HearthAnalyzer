@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Common.Logging;
 using HearthAnalyzer.Core.Cards;
 using HearthAnalyzer.Core.Cards.Spells;
 using HearthAnalyzer.Core.Deathrattles;
@@ -66,6 +66,7 @@ namespace HearthAnalyzer.Core
         /// </summary>
         public static void Uninitialize()
         {
+            HearthEntityFactory.Reset();
             GameEventManager.Uninitialize();
             GameState = null;
             DeadMinionsThisTurn = null;
@@ -305,11 +306,12 @@ namespace HearthAnalyzer.Core
         /// </summary>
         /// <param name="player">The player performing the mulligan</param>
         /// <param name="mulligans">The cards to toss if any</param>
-        public static void Mulligan(BasePlayer player, List<BaseCard> mulligans)
+        public static void Mulligan(BasePlayer player, IEnumerable<BaseCard> mulligans)
         {
-            if (mulligans.Any())
+            if (mulligans != null && mulligans.Any())
             {
-                foreach (var card in mulligans)
+                var mulligansList = mulligans.ToList();
+                foreach (var card in mulligansList)
                 {
                     if (!player.Hand.Contains(card))
                     {
@@ -317,14 +319,15 @@ namespace HearthAnalyzer.Core
                             string.Format("Can't mulligan {0} because it could not be found it the player's hand!", card));
                     }
 
+                    Logger.Instance.InfoFormat("{0} is mulliganing {1}", player.LogString(), card);
                     player.Hand.Remove(card);
                 }
 
                 // Draw new cards equal to the amount mulliganed
-                player.DrawCards(mulligans.Count);
+                player.DrawCards(mulligansList.Count());
 
                 // Shuffle the mulliganed cards back into the deck
-                player.Deck.AddCards(mulligans);
+                player.Deck.AddCards(mulligansList);
                 player.Deck.Shuffle();
             }
 
@@ -339,7 +342,9 @@ namespace HearthAnalyzer.Core
 
             if (PlayerMulliganed && OpponentMulliganed)
             {
-                GameEngine.GameState.WaitingPlayer.Hand.Add(new TheCoin());
+                var theCoin = HearthEntityFactory.CreateCard<TheCoin>();
+                Logger.Instance.InfoFormat("Giving {0} {1}", GameEngine.GameState.WaitingPlayer.LogString(), theCoin);
+                GameEngine.GameState.WaitingPlayer.Hand.Add(theCoin);
                 GameEngine.StartTurn(GameEngine.GameState.CurrentPlayer);
             }
         }

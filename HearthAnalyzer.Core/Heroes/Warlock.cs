@@ -9,7 +9,7 @@ namespace HearthAnalyzer.Core.Heroes
 {
     public class Warlock : BasePlayer
     {
-        public Warlock():base()
+        public Warlock(int id = -1):base(id)
         {
         }
     }

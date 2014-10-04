@@ -70,7 +70,7 @@ namespace HearthAnalyzer.Core.Cards
         /// </summary>
         /// <param name="cards">The list of cards to add</param>
         /// <remarks>Adds to the end of the deck by default</remarks>
-        public void AddCards(List<BaseCard> cards)
+        public void AddCards(IEnumerable<BaseCard> cards)
         {
             this.Cards.AddRange(cards);
             this.topDeckIndex = this.Cards.Count - 1;
@@ -152,7 +152,7 @@ namespace HearthAnalyzer.Core.Cards
                             throw new InvalidDataException(string.Format("Failed to find card type with name: {0}", cleanedCardName));
                         }
 
-                        var createCardMethod = typeof (CardManager).GetMethod("CreateCard");
+                        var createCardMethod = typeof (HearthEntityFactory).GetMethod("CreateCard");
                         var createCardTypeMethod = createCardMethod.MakeGenericMethod(new[] {cardType});
                         dynamic card = createCardTypeMethod.Invoke(null, null);
 
