@@ -154,6 +154,13 @@ namespace HearthAnalyzer.Core
                 this.PlayWeapon(weaponCard, subTarget);
             }
 
+            // Register any triggered effects
+            var triggeredEffectCard = cardInHand as ITriggeredEffectOwner;
+            if (triggeredEffectCard != null)
+            {
+                triggeredEffectCard.RegisterEffect();
+            }
+
             GameEngine.CheckForGameEnd();
         }
 
@@ -309,6 +316,8 @@ namespace HearthAnalyzer.Core
 
             foreach (var drawnCard in drawnCards)
             {
+                drawnCard.Owner = this;
+
                 if (drawnCard is FatigueCard)
                 {
                     // Oh noes!

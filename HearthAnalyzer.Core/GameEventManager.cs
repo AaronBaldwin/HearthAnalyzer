@@ -68,7 +68,7 @@ namespace HearthAnalyzer.Core
         /// </remarks>
         public delegate void AttackingEventHandler(IAttacker attacker, IDamageableEntity target, bool isRetaliation, out bool shouldAbort);
         public static AttackingEventHandler Attacking;
-        private static List<Tuple<BaseCard, AttackingEventHandler>> _minionAttackingListeners;
+        internal static List<Tuple<BaseCard, AttackingEventHandler>> _minionAttackingListeners;
 
         /// <summary>
         /// Handler for when damage is dealt
@@ -77,7 +77,7 @@ namespace HearthAnalyzer.Core
         /// <param name="damageDealt">How much damage was dealt</param>
         public delegate void DamageDealtEventHandler(IDamageableEntity target, int damageDealt);
         public static DamageDealtEventHandler DamageDealt;
-        private static List<Tuple<BaseCard, DamageDealtEventHandler>> _damageDealtListeners;
+        internal static List<Tuple<BaseCard, DamageDealtEventHandler>> _damageDealtListeners;
 
         /// <summary>
         /// Handler for when a minion is placed (before his battle cry)
@@ -85,7 +85,7 @@ namespace HearthAnalyzer.Core
         /// <param name="minion">The minion that was just placed</param>
         public delegate void MinionPlacedEventHandler(BaseMinion minion);
         public static MinionPlacedEventHandler MinionPlaced;
-        private static List<Tuple<BaseCard, MinionPlacedEventHandler>> _minionPlacedListeners;
+        internal static List<Tuple<BaseCard, MinionPlacedEventHandler>> _minionPlacedListeners;
 
         /// <summary>
         /// Handler for when a minion is played
@@ -96,7 +96,7 @@ namespace HearthAnalyzer.Core
         /// </remarks>
         public delegate void MinionPlayedEventHandler(BaseMinion minionPlayed);
         public static MinionPlayedEventHandler MinionPlayed;
-        private static List<Tuple<BaseCard, MinionPlayedEventHandler>> _minionPlayedListeners;
+        internal static List<Tuple<BaseCard, MinionPlayedEventHandler>> _minionPlayedListeners;
 
         /// <summary>
         /// Handler for when a spell is casting (but hasn't triggered its effect yet)
@@ -106,7 +106,7 @@ namespace HearthAnalyzer.Core
         /// <param name="shouldAbort">Whether or not the spell should abort casting</param>
         public delegate void SpellCastingEventHandler(BaseSpell spell, IDamageableEntity target, out bool shouldAbort);
         public static SpellCastingEventHandler SpellCasting;
-        private static List<Tuple<BaseCard, SpellCastingEventHandler>> _spellCastingListeners; 
+        internal static List<Tuple<BaseCard, SpellCastingEventHandler>> _spellCastingListeners; 
 
         #endregion
 

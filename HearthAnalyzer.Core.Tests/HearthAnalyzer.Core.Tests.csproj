@@ -68,6 +68,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpellTests.cs" />
     <Compile Include="TestLogManager.cs" />
+    <Compile Include="TriggeredEffectTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HearthAnalyzer.Core\HearthAnalyzer.Core.csproj">

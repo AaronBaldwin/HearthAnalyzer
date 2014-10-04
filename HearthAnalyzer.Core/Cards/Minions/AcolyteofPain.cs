@@ -11,10 +11,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// 
     /// Whenever this minion takes damage, draw a card.
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
-    public class AcolyteofPain : BaseMinion
+    public class AcolyteofPain : BaseMinion, ITriggeredEffectOwner
     {
         private const int MANA_COST = 3;
         private const int ATTACK_POWER = 1;
@@ -30,6 +27,19 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
 			this.Type = CardType.NORMAL_MINION;
+        }
+
+        public void RegisterEffect()
+        {
+            GameEventManager.DamageDealt += this.OnDamagedEffect;
+        }
+
+        internal void OnDamagedEffect(IDamageableEntity target, int damageDealt)
+        {
+            if (target == this)
+            {
+                this.Owner.DrawCard();
+            }
         }
     }
 }

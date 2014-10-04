@@ -611,6 +611,7 @@
     <Compile Include="BasePlayer.cs" />
     <Compile Include="Heroes\Warlock.cs" />
     <Compile Include="IAttacker.cs" />
+    <Compile Include="ITriggeredEffectOwner.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="Scripts\TemplateSpell.cs.txt" />
