@@ -24,7 +24,7 @@ namespace HearthAnalyzer.Core.Cards.Weapons
             this.OriginalManaCost = MANA_COST;
             this.CurrentManaCost = MANA_COST;
 
-            this.CurrentAttackPower = ATTACK_POWER;
+            this.OriginalAttackPower = ATTACK_POWER;
 
             this.Durability = DURABILITY;
         }

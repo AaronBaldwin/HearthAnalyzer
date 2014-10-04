@@ -30,5 +30,11 @@ namespace HearthAnalyzer.Core
         /// <param name="attackBuff">Attack Buff</param>
         /// <param name="healthBuff">Health Buff</param>
         void TakeBuff(int attackBuff, int healthBuff);
+
+        /// <summary>
+        /// Takes a temporary attack buff
+        /// </summary>
+        /// <param name="attackBuff">The amount of attack to give this turn</param>
+        void TakeTemporaryBuff(int attackBuff);
     }
 }

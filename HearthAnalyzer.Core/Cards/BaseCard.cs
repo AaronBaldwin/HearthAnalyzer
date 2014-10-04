@@ -54,7 +54,20 @@ namespace HearthAnalyzer.Core.Cards
         /// <summary>
         /// The current attack power for this card
         /// </summary>
-        public int CurrentAttackPower;
+        public int CurrentAttackPower
+        {
+            get { return this.OriginalAttackPower + this.PermanentAttackBuff + this.TemporaryAttackBuff; }
+        }
+
+        /// <summary>
+        /// The amount of permanent attack buff
+        /// </summary>
+        public int PermanentAttackBuff;
+
+        /// <summary>
+        /// The amount of temporary attack buff this turn
+        /// </summary>
+        public int TemporaryAttackBuff;
 
         /// <summary>
         /// The time that the card was first played on the board

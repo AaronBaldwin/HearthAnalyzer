@@ -89,6 +89,11 @@ namespace HearthAnalyzer.Core
         public int PendingOverload;
 
         /// <summary>
+        /// The temporary attack buff added to this player
+        /// </summary>
+        public int TemporaryAttackBuff;
+
+        /// <summary>
         /// The player's status effects
         /// </summary>
         public PlayerStatusEffects StatusEffects;
@@ -376,11 +381,26 @@ namespace HearthAnalyzer.Core
 
         #region IAttacker
 
+        public int GetCurrentAttackPower()
+        {
+            return this.TemporaryAttackBuff;
+        }
+
         public void Attack(IDamageableEntity target)
         {
             if (this.Weapon != null)
             {
                 this.Weapon.Attack(target);
+            }
+            else if (this.TemporaryAttackBuff > 0)
+            {
+                // Fire attacking event
+                bool shouldAbort;
+                GameEventManager.Attacking(this, target, isRetaliation: false, shouldAbort: out shouldAbort);
+            }
+            else
+            {
+                throw new InvalidOperationException("Player has no attack damage to attack with!");
             }
         }
 
@@ -425,6 +445,18 @@ namespace HearthAnalyzer.Core
         public void TakeBuff(int attackBuff, int healthBuff)
         {
             throw new InvalidOperationException("Player's can't receive buffs.");
+        }
+
+        public void TakeTemporaryBuff(int attackBuff)
+        {
+            if (this.Weapon == null)
+            {
+                this.TemporaryAttackBuff += attackBuff;
+            }
+            else
+            {
+                this.Weapon.TakeTemporaryBuff(attackBuff);
+            }
         }
 
         #endregion

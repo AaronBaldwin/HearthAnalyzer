@@ -40,6 +40,11 @@ namespace HearthAnalyzer.Core.Cards
 
         #region IAttacker
 
+        public int GetCurrentAttackPower()
+        {
+            return this.CurrentAttackPower;
+        }
+
         public virtual void Attack(IDamageableEntity target)
         {
             // Fire attacking event
@@ -74,9 +79,14 @@ namespace HearthAnalyzer.Core.Cards
 
         public virtual void TakeBuff(int attackBuff, int healthBuff)
         {
-            this.CurrentAttackPower += attackBuff;
+            this.PermanentAttackBuff += attackBuff;
 
             this.Durability += healthBuff;
+        }
+
+        public void TakeTemporaryBuff(int attackBuff)
+        {
+            this.TemporaryAttackBuff += attackBuff;
         }
     }
 }

@@ -23,7 +23,7 @@ namespace HearthAnalyzer.Core.Cards.Weapons
             this.OriginalManaCost = MANA_COST;
             this.CurrentManaCost = MANA_COST;
 
-            this.CurrentAttackPower = ATTACK_POWER;
+            this.OriginalAttackPower = ATTACK_POWER;
 
             this.Durability = DURABILITY;
         }
@@ -31,7 +31,7 @@ namespace HearthAnalyzer.Core.Cards.Weapons
         public override void TakeDamage(int damage)
         {
             // Gorehowl decreases in attack power isntead of durability each time it attacks
-            this.CurrentAttackPower -= damage;
+            this.PermanentAttackBuff -= damage;
 
             if (this.CurrentAttackPower <= 0 || this.Durability <= 0)
             {

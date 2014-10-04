@@ -26,7 +26,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.Name = "Abomination";
             this.OriginalManaCost = MANA;
             this.CurrentManaCost = MANA;
-            this.CurrentAttackPower = ATTACK;
+            this.OriginalAttackPower = ATTACK;
             this.CurrentHealth = HEALTH;
         }
 

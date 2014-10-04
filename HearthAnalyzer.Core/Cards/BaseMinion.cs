@@ -139,7 +139,8 @@ namespace HearthAnalyzer.Core.Cards
             this.CurrentHealth = Math.Min(this.MaxHealth - this.BonusHealth, this.CurrentHealth);
 
             // Reset the attack power to its original value
-            this.CurrentAttackPower = this.OriginalAttackPower;
+            this.PermanentAttackBuff = 0;
+            this.TemporaryAttackBuff = 0;
         }
 
         /// <summary>
@@ -157,6 +158,11 @@ namespace HearthAnalyzer.Core.Cards
 
             // Let GameEngine clean up minions from the baord
 
+        }
+
+        public int GetCurrentAttackPower()
+        {
+            return this.CurrentAttackPower;
         }
 
         /// <summary>
@@ -212,10 +218,15 @@ namespace HearthAnalyzer.Core.Cards
 
         public void TakeBuff(int attackBuff, int healthBuff)
         {
-            this.CurrentAttackPower += attackBuff;
+            this.PermanentAttackBuff += attackBuff;
 
             this.MaxHealth += healthBuff;
             this.CurrentHealth = Math.Min(this.CurrentHealth + healthBuff, this.MaxHealth);
+        }
+
+        public void TakeTemporaryBuff(int attackBuff)
+        {
+            this.TemporaryAttackBuff += attackBuff;
         }
 
         #endregion

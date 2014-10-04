@@ -22,7 +22,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.Name = "Chillwind Yeti";
             this.CurrentManaCost = MANA_COST;
             this.OriginalManaCost = MANA_COST;
-            this.CurrentAttackPower = ATTACK_POWER;
+            this.OriginalAttackPower = ATTACK_POWER;
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
         }

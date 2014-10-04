@@ -66,7 +66,7 @@ namespace HearthAnalyzer.Core
         /// <remarks>
         /// Handlers include Misdirection Trap, Vaporize, and the game engine itself.
         /// </remarks>
-        public delegate void AttackingEventHandler(BaseCard attacker, IDamageableEntity target, bool isRetaliation, out bool shouldAbort);
+        public delegate void AttackingEventHandler(IAttacker attacker, IDamageableEntity target, bool isRetaliation, out bool shouldAbort);
         public static AttackingEventHandler Attacking;
         private static List<Tuple<BaseCard, AttackingEventHandler>> _minionAttackingListeners;
 
@@ -159,7 +159,7 @@ namespace HearthAnalyzer.Core
 
         #region Handlers
 
-        public static void OnAttacking(BaseCard attacker, IDamageableEntity target, bool isRetaliation, out bool shouldAbort)
+        public static void OnAttacking(IAttacker attacker, IDamageableEntity target, bool isRetaliation, out bool shouldAbort)
         {
             shouldAbort = false;
 

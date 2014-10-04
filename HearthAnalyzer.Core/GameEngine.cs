@@ -118,7 +118,7 @@ namespace HearthAnalyzer.Core
         /// <param name="attacker">The card doing the attacking</param>
         /// <param name="target">The object receiving the attack</param>
         /// <param name="isRetaliation">Whether or not the attack is a retaliation</param>
-        public static void ApplyAttackDamage(BaseCard attacker, IDamageableEntity target, bool isRetaliation = false)
+        public static void ApplyAttackDamage(IAttacker attacker, IDamageableEntity target, bool isRetaliation = false)
         {
             // If the attacker is a spell card or hero power, you can't retaliate
             // If the target is a hero, he can't retaliate
@@ -126,7 +126,7 @@ namespace HearthAnalyzer.Core
             {
                 var targetMinion = (BaseMinion) target;
 
-                targetMinion.TakeDamage(attacker.CurrentAttackPower);
+                targetMinion.TakeDamage(attacker.GetCurrentAttackPower());
 
                 if (!isRetaliation && (attacker is BaseMinion || attacker is BaseWeapon))
                 {
@@ -146,7 +146,7 @@ namespace HearthAnalyzer.Core
             {
                 var targetPlayer = (BasePlayer) target;
 
-                targetPlayer.TakeDamage(attacker.CurrentAttackPower);
+                targetPlayer.TakeDamage(attacker.GetCurrentAttackPower());
             }
         }
 
@@ -393,13 +393,22 @@ namespace HearthAnalyzer.Core
             // Clear GameEngine graveyards
             DeadMinionsThisTurn.Clear();
 
-            // Unexhaust all player owned minions
+            // Unexhaust all player owned minions and remove temporary boons
             foreach (var minion in GameEngine.GameState.CurrentPlayerPlayZone)
             {
                 if (minion != null)
                 {
                     ((BaseMinion)minion).RemoveStatusEffects(MinionStatusEffects.EXHAUSTED);
                     ((BaseMinion)minion).ResetAttacksThisRun();
+                    minion.TemporaryAttackBuff = 0;
+                }
+            }
+
+            foreach (var minion in GameEngine.GameState.WaitingPlayerPlayZone)
+            {
+                if (minion != null)
+                {
+                    minion.TemporaryAttackBuff = 0;
                 }
             }
 

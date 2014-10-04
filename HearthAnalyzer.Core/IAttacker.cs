@@ -13,6 +13,12 @@ namespace HearthAnalyzer.Core
     public interface IAttacker
     {
         /// <summary>
+        /// Gets the current attack power of the attacker
+        /// </summary>
+        /// <returns></returns>
+        int GetCurrentAttackPower();
+
+        /// <summary>
         /// Attacks the target
         /// </summary>
         /// <param name="target">The target to attack</param>
