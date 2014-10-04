@@ -412,6 +412,9 @@ namespace HearthAnalyzer.Core
                 }
             }
 
+            GameEngine.GameState.CurrentPlayer.TemporaryAttackBuff = 0;
+            GameEngine.GameState.WaitingPlayer.TemporaryAttackBuff = 0;
+
             // Start the turn for the next player
             GameEngine.StartTurn(GameEngine.GameState.WaitingPlayer);
         }

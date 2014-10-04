@@ -36,6 +36,45 @@ namespace HearthAnalyzer.Core.Tests
         }
 
         /// <summary>
+        /// Give minion +2 attack
+        /// </summary>
+        [TestMethod]
+        public void AbusiveSergeant()
+        {
+            var sergeant = HearthEntityFactory.CreateCard<AbusiveSergeant>();
+            var faerie = HearthEntityFactory.CreateCard<FaerieDragon>();
+            var yeti = HearthEntityFactory.CreateCard<ChillwindYeti>();
+
+            GameEngine.GameState.CurrentPlayerPlayZone[0] = yeti;
+            GameEngine.GameState.WaitingPlayerPlayZone[0] = faerie;
+
+            // Verify buffing friendly minion
+            sergeant.CurrentManaCost = 0;
+            player.Hand.Add(sergeant);
+            player.PlayCard(sergeant, yeti);
+
+            Assert.AreEqual(yeti.OriginalAttackPower + 2, yeti.CurrentAttackPower, "Verify yeti got an attack buff");
+
+            // Verify buffing enemy minion
+            player.Hand.Add(sergeant);
+            player.PlayCard(sergeant, faerie);
+
+            Assert.AreEqual(faerie.OriginalAttackPower + 2, faerie.CurrentAttackPower, "Verify faerie got an attack buff");
+
+            // Verify can't buff players
+            player.Hand.Add(sergeant);
+            try
+            {
+                player.PlayCard(sergeant, player);
+                Assert.Fail("Shouldn't be able to buff player!");
+            }
+            catch (InvalidOperationException)
+            {
+            }
+            
+        }
+
+        /// <summary>
         /// Freeze a character
         /// </summary>
         [TestMethod]
