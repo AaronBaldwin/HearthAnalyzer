@@ -10,10 +10,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// Implements the Frost Elemental
     /// Basic Minion
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
-    public class FrostElemental : BaseMinion
+    public class FrostElemental : BaseMinion, IBattlecry
     {
         private const int MANA_COST = 6;
         private const int ATTACK_POWER = 5;
@@ -28,6 +25,21 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.CurrentAttackPower = ATTACK_POWER;
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
+        }
+
+        public void Battlecry(IDamageableEntity subTarget)
+        {
+            var targetMinion = subTarget as BaseMinion;
+            var targetPlayer = subTarget as BasePlayer;
+
+            if (targetMinion != null)
+            {
+                targetMinion.ApplyStatusEffects(MinionStatusEffects.FROZEN);
+            }
+            else if (targetPlayer != null)
+            {
+                targetPlayer.ApplyStatusEffects(BasePlayer.PlayerStatusEffects.FROZEN);
+            }
         }
     }
 }

@@ -98,6 +98,11 @@ namespace HearthAnalyzer.Core.Cards
         public bool HasCharge { get { return this.StatusEffects.HasFlag(MinionStatusEffects.CHARGE); } }
 
         /// <summary>
+        /// Whether or not the minion is immune to spell targeting
+        /// </summary>
+        public bool IsImmuneToSpellTarget { get { return this.StatusEffects.HasFlag(MinionStatusEffects.IMMUNE_TO_SPELL_TARGET); } }
+
+        /// <summary>
         /// Applies the provided effects to the minion
         /// </summary>
         /// <param name="effects">The effects to apply</param>
@@ -232,6 +237,7 @@ namespace HearthAnalyzer.Core.Cards
         SILENCED = 64,
         IMMUNE_TO_DEATH = 128,
         IMMUNE_TO_DAMAGE = 256,
-        CHARGE = 512
+        CHARGE = 512,
+        IMMUNE_TO_SPELL_TARGET = 1024
     }
 }

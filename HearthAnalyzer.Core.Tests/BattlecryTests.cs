@@ -15,41 +15,17 @@ namespace HearthAnalyzer.Core.Tests
     [TestClass]
     public class BattlecryTests : BaseTestSuite
     {
-        private BaseMinion raptor1;
-        private BaseMinion commando1;
         private BasePlayer player;
+        private BasePlayer opponent;
 
         [TestInitialize]
         public void Setup()
         {
-            player = new Warlock();
+            player = HearthEntityFactory.CreatePlayer<Warlock>();
+            opponent = HearthEntityFactory.CreatePlayer<Warlock>();
 
-            raptor1 = new BloodfenRaptor(1);
-            commando1 = new StormpikeCommando(2);
+            GameEngine.Initialize(player, opponent);
 
-            player.Hand = new List<BaseCard>()
-            {
-                commando1
-            };
-
-            player.Mana = 5;
-
-            GameEngine.Initialize(player, null);
-
-            var playerPlayZone = new List<BaseCard>(Constants.MAX_CARDS_ON_BOARD);
-            playerPlayZone.AddRange(Enumerable.Repeat<BaseCard>(null, playerPlayZone.Capacity));
-
-            var opponentPlayZone = new List<BaseCard>(Constants.MAX_CARDS_ON_BOARD);
-            opponentPlayZone.AddRange(Enumerable.Repeat<BaseCard>(null, opponentPlayZone.Capacity));
-            opponentPlayZone.Insert(0, raptor1);
-
-            var gameBoard = new GameBoard()
-            {
-                PlayerPlayZone = playerPlayZone,
-                OpponentPlayZone = opponentPlayZone
-            };
-
-            GameEngine.GameState.Board = gameBoard;
             GameEngine.GameState.CurrentPlayer = player;
         }
 
@@ -59,12 +35,52 @@ namespace HearthAnalyzer.Core.Tests
             GameEngine.Uninitialize();
         }
 
+        /// <summary>
+        /// Freeze a character
+        /// </summary>
+        [TestMethod]
+        public void FrostElemental()
+        {
+            var frostElemental = HearthEntityFactory.CreateCard<FrostElemental>();
+            var faerie = HearthEntityFactory.CreateCard<FaerieDragon>();
+
+            // Verify targeting a minion on the board
+            GameEngine.GameState.WaitingPlayerPlayZone[0] = faerie;
+
+            player.Hand.Add(frostElemental);
+            frostElemental.CurrentManaCost = 0;
+
+            player.PlayCard(frostElemental, faerie);
+
+            Assert.IsTrue(faerie.IsFrozen, "Verify the faerie dragon is frozen");
+
+            // Verify targeting a character
+            frostElemental = HearthEntityFactory.CreateCard<FrostElemental>();
+            player.Hand.Add(frostElemental);
+            frostElemental.CurrentManaCost = 0;
+
+            player.PlayCard(frostElemental, opponent);
+
+            Assert.IsTrue(opponent.IsFrozen, "Verify the opponent is now frozen");
+        }
+
+        /// <summary>
+        /// Deal 2 damage to a character
+        /// </summary>
         [TestMethod]
         public void StormpikeCommando()
         {
-            player.PlayCard(commando1, raptor1, 0);
-            Assert.AreEqual(commando1, GameEngine.GameState.Board.PlayerPlayZone[0], "Verify that the commando was placed on the board");
-            Assert.IsTrue(GameEngine.DeadMinionsThisTurn.Contains(raptor1), "Verify the raptor died due to battlecry");
+            var commando = HearthEntityFactory.CreateCard<StormpikeCommando>();
+            var raptor = HearthEntityFactory.CreateCard<BloodfenRaptor>();
+
+            GameEngine.GameState.WaitingPlayerPlayZone[0] = raptor;
+
+            player.Hand.Add(commando);
+            commando.CurrentManaCost = 0;
+
+            player.PlayCard(commando, raptor, 0);
+            Assert.AreEqual(commando, GameEngine.GameState.Board.PlayerPlayZone[0], "Verify that the commando was placed on the board");
+            Assert.IsTrue(GameEngine.DeadMinionsThisTurn.Contains(raptor), "Verify the raptor died due to battlecry");
         }
     }
 }

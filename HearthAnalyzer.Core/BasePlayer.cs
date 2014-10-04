@@ -227,6 +227,14 @@ namespace HearthAnalyzer.Core
         /// <param name="subTarget">The sub target for this spell card if applicable</param>
         public void PlaySpell(BaseSpell spell, IDamageableEntity subTarget = null)
         {
+            if (subTarget != null && subTarget is BaseMinion)
+            {
+                if (((BaseMinion) subTarget).IsImmuneToSpellTarget)
+                {
+                    throw new InvalidOperationException("Can't target minion that is immune to spell targeting");
+                }
+            }
+
             // Remove it from the player's hand
             this.Hand.Remove(spell);
 
