@@ -40,6 +40,10 @@ namespace HearthAnalyzer.Core.Cards
             this.fatigueDamage = 0;
         }
 
+        /// <summary>
+        /// Draws a card from the player's deck
+        /// </summary>
+        /// <returns>The card that was drawn</returns>
         public BaseCard DrawCard()
         {
             if (topDeckIndex < 0)

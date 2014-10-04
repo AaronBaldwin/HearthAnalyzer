@@ -134,7 +134,6 @@ namespace HearthAnalyzer.Core
             if (minionCard != null)
             {
                 this.PlayMinion(minionCard, subTarget, gameboardPos);
-                return;
             }
 
             var spellCard = cardInHand as BaseSpell;
@@ -255,6 +254,7 @@ namespace HearthAnalyzer.Core
                 {
                     // Oh noes!
                     this.TakeDamage(((FatigueCard)drawnCard).FatigueDamage);
+                    GameEngine.CheckForGameEnd();
                 }
                 else
                 {

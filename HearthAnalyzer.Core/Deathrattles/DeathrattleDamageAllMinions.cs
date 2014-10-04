@@ -25,14 +25,20 @@ namespace HearthAnalyzer.Core.Deathrattles
 
             foreach (var card in gameState.CurrentPlayerPlayZone)
             {
-                var minion = card as BaseMinion;
-                minion.TakeDamage(this._damage);
+                if (card != null)
+                {
+                    var minion = card as BaseMinion;
+                    minion.TakeDamage(this._damage);
+                }
             }
 
             foreach (var card in gameState.WaitingPlayerPlayZone)
             {
-                var minion = card as BaseMinion;
-                minion.TakeDamage(this._damage);
+                if (card != null)
+                {
+                    var minion = card as BaseMinion;
+                    minion.TakeDamage(this._damage);
+                }
             }
         }
     }

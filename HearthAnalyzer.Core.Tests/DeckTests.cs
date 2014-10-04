@@ -68,6 +68,24 @@ namespace HearthAnalyzer.Core.Tests
         }
 
         /// <summary>
+        /// Verify the player takes fatigue damage when they run out of cards
+        /// </summary>
+        [TestMethod]
+        public void FatigueDamage()
+        {
+            player.Deck.Cards.Clear();
+
+            player.DrawCard();
+
+            Assert.AreEqual(1, player.Deck.fatigueDamage, "Verify fatigue damage is set to 1");
+            Assert.AreEqual(29, player.Health, "Verify the player took one point of damage");
+
+            player.DrawCard();
+            Assert.AreEqual(2, player.Deck.fatigueDamage, "Verify fatigue damage increased");
+            Assert.AreEqual(27, player.Health, "Verify the player took more damage");
+        }
+
+        /// <summary>
         /// Verify shuffling a card
         /// </summary>
         [TestMethod]

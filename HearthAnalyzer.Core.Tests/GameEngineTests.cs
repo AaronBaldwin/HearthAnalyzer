@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using HearthAnalyzer.Core.Cards;
+using HearthAnalyzer.Core.Cards.Minions;
 using HearthAnalyzer.Core.Cards.Spells;
 using HearthAnalyzer.Core.Heroes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -16,6 +19,8 @@ namespace HearthAnalyzer.Core.Tests
     {
         private BasePlayer player;
         private BasePlayer opponent;
+        private bool gameEnded;
+        private GameEngine.GameResult? gameResult;
 
         private readonly string DeckTestDataPath = @".\TestData\Decks";
 
@@ -31,6 +36,9 @@ namespace HearthAnalyzer.Core.Tests
             opponent.Deck = Deck.FromDeckFile(zooLockDeckFile);
 
             GameEngine.Initialize(player, opponent);
+            gameEnded = false;
+            gameResult = null;
+            GameEngine.GameEnded += OnGameEnded;
         }
 
         [TestCleanup]
@@ -124,6 +132,115 @@ namespace HearthAnalyzer.Core.Tests
             var currentPlayer = GameEngine.GameState.CurrentPlayer;
             Assert.AreEqual(Constants.MAX_MANA_CAPACITY, currentPlayer.MaxMana, "Verify max mana doesn't exceed maximum value");
             Assert.AreEqual(Constants.MAX_MANA_CAPACITY, currentPlayer.Mana, "Verify mana is replenished");
+        }
+
+        /// <summary>
+        /// Verify death due to fatigue
+        /// </summary>
+        [TestMethod]
+        public void GameEndDueToFatigueDamage()
+        {
+            player.Health = 1;
+            player.Deck = new Deck();
+
+            player.DrawCard();
+
+            // wait for game end
+            Task.Factory.StartNew(() => this.WaitUntilGameEnded(250, 8)).Wait();
+
+            // Game should have ended
+            Assert.IsTrue(this.gameEnded, "Verify the game has ended");
+            Assert.AreEqual(this.gameResult, GameEngine.GameResult.LOSE, "Verify we lost because we fatigued ourself to death");
+        }
+
+        /// <summary>
+        /// Verify the game ended due to attack
+        /// </summary>
+        [TestMethod]
+        public void GameEndDueToAttack()
+        {
+            opponent.Health = 1;
+            var yeti = HearthEntityFactory.CreateCard<ChillwindYeti>();
+            GameEngine.GameState.Board.PlayerPlayZone.Add(yeti);
+            yeti.RemoveStatusEffects(MinionStatusEffects.EXHAUSTED);
+
+            yeti.Attack(opponent);
+
+            Task.Factory.StartNew(() => this.WaitUntilGameEnded(250, 8)).Wait();
+
+            Assert.IsTrue(this.gameEnded, "Verify the game has ended");
+            Assert.AreEqual(this.gameResult, GameEngine.GameResult.WIN, "Verify we won because we killed the opponent");
+        }
+
+        /// <summary>
+        /// Verify the game was a draw
+        /// </summary>
+        [TestMethod]
+        public void GameDraw()
+        {
+            player.Health = 1;
+            opponent.Health = 1;
+
+            GameEngine.GameState.CurrentPlayer = player;
+            var hellfire = HearthEntityFactory.CreateCard<Hellfire>();
+            hellfire.CurrentManaCost = 0;
+            player.Hand.Add(hellfire);
+            player.PlayCard(hellfire, null);
+
+            Task.Factory.StartNew(() => this.WaitUntilGameEnded(250, 8)).Wait();
+
+            Assert.IsTrue(this.gameEnded, "Verify the game has ended");
+            Assert.AreEqual(this.gameResult, GameEngine.GameResult.DRAW, "Verify it was a draw");
+        }
+
+        /// <summary>
+        /// Verify the game ends if the opponent is killed as a result of playing a card
+        /// </summary>
+        [TestMethod]
+        public void GameEndDueToCardPlayed()
+        {
+            opponent.Health = 1;
+            var stormpikeCommando = HearthEntityFactory.CreateCard<StormpikeCommando>();
+            stormpikeCommando.CurrentManaCost = 0;
+            player.Hand.Add(stormpikeCommando);
+
+            GameEngine.GameState.CurrentPlayer = player;
+            player.PlayCard(stormpikeCommando, opponent);
+
+            Task.Factory.StartNew(() => this.WaitUntilGameEnded(250, 8)).Wait();
+
+            Assert.IsTrue(this.gameEnded, "Verify the game has ended");
+            Assert.AreEqual(this.gameResult, GameEngine.GameResult.WIN, "Verify we won because we killed the opponent");
+        }
+
+        /// <summary>
+        /// Triggered when the game has ended
+        /// </summary>
+        /// <param name="result"></param>
+        public void OnGameEnded(GameEngine.GameResult result)
+        {
+            this.gameEnded = true;
+            this.gameResult = result;
+        }
+
+        /// <summary>
+        /// Waits for the game to end within a timeout
+        /// </summary>
+        /// <param name="intervalInMs">The time to wait between retries in milliseconds</param>
+        /// <param name="retries">The number of retries</param>
+        private Task WaitUntilGameEnded(int intervalInMs, int retries)
+        {
+            for (int i = 0; i < retries; i++)
+            {
+                if (this.gameEnded)
+                {
+                    break;
+                }
+
+                Thread.Sleep(intervalInMs);
+            }
+
+            return null;
         }
     }
 }

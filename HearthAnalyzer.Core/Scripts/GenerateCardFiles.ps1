@@ -79,12 +79,12 @@ function GenerateCodeFile($card)
 		if ($card.text -match '\$([0-9]+).+\$([0-9]+)')
 		{
 			$minSpellPower = $matches[1]
+			$maxSpellPower = $matches[2]
+		}
+		elseif ($card.text -match '\$([0-9]+)')
+		{
+			$minSpellPower = $matches[1]
 			$maxSpellPower = $matches[1]
-
-			if ($matches.Count -eq 3)
-			{	
-				$maxSpellPower = $matches[2]
-			}
 		}
 
         (Get-Content $spellTemplate) | Foreach-Object {

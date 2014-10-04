@@ -17,8 +17,8 @@ namespace HearthAnalyzer.Core.Cards.Spells
     public class Moonfire : BaseSpell
     {
         private const int MANA_COST = 0;
-        private const int MIN_SPELL_POWER = 0;
-        private const int MAX_SPELL_POWER = 0;
+        private const int MIN_SPELL_POWER = 1;
+        private const int MAX_SPELL_POWER = 1;
 
         public Moonfire(int id = -1)
         {
@@ -27,6 +27,8 @@ namespace HearthAnalyzer.Core.Cards.Spells
 
             this.OriginalManaCost = MANA_COST;
             this.CurrentManaCost = MANA_COST;
+
+			this.BonusSpellPower = 0;
         }
 
         public override void Activate(IDamageableEntity target = null)

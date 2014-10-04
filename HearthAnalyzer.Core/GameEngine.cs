@@ -374,8 +374,6 @@ namespace HearthAnalyzer.Core
 
             // Draw a card
             currentPlayer.DrawCard();
-
-            GameEngine.CheckForGameEnd();
         }
 
         /// <summary>

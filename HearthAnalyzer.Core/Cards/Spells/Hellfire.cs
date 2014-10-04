@@ -11,14 +11,11 @@ namespace HearthAnalyzer.Core.Cards.Spells
     /// 
     /// Deal $3 damage to ALL characters.
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
     public class Hellfire : BaseSpell
     {
         private const int MANA_COST = 4;
-        private const int MIN_SPELL_POWER = 0;
-        private const int MAX_SPELL_POWER = 0;
+        private const int MIN_SPELL_POWER = 3;
+        private const int MAX_SPELL_POWER = 3;
 
         public Hellfire(int id = -1)
         {
@@ -27,11 +24,17 @@ namespace HearthAnalyzer.Core.Cards.Spells
 
             this.OriginalManaCost = MANA_COST;
             this.CurrentManaCost = MANA_COST;
+
+			this.BonusSpellPower = 0;
         }
 
         public override void Activate(IDamageableEntity target = null)
         {
-            throw new NotImplementedException();
+            int totalSpellDamage = MAX_SPELL_POWER + this.BonusSpellPower;
+            GameEngine.GameState.CurrentPlayer.TakeDamage(totalSpellDamage);
+            GameEngine.GameState.WaitingPlayer.TakeDamage(totalSpellDamage);
+            GameEngine.GameState.CurrentPlayerPlayZone.Where(card => card != null).ToList().ForEach(card => ((IDamageableEntity)card).TakeDamage(totalSpellDamage));
+            GameEngine.GameState.WaitingPlayerPlayZone.Where(card => card != null).ToList().ForEach(card => ((IDamageableEntity)card).TakeDamage(totalSpellDamage));
         }
     }
 }

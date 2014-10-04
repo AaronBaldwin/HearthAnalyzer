@@ -17,8 +17,8 @@ namespace HearthAnalyzer.Core.Cards.Spells
     public class Wrath : BaseSpell
     {
         private const int MANA_COST = 0;
-        private const int MIN_SPELL_POWER = 0;
-        private const int MAX_SPELL_POWER = 0;
+        private const int MIN_SPELL_POWER = 3;
+        private const int MAX_SPELL_POWER = 3;
 
         public Wrath(int id = -1)
         {
@@ -27,6 +27,8 @@ namespace HearthAnalyzer.Core.Cards.Spells
 
             this.OriginalManaCost = MANA_COST;
             this.CurrentManaCost = MANA_COST;
+
+			this.BonusSpellPower = 0;
         }
 
         public override void Activate(IDamageableEntity target = null)

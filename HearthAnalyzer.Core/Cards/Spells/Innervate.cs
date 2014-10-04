@@ -11,6 +11,9 @@ namespace HearthAnalyzer.Core.Cards.Spells
     /// 
     /// Gain 2 Mana Crystals this turn only.
     /// </summary>
+    /// <remarks>
+    /// TODO: NOT YET COMPLETELY IMPLEMENTED
+    /// </remarks>
     public class Innervate : BaseSpell
     {
         private const int MANA_COST = 0;
@@ -24,11 +27,13 @@ namespace HearthAnalyzer.Core.Cards.Spells
 
             this.OriginalManaCost = MANA_COST;
             this.CurrentManaCost = MANA_COST;
+
+			this.BonusSpellPower = 0;
         }
 
         public override void Activate(IDamageableEntity target = null)
         {
-            this.Owner.Mana = Math.Min(this.Owner.Mana + 2, Constants.MAX_MANA_CAPACITY);
+            throw new NotImplementedException();
         }
     }
 }
