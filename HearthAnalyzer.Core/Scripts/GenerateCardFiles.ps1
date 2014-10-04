@@ -38,13 +38,21 @@ function GenerateCodeFile($card)
             continue
         }
 
+        $cardType = "CardType.NORMAL_MINION"
+        if ($card.race -ne $null)
+        {
+            $cardType = "CardType.$($card.race.ToUpper())"
+        }
+
         # File hasn't been created yet, so let's generate it
         (Get-Content $minionTemplate) | Foreach-Object {
             $_.Replace("_CLASS_NAME_", $className). `
             Replace("_NAME_", $card.name). `
             Replace("_MANA_COST_", $mana). `
+			Replace("_CARD_TEXT_", $card.text). `
             Replace("_ATTACK_POWER_", $attack). `
-            Replace("_HEALTH_", $health)
+            Replace("_HEALTH_", $health). `
+            Replace("_CARD_TYPE_", $cardType)
         } | Set-Content $filePath
     }
     elseif ($card.type -eq 'weapon')
@@ -60,6 +68,7 @@ function GenerateCodeFile($card)
             $_.Replace("_CLASS_NAME_", $className). `
             Replace("_NAME_", $card.name). `
             Replace("_MANA_COST_", $mana). `
+			Replace("_CARD_TEXT_", $card.text). `
             Replace("_ATTACK_POWER_", $attack). `
             Replace("_DURABILITY_", $health)
         } | Set-Content $filePath

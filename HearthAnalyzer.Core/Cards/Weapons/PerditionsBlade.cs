@@ -8,6 +8,8 @@ namespace HearthAnalyzer.Core.Cards.Weapons
 {
     /// <summary>
     /// Implements the Perdition's Blade Weapon
+    /// 
+    /// <b>Battlecry:</b> Deal 1 damage. <b>Combo:</b> Deal 2 instead.
     /// </summary>
     /// <remarks>
     /// TODO: NOT YET COMPLETELY IMPLEMENTED

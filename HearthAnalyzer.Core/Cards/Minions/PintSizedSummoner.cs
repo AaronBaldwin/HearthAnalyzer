@@ -8,7 +8,8 @@ namespace HearthAnalyzer.Core.Cards.Minions
 {
     /// <summary>
     /// Implements the Pint-Sized Summoner
-    /// Basic Minion
+    /// 
+    /// The first minion you play each turn costs (1) less.
     /// </summary>
     /// <remarks>
     /// TODO: NOT YET COMPLETELY IMPLEMENTED
@@ -28,6 +29,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.CurrentAttackPower = ATTACK_POWER;
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
+			this.Type = CardType.NORMAL_MINION;
         }
     }
 }

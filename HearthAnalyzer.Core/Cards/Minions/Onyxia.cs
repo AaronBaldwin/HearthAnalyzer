@@ -8,7 +8,8 @@ namespace HearthAnalyzer.Core.Cards.Minions
 {
     /// <summary>
     /// Implements the Onyxia
-    /// Basic Minion
+    /// 
+    /// <b>Battlecry:</b> Summon 1/1 Whelps until your side of the battlefield is full.
     /// </summary>
     /// <remarks>
     /// TODO: NOT YET COMPLETELY IMPLEMENTED
@@ -28,6 +29,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.CurrentAttackPower = ATTACK_POWER;
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
+			this.Type = CardType.DRAGON;
         }
     }
 }

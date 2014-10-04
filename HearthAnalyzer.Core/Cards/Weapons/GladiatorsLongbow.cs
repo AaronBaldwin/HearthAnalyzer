@@ -8,6 +8,8 @@ namespace HearthAnalyzer.Core.Cards.Weapons
 {
     /// <summary>
     /// Implements the Gladiator's Longbow Weapon
+    /// 
+    /// Your hero is <b>Immune</b> while attacking.
     /// </summary>
     /// <remarks>
     /// TODO: NOT YET COMPLETELY IMPLEMENTED

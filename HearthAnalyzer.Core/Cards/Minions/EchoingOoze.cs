@@ -8,7 +8,8 @@ namespace HearthAnalyzer.Core.Cards.Minions
 {
     /// <summary>
     /// Implements the Echoing Ooze
-    /// Basic Minion
+    /// 
+    /// <b>Battlecry:</b> Summon an exact copy of this minion at the end of the turn.
     /// </summary>
     /// <remarks>
     /// TODO: NOT YET COMPLETELY IMPLEMENTED
@@ -28,6 +29,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.CurrentAttackPower = ATTACK_POWER;
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
+			this.Type = CardType.NORMAL_MINION;
         }
     }
 }

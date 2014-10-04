@@ -8,7 +8,8 @@ namespace HearthAnalyzer.Core.Cards.Minions
 {
     /// <summary>
     /// Implements the Stampeding Kodo
-    /// Basic Minion
+    /// 
+    /// <b>Battlecry:</b> Destroy a random enemy minion with 2 or less Attack.
     /// </summary>
     /// <remarks>
     /// TODO: NOT YET COMPLETELY IMPLEMENTED
@@ -28,6 +29,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.CurrentAttackPower = ATTACK_POWER;
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
+			this.Type = CardType.BEAST;
         }
     }
 }

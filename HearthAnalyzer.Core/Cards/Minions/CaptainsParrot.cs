@@ -8,7 +8,8 @@ namespace HearthAnalyzer.Core.Cards.Minions
 {
     /// <summary>
     /// Implements the Captain's Parrot
-    /// Basic Minion
+    /// 
+    /// <b>Battlecry:</b> Put a random Pirate from your deck into your hand.
     /// </summary>
     /// <remarks>
     /// TODO: NOT YET COMPLETELY IMPLEMENTED
@@ -28,6 +29,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.CurrentAttackPower = ATTACK_POWER;
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
+			this.Type = CardType.BEAST;
         }
     }
 }

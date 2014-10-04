@@ -8,6 +8,8 @@ namespace HearthAnalyzer.Core.Cards.Weapons
 {
     /// <summary>
     /// Implements the Truesilver Champion Weapon
+    /// 
+    /// Whenever your hero attacks, restore 2 Health to it.
     /// </summary>
     /// <remarks>
     /// TODO: NOT YET COMPLETELY IMPLEMENTED

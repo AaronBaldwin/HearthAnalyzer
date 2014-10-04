@@ -8,6 +8,8 @@ namespace HearthAnalyzer.Core.Cards.Weapons
 {
     /// <summary>
     /// Implements the Runeblade Weapon
+    /// 
+    /// Has +6 Attack if the other Horsemen are dead.
     /// </summary>
     /// <remarks>
     /// TODO: NOT YET COMPLETELY IMPLEMENTED

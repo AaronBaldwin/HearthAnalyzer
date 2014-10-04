@@ -91,6 +91,7 @@ namespace HearthAnalyzer.Core.Cards
         DRAGON,
         MURLOC,
         TOTEM,
+        PIRATE,
         NORMAL_MINION,
         SPELL,
         WEAPON,

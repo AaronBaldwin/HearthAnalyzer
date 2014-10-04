@@ -8,6 +8,8 @@ namespace HearthAnalyzer.Core.Cards.Weapons
 {
     /// <summary>
     /// Implements the Sword of Justice Weapon
+    /// 
+    /// Whenever you summon a minion, give it +1/+1 and this loses 1 Durability.
     /// </summary>
     /// <remarks>
     /// TODO: NOT YET COMPLETELY IMPLEMENTED

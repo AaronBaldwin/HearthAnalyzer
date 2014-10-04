@@ -8,6 +8,8 @@ namespace HearthAnalyzer.Core.Cards.Weapons
 {
     /// <summary>
     /// Implements the Jaws Weapon
+    /// 
+    /// Whenever a minion with <b>Deathrattle</b> dies, gain +2 Attack.
     /// </summary>
     /// <remarks>
     /// TODO: NOT YET COMPLETELY IMPLEMENTED

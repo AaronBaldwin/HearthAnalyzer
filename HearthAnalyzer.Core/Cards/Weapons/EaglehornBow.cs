@@ -8,6 +8,8 @@ namespace HearthAnalyzer.Core.Cards.Weapons
 {
     /// <summary>
     /// Implements the Eaglehorn Bow Weapon
+    /// 
+    /// Whenever a friendly <b>Secret</b> is revealed, gain +1 Durability.
     /// </summary>
     /// <remarks>
     /// TODO: NOT YET COMPLETELY IMPLEMENTED
