@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using HearthAnalyzer.Core.Cards;
 using HearthAnalyzer.Core.Cards.Minions;
 using HearthAnalyzer.Core.Cards.Spells;
+using HearthAnalyzer.Core.Cards.Weapons;
 using HearthAnalyzer.Core.Heroes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -211,6 +212,37 @@ namespace HearthAnalyzer.Core.Tests
 
             Assert.IsTrue(this.gameEnded, "Verify the game has ended");
             Assert.AreEqual(this.gameResult, GameEngine.GameResult.WIN, "Verify we won because we killed the opponent");
+        }
+
+        /// <summary>
+        /// Verify overload logic
+        /// </summary>
+        [TestMethod]
+        public void Overload()
+        {
+            player.MaxMana = Constants.MAX_MANA_CAPACITY;
+            var stormAxe = HearthEntityFactory.CreateCard<StormforgedAxe>();
+            stormAxe.CurrentManaCost = 0;
+            player.Hand.Add(stormAxe);
+
+            GameEngine.GameState.CurrentPlayer = player;
+            player.PlayCard(stormAxe, null);
+
+            Assert.AreEqual(stormAxe, player.Weapon, "Verify axe was equipped");
+            Assert.AreEqual(1, player.PendingOverload, "Verify player's pending overload");
+
+            GameEngine.EndTurn();
+            GameEngine.EndTurn();
+
+            Assert.AreEqual(0, player.PendingOverload, "Verify pending overload is now gone");
+            Assert.AreEqual(1, player.Overload, "Verify overload");
+            Assert.AreEqual(Constants.MAX_MANA_CAPACITY - 1, player.Mana, "Verify mana less overload");
+
+            GameEngine.EndTurn();
+            GameEngine.EndTurn();
+
+            Assert.AreEqual(0, player.Overload, "Verify overload is now gone");
+            Assert.AreEqual(Constants.MAX_MANA_CAPACITY, player.Mana, "Verify mana is back to normal");
         }
 
         /// <summary>

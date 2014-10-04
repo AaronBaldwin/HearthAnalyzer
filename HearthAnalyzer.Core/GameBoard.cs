@@ -31,5 +31,15 @@ namespace HearthAnalyzer.Core
         /// The opponent's side of the baord
         /// </summary>
         public List<BaseCard> OpponentPlayZone;
+
+        /// <summary>
+        /// Removes a card from the baord
+        /// </summary>
+        /// <param name="card"></param>
+        public void RemoveCard(BaseCard card)
+        {
+            this.PlayerPlayZone.Remove(card);
+            this.OpponentPlayZone.Remove(card);
+        }
     }
 }

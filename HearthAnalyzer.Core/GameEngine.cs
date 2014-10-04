@@ -233,7 +233,7 @@ namespace HearthAnalyzer.Core
             destZoneContainer[destPos] = cardToMove;
             srcZoneContainer[srcPos] = null;
 
-            Logger.Instance.Debug(string.Format("Moving {0}[1}\tFROM {2}[{3}]\tTO {4}[{5}]", cardToMove, id, srcZone, srcPos, destZone, destPos));
+            Logger.Instance.DebugFormat("Moving {0}\tFROM {1}[{2}]\tTO {3}[{4}]", cardToMove, srcZone, srcPos, destZone, destPos);
         }
 
         /// <summary>
@@ -262,6 +262,9 @@ namespace HearthAnalyzer.Core
         {
             // Before we fire trigger any deathrattles, we need to check if the game is over
             if (GameEngine.CheckForGameEnd()) return;
+
+            // Remove dead minions from the board so the deathrattle doesn't trigger on itself
+            GameEngine.DeadMinionsThisTurn.ForEach(card => GameEngine.GameState.Board.RemoveCard(card));
 
             // Deathrattles trigger by TimePlayed first.
             var sortedDeadMinions = GameEngine.DeadMinionsThisTurn.OrderBy(minion => minion.TimePlayed).ToList();

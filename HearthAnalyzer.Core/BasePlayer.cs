@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using HearthAnalyzer.Core.Cards;
+using HearthAnalyzer.Core.Deathrattles;
 
 namespace HearthAnalyzer.Core
 {
@@ -142,6 +143,12 @@ namespace HearthAnalyzer.Core
                 this.PlaySpell(spellCard, subTarget);
             }
 
+            var weaponCard = cardInHand as BaseWeapon;
+            if (weaponCard != null)
+            {
+                this.PlayWeapon(weaponCard, subTarget);
+            }
+
             GameEngine.CheckForGameEnd();
         }
 
@@ -168,7 +175,7 @@ namespace HearthAnalyzer.Core
             {
                 for (int i = playZone.Count - 1; i > gameboardPos; i--)
                 {
-                    playZone[i] = playZone[i - 1];
+                    playZone[i] = playZone[i-1];
                 }
             }
 
@@ -194,6 +201,13 @@ namespace HearthAnalyzer.Core
 
             // Fire minion placed event
             GameEventManager.MinionPlaced(minion);
+
+            // Register deathrattle if applicable
+            var deathrattleCard = minion as IDeathrattler;
+            if (deathrattleCard != null)
+            {
+                deathrattleCard.RegisterDeathrattle();
+            }
 
             // call the card's battlecry 
             var battlecryCard = minion as IBattlecry;
@@ -230,6 +244,38 @@ namespace HearthAnalyzer.Core
             }
 
             // Fire spell casted event (if we need to)
+        }
+
+        /// <summary>
+        /// Plays a weapon
+        /// </summary>
+        /// <param name="weapon">The weapon to play</param>
+        /// <param name="subTarget">The sub target for this weapon if applicable</param>
+        public void PlayWeapon(BaseWeapon weapon, IDamageableEntity subTarget = null)
+        {
+            this.Hand.Remove(weapon);
+
+            this.Mana -= weapon.CurrentManaCost;
+
+            weapon.WeaponOwner = this;
+            this.Weapon = weapon;
+
+            // Register deathrattle if applicable
+            var deathrattleCard = weapon as IDeathrattler;
+            if (deathrattleCard != null)
+            {
+                deathrattleCard.RegisterDeathrattle();
+            }
+
+            // Call the card's battle cry
+            var battlecryWeapon = weapon as IBattlecry;
+            if (battlecryWeapon != null)
+            {
+                battlecryWeapon.Battlecry(subTarget);
+            }
+
+            // Fire card played event
+            // TODO: Add weapon played event?
         }
 
         /// <summary>

@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Deathrattles\IDeathrattler.cs" />
     <Compile Include="HearthEntityFactory.cs" />
     <Compile Include="Cards\BaseSpell.cs" />
     <Compile Include="Cards\BaseWeapon.cs" />

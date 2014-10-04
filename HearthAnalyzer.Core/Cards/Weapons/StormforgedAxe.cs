@@ -9,14 +9,12 @@ namespace HearthAnalyzer.Core.Cards.Weapons
     /// <summary>
     /// Implements the Stormforged Axe Weapon
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
-    public class StormforgedAxe : BaseWeapon
+    public class StormforgedAxe : BaseWeapon, IBattlecry
     {
         private const int MANA_COST = 2;
         private const int ATTACK_POWER = 2;
         private const int DURABILITY = 0;
+        private const int OVERLOAD_COST = 1;
 
         public StormforgedAxe(int id = -1)
         {
@@ -30,5 +28,14 @@ namespace HearthAnalyzer.Core.Cards.Weapons
 
             this.Durability = DURABILITY;
         }
+
+        #region IBattlecry
+
+        public void Battlecry(IDamageableEntity subTarget)
+        {
+            this.WeaponOwner.PendingOverload += OVERLOAD_COST;
+        }
+
+        #endregion
     }
 }

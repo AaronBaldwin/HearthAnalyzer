@@ -151,6 +151,7 @@ namespace HearthAnalyzer.Core.Cards
             GameEngine.DeadMinionsThisTurn.Add(this);
 
             // Let GameEngine clean up minions from the baord
+
         }
 
         /// <summary>

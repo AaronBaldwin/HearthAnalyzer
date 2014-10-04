@@ -20,17 +20,20 @@ namespace HearthAnalyzer.Core.Tests
         private BaseMinion yeti3;
         private BaseMinion yeti4;
         private BaseMinion abom1;
+        private BasePlayer player;
+        private BasePlayer opponent;
 
         [TestInitialize]
         public void Setup()
         {
-            GameEngine.Initialize(null, null);
+            player = HearthEntityFactory.CreatePlayer<Warlock>();
+            opponent = HearthEntityFactory.CreatePlayer<Warlock>();
 
-            yeti1 = new ChillwindYeti(1);
-            yeti2 = new ChillwindYeti(2);
-            yeti3 = new ChillwindYeti(3);
-            yeti4 = new ChillwindYeti(4);
-            abom1 = new Abomination(5);
+            yeti1 = HearthEntityFactory.CreateCard<ChillwindYeti>();
+            yeti2 = HearthEntityFactory.CreateCard<ChillwindYeti>();
+            yeti3 = HearthEntityFactory.CreateCard<ChillwindYeti>();
+            yeti4 = HearthEntityFactory.CreateCard<ChillwindYeti>();
+            abom1 = HearthEntityFactory.CreateCard<Abomination>();
 
             var gameBoard = new GameBoard()
             {
@@ -38,17 +41,26 @@ namespace HearthAnalyzer.Core.Tests
                 {
                     yeti1,
                     yeti2,
-                    abom1
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
                 },
 
                 OpponentPlayZone = new List<BaseCard>()
                 {
                     yeti3,
-                    yeti4
+                    yeti4,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
                 }
             };
 
-            GameEngine.GameState.Board = gameBoard;
+            GameEngine.Initialize(player, opponent, gameBoard, 0, player);
         }
 
         [TestCleanup]
@@ -60,6 +72,12 @@ namespace HearthAnalyzer.Core.Tests
         [TestMethod]
         public void DeathrattleDamageAllMinions()
         {
+            abom1.CurrentManaCost = 0;
+            player.Hand.Add(abom1);
+            player.PlayCard(abom1, null);
+
+            GameEngine.EndTurn();
+
             // This should kill the abomination
             // The yeti should also die from the deathrattle
             yeti3.Attack(abom1);

@@ -12,7 +12,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// Taunt. Deathrattle:
     /// Deal 2 damage to ALL characters.
     /// </summary>
-    public class Abomination : BaseMinion
+    public class Abomination : BaseMinion, IDeathrattler
     {
         private static int MANA     = 5;
         private static int ATTACK   = 4;
@@ -28,7 +28,10 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.CurrentManaCost = MANA;
             this.CurrentAttackPower = ATTACK;
             this.CurrentHealth = HEALTH;
+        }
 
+        public void RegisterDeathrattle()
+        {
             GameEngine.RegisterDeathrattle(this, new DeathrattleDamageAllMinions(DEATHRATTLE_DAMAGE));
         }
     }
