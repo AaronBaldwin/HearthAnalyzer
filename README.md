@@ -33,3 +33,7 @@ and optional decks to play against.
 Disclaimer
 ---------------
 This project just started and is a long way from completion. Don't expect anything out of it and you won't be disappointed :)
+
+Want to help?
+---------------
+Feel free to message me or send a pull request. The primary focus right now is to implement each card.
