@@ -28,6 +28,8 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.CurrentManaCost = MANA;
             this.OriginalAttackPower = ATTACK;
             this.CurrentHealth = HEALTH;
+
+            this.ApplyStatusEffects(MinionStatusEffects.TAUNT);
         }
 
         public void RegisterDeathrattle()

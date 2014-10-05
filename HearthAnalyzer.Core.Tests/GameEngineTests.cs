@@ -246,6 +246,81 @@ namespace HearthAnalyzer.Core.Tests
         }
 
         /// <summary>
+        /// Verify you can't attack through taunt
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void Taunt()
+        {
+            var alakir = HearthEntityFactory.CreateCard<AlAkirtheWindlord>();
+            var yeti = HearthEntityFactory.CreateCard<ChillwindYeti>();
+            var faerie = HearthEntityFactory.CreateCard<FaerieDragon>();
+
+            GameEngine.GameState.CurrentPlayer = player;
+
+            GameEngine.GameState.CurrentPlayerPlayZone[0] = faerie;
+            GameEngine.GameState.WaitingPlayerPlayZone[0] = alakir;
+            GameEngine.GameState.WaitingPlayerPlayZone[1] = yeti;
+
+            faerie.Attack(yeti);
+            faerie.Attack(opponent);
+        }
+
+        /// <summary>
+        /// Verify charge and windfury mechanics
+        /// </summary>
+        [TestMethod]
+        public void ChargeAndWindfury()
+        {
+            var alakir = HearthEntityFactory.CreateCard<AlAkirtheWindlord>();
+            alakir.CurrentManaCost = 0;
+
+            GameEngine.GameState.CurrentPlayer = player;
+            player.Hand.Add(alakir);
+
+            player.PlayCard(alakir, null);
+            alakir.Attack(opponent);
+
+            Assert.AreEqual(30 - alakir.CurrentAttackPower, opponent.Health, "Verify the opponent took damage");
+
+            alakir.Attack(opponent);
+            Assert.AreEqual(30 - (alakir.CurrentAttackPower * 2), opponent.Health, "Verify the opponent got hit again");
+
+            try
+            {
+                alakir.Attack(opponent);
+                Assert.Fail("Alakir shouldn't be able to attack a third time!");
+            }
+            catch (InvalidOperationException)
+            {
+            }
+        }
+
+        /// <summary>
+        /// Verify divine shield mechanics
+        /// </summary>
+        [TestMethod]
+        public void DivineShield()
+        {
+            var alakir = HearthEntityFactory.CreateCard<AlAkirtheWindlord>();
+            var playerAlakir = HearthEntityFactory.CreateCard<AlAkirtheWindlord>();
+
+            GameEngine.GameState.CurrentPlayer = player;
+            GameEngine.GameState.CurrentPlayerPlayZone[0] = playerAlakir;
+            GameEngine.GameState.WaitingPlayerPlayZone[0] = alakir;
+
+            playerAlakir.Attack(alakir);
+
+            Assert.IsFalse(playerAlakir.HasDivineShield, "Verify player's alakir lost divine shield");
+            Assert.IsFalse(alakir.HasDivineShield, "Verify opponent's alakir lost divine shield");
+
+            playerAlakir.Attack(alakir);
+
+            Assert.AreEqual(5 - alakir.CurrentAttackPower, playerAlakir.CurrentHealth, "Verify player's alakir took damage");
+            Assert.AreEqual(5 - playerAlakir.CurrentAttackPower, alakir.CurrentHealth, "Verify opponent's alakir took damage");
+        }
+
+        /// <summary>
         /// Triggered when the game has ended
         /// </summary>
         /// <param name="result"></param>

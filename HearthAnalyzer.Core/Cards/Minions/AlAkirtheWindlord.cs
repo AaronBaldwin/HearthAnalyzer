@@ -11,9 +11,6 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// 
     /// <b>Windfury, Charge, Divine Shield, Taunt</b>
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
     public class AlAkirtheWindlord : BaseMinion
     {
         private const int MANA_COST = 8;
@@ -30,6 +27,9 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
 			this.Type = CardType.NORMAL_MINION;
+
+            this.ApplyStatusEffects(MinionStatusEffects.WINDFURY | MinionStatusEffects.CHARGE |
+                                    MinionStatusEffects.DIVINE_SHIELD | MinionStatusEffects.TAUNT);
         }
     }
 }

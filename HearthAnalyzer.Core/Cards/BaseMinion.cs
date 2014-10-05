@@ -171,6 +171,21 @@ namespace HearthAnalyzer.Core.Cards
         /// <param name="target">The target to attack</param>
         public void Attack(IDamageableEntity target)
         {
+            // Make sure the minion isn't exhausted first or can't attack
+            if (!this.CanAttack)
+            {
+                throw new InvalidOperationException("This minion can't attack yet!");
+            }
+
+            // Make sure we're not attacking through a taunt
+            var enemyPlayZone = GameEngine.GameState.WaitingPlayerPlayZone;
+            var targetMinion = target as BaseMinion;
+            if (((targetMinion != null && !targetMinion.HasTaunt) || target is BasePlayer) &&
+                enemyPlayZone.Any(minion => minion != null && ((BaseMinion) minion).HasTaunt))
+            {
+                throw new InvalidOperationException("Can't attack through taunt!");
+            }
+
             this.attacksThisTurn++;
 
             // Fire attacking event
@@ -197,6 +212,12 @@ namespace HearthAnalyzer.Core.Cards
         {
             if (!this.IsImmuneToDamage)
             {
+                if (this.HasDivineShield)
+                {
+                    this.RemoveStatusEffects(MinionStatusEffects.DIVINE_SHIELD);
+                    return;
+                }
+
                 this.CurrentHealth -= damage;
 
                 // fire damage dealt event
@@ -238,17 +259,17 @@ namespace HearthAnalyzer.Core.Cards
     [Flags]
     public enum MinionStatusEffects
     {
-        DIVINE_SHIELD = 0,
-        CANT_ATTACK = 1,
-        TAUNT = 2,
-        STEALTHED = 4,
-        EXHAUSTED = 8,
-        WINDFURY = 16,
-        FROZEN = 32,
-        SILENCED = 64,
-        IMMUNE_TO_DEATH = 128,
-        IMMUNE_TO_DAMAGE = 256,
-        CHARGE = 512,
-        IMMUNE_TO_SPELL_TARGET = 1024
+        DIVINE_SHIELD = 1,
+        CANT_ATTACK = 2,
+        TAUNT = 4,
+        STEALTHED = 8,
+        EXHAUSTED = 16,
+        WINDFURY = 32,
+        FROZEN = 64,
+        SILENCED = 128,
+        IMMUNE_TO_DEATH = 256,
+        IMMUNE_TO_DAMAGE = 512,
+        CHARGE = 1024,
+        IMMUNE_TO_SPELL_TARGET = 2048
     }
 }
