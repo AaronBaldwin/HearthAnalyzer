@@ -57,5 +57,40 @@ namespace HearthAnalyzer.Core.Tests
             player.PlayCard(fireball, opponent);
             Assert.AreEqual(24, opponent.Health, "Verify the opponent took 6 damage");
         }
+
+        /// <summary>
+        /// Validate bonus spell power
+        /// </summary>
+        [TestMethod]
+        public void BonusSpellPower()
+        {
+            var ancientMage = HearthEntityFactory.CreateCard<AncientMage>();
+            ancientMage.Owner = player;
+            ancientMage.CurrentManaCost = 0;
+
+            var yeti = HearthEntityFactory.CreateCard<ChillwindYeti>();
+            var azureDrake = HearthEntityFactory.CreateCard<AzureDrake>();
+
+            GameEngine.GameState.CurrentPlayerPlayZone[0] = yeti;
+            GameEngine.GameState.CurrentPlayerPlayZone[1] = azureDrake;
+
+            player.Hand.Add(ancientMage);
+            player.PlayCard(ancientMage, null, 1);
+
+            // Yeti should have +1 SP and Azure Drake should have +2
+            Assert.AreEqual(1, yeti.BonusSpellPower, "Verify yeti bonus spell power");
+            Assert.AreEqual(2, azureDrake.BonusSpellPower, "Verify azure drake bonus spell power");
+            Assert.AreEqual(3, player.BonusSpellPower, "Verify player's bonus spell power");
+
+            var fireball = HearthEntityFactory.CreateCard<Fireball>();
+            fireball.Owner = player;
+            fireball.CurrentManaCost = 0;
+
+            player.Hand.Add(fireball);
+
+            // Fireball should do 6 + 3 damage
+            player.PlayCard(fireball, opponent);
+            Assert.AreEqual(21, opponent.Health, "Verify the opponent took 9 points of damage");
+        }
     }
 }
