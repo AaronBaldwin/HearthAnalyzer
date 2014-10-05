@@ -45,7 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Deathrattles\IDeathrattler.cs" />
+    <Compile Include="Interfaces\IDeathrattler.cs" />
     <Compile Include="HearthEntityFactory.cs" />
     <Compile Include="Cards\BaseSpell.cs" />
     <Compile Include="Cards\BaseWeapon.cs" />
@@ -598,8 +598,8 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Deathrattles\BaseDeathrattle.cs" />
     <Compile Include="Deathrattles\DeathrattleDamageAllMinions.cs" />
-    <Compile Include="IBattlecry.cs" />
-    <Compile Include="IDamageableEntity.cs" />
+    <Compile Include="Interfaces\IBattlecry.cs" />
+    <Compile Include="Interfaces\IDamageableEntity.cs" />
     <Compile Include="Cards\BaseCard.cs" />
     <Compile Include="Cards\BaseMinion.cs" />
     <Compile Include="Cards\Minions\Abomination.cs" />
@@ -610,8 +610,9 @@
     <Compile Include="GameState.cs" />
     <Compile Include="BasePlayer.cs" />
     <Compile Include="Heroes\Warlock.cs" />
-    <Compile Include="IAttacker.cs" />
-    <Compile Include="ITriggeredEffectOwner.cs" />
+    <Compile Include="Interfaces\IAttacker.cs" />
+    <Compile Include="Interfaces\IEnragable.cs" />
+    <Compile Include="Interfaces\ITriggeredEffectOwner.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="Scripts\TemplateSpell.cs.txt" />

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using HearthAnalyzer.Core.Interfaces;
 
 namespace HearthAnalyzer.Core.Cards
 {
@@ -222,6 +223,12 @@ namespace HearthAnalyzer.Core.Cards
                 // fire damage dealt event
                 GameEventManager.DamageDealt(this, damage);
 
+                // Check if we should enrage
+                if (this is IEnragable && this.CurrentHealth < this.MaxHealth)
+                {
+                    ((IEnragable)this).Enrage();
+                }
+
                 if (this.CurrentHealth <= 0 && !this.IsImmuneToDeath)
                 {
                     this.Die();
@@ -234,6 +241,12 @@ namespace HearthAnalyzer.Core.Cards
             this.CurrentHealth = Math.Min(this.CurrentHealth + healAmount, this.MaxHealth);
 
             // fire healing dealt event
+
+            // Check if we need to be un-enraged
+            if (this is IEnragable && this.CurrentHealth == this.MaxHealth)
+            {
+                ((IEnragable)this).Derage();
+            }
         }
 
         public void TakeBuff(int attackBuff, int healthBuff)
