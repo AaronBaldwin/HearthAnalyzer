@@ -138,6 +138,69 @@ namespace HearthAnalyzer.Core.Tests
         }
 
         /// <summary>
+        /// Sends a friendly minion on the battlefield back to owner's hand
+        /// </summary>
+        [TestMethod]
+        public void AncientBrewmaster()
+        {
+            var brewmaster = HearthEntityFactory.CreateCard<AncientBrewmaster>();
+            brewmaster.Owner = player;
+            brewmaster.CurrentManaCost = 0;
+
+            var yeti = HearthEntityFactory.CreateCard<ChillwindYeti>();
+
+            // Verify exception when playing on an empty board with a target
+            player.Hand.Add(brewmaster);
+
+            try
+            {
+                player.PlayCard(brewmaster, yeti);
+                Assert.Fail("Can't play brewmaster on an empty board with a target!");
+            }
+            catch (InvalidOperationException)
+            {
+            }
+            finally
+            {
+                GameEngine.GameState.Board.RemoveCard(brewmaster);
+                player.Hand.Add(brewmaster);
+            }
+
+            // Verify playing on an empty board with no target is valid
+            player.PlayCard(brewmaster, null);
+
+            Assert.IsTrue(GameEngine.GameState.CurrentPlayerPlayZone.Contains(brewmaster), "Verify brewmaster was played");
+
+            GameEngine.GameState.Board.RemoveCard(brewmaster);
+
+            // Verify playing brewmaster returns the friendly minion back to the hand
+            GameEngine.GameState.CurrentPlayerPlayZone[0] = yeti;
+
+            player.Hand.Add(brewmaster);
+            player.PlayCard(brewmaster, yeti);
+
+            Assert.IsTrue(player.Hand.Contains(yeti), "Verify yeti was returned to the owner's hand");
+            Assert.IsFalse(GameEngine.GameState.CurrentPlayerPlayZone.Contains(yeti), "Verify yeti is no longer on the baord");
+            Assert.IsTrue(GameEngine.GameState.CurrentPlayerPlayZone.Contains(brewmaster), "Verify brewmaster is on the baord");
+
+            GameEngine.GameState.Board.RemoveCard(brewmaster);
+
+            // Verify playing brewmaster and targeting an enemy minion is not valid
+            player.Hand.Remove(yeti);
+            GameEngine.GameState.WaitingPlayerPlayZone[0] = yeti;
+            player.Hand.Add(brewmaster);
+
+            try
+            {
+                player.PlayCard(brewmaster, yeti);
+                Assert.Fail("Can't target enemy minions!");
+            }
+            catch (InvalidOperationException)
+            {
+            }
+        }
+
+        /// <summary>
         /// Freeze a character
         /// </summary>
         [TestMethod]
