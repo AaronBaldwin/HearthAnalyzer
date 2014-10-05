@@ -14,13 +14,15 @@ namespace HearthAnalyzer.Core.Cards
         protected BaseSpell()
         {
             this.Type = CardType.SPELL;
-            this.BonusSpellPower = 0;
         }
 
         /// <summary>
         /// The amount of bonus spell power to add
         /// </summary>
-        public int BonusSpellPower;
+        public int BonusSpellPower
+        {
+            get { return this.Owner.BonusSpellPower; }
+        }
 
         /// <summary>
         /// Activates the spell card with an optional target

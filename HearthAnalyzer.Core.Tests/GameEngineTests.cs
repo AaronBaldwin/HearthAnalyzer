@@ -184,6 +184,7 @@ namespace HearthAnalyzer.Core.Tests
 
             GameEngine.GameState.CurrentPlayer = player;
             var hellfire = HearthEntityFactory.CreateCard<Hellfire>();
+            hellfire.Owner = player;
             hellfire.CurrentManaCost = 0;
             player.Hand.Add(hellfire);
             player.PlayCard(hellfire, null);

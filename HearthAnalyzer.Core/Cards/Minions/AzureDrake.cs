@@ -30,6 +30,8 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
 			this.Type = CardType.DRAGON;
+
+            this.BonusSpellPower = 1;
         }
     }
 }

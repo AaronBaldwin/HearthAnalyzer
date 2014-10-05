@@ -24,8 +24,6 @@ namespace HearthAnalyzer.Core.Cards.Spells
 
             this.OriginalManaCost = MANA_COST;
             this.CurrentManaCost = MANA_COST;
-
-            this.BonusSpellPower = 0;
         }
 
         public override void Activate(IDamageableEntity target = null)

@@ -36,6 +36,11 @@ namespace HearthAnalyzer.Core.Cards
         public int CurrentHealth;
 
         /// <summary>
+        /// The amount of bonus spell power this minion adds
+        /// </summary>
+        public int BonusSpellPower;
+
+        /// <summary>
         /// Represents the current status effects applied to the card
         /// </summary>
         public MinionStatusEffects StatusEffects;

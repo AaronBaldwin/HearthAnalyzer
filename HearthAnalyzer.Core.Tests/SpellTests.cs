@@ -40,19 +40,21 @@ namespace HearthAnalyzer.Core.Tests
         [TestMethod]
         public void Fireball()
         {
-            player.Hand.Add(new Fireball(1));
-            player.Hand.Add(new Fireball(2));
+            var fireball = HearthEntityFactory.CreateCard<Fireball>();
+            fireball.Owner = player;
+            fireball.CurrentManaCost = 0;
 
-            player.Hand.ForEach(card => card.CurrentManaCost = 0);
+            player.Hand.Add(fireball);
 
             var rag = new RagnarostheFirelord(3);
             GameEngine.GameState.Board.OpponentPlayZone.Add(rag);
 
-            player.PlayCard(player.Hand.First(), rag);
+            player.PlayCard(fireball, rag);
 
             Assert.AreEqual(2, rag.CurrentHealth, "Verify rag took 6 damage");
 
-            player.PlayCard(player.Hand.First(), opponent);
+            player.Hand.Add(fireball);
+            player.PlayCard(fireball, opponent);
             Assert.AreEqual(24, opponent.Health, "Verify the opponent took 6 damage");
         }
     }

@@ -111,6 +111,14 @@ namespace HearthAnalyzer.Core
         public BaseCard HeroPower;
 
         /// <summary>
+        /// The amount of bonus spell power provided by minions
+        /// </summary>
+        public int BonusSpellPower
+        {
+            get { return GameEngine.GameState.CurrentPlayerPlayZone.Where(card => card != null).Sum(card => ((BaseMinion)card).BonusSpellPower); }
+        }
+
+        /// <summary>
         /// Plays a card
         /// </summary>
         /// <param name="card">The card to play</param>

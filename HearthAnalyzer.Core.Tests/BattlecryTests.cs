@@ -201,6 +201,31 @@ namespace HearthAnalyzer.Core.Tests
         }
 
         /// <summary>
+        /// Adjacent minions get +1 spell power
+        /// </summary>
+        [TestMethod]
+        public void AncientMage()
+        {
+            var ancientMage = HearthEntityFactory.CreateCard<AncientMage>();
+            ancientMage.Owner = player;
+            ancientMage.CurrentManaCost = 0;
+
+            var yeti = HearthEntityFactory.CreateCard<ChillwindYeti>();
+            var azureDrake = HearthEntityFactory.CreateCard<AzureDrake>();
+
+            GameEngine.GameState.CurrentPlayerPlayZone[0] = yeti;
+            GameEngine.GameState.CurrentPlayerPlayZone[1] = azureDrake;
+
+            player.Hand.Add(ancientMage);
+            player.PlayCard(ancientMage, null, 1);
+
+            // Yeti should have +1 SP and Azure Drake should have +2
+            Assert.AreEqual(1, yeti.BonusSpellPower, "Verify yeti bonus spell power");
+            Assert.AreEqual(2, azureDrake.BonusSpellPower, "Verify azure drake bonus spell power");
+            Assert.AreEqual(3, player.BonusSpellPower, "Verify player's bonus spell power");
+        }
+
+        /// <summary>
         /// Freeze a character
         /// </summary>
         [TestMethod]
