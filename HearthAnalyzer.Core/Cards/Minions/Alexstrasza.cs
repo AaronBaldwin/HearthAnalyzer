@@ -11,10 +11,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// 
     /// <b>Battlecry:</b> Set a hero's remaining Health to 15.
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
-    public class Alexstrasza : BaseMinion
+    public class Alexstrasza : BaseMinion, IBattlecry
     {
         private const int MANA_COST = 9;
         private const int ATTACK_POWER = 8;
@@ -30,6 +27,17 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
 			this.Type = CardType.DRAGON;
+        }
+
+        public void Battlecry(IDamageableEntity subTarget)
+        {
+            var targetPlayer = subTarget as BasePlayer;
+            if (targetPlayer == null)
+            {
+                throw new InvalidOperationException("Target must be a player!");
+            }
+
+            targetPlayer.Health = 15;
         }
     }
 }

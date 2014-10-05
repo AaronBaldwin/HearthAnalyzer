@@ -118,6 +118,26 @@ namespace HearthAnalyzer.Core.Tests
         }
 
         /// <summary>
+        /// Change a hero's health to 15
+        /// </summary>
+        [TestMethod]
+        public void Alexstrasza()
+        {
+            var alex = HearthEntityFactory.CreateCard<Alexstrasza>();
+            alex.CurrentManaCost = 0;
+
+            player.Hand.Add(alex);
+            player.PlayCard(alex, opponent);
+
+            Assert.AreEqual(15, opponent.Health, "Verify opponent health is set to 15");
+
+            player.Hand.Add(alex);
+            player.PlayCard(alex, player);
+
+            Assert.AreEqual(15, player.Health, "Verify player health is set to 15");
+        }
+
+        /// <summary>
         /// Freeze a character
         /// </summary>
         [TestMethod]
