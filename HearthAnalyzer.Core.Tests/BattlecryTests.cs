@@ -99,6 +99,25 @@ namespace HearthAnalyzer.Core.Tests
         }
 
         /// <summary>
+        /// Change an enemy minion's attack to 1
+        /// </summary>
+        [TestMethod]
+        public void AldorPeacekeeper()
+        {
+            var aldor = HearthEntityFactory.CreateCard<AldorPeacekeeper>();
+            aldor.CurrentManaCost = 0;
+
+            var rag = HearthEntityFactory.CreateCard<RagnarostheFirelord>();
+
+            GameEngine.GameState.WaitingPlayerPlayZone[0] = rag;
+
+            player.Hand.Add(aldor);
+            player.PlayCard(aldor, rag);
+
+            Assert.AreEqual(1, rag.CurrentAttackPower, "Verify rag's attack is changed to 1");
+        }
+
+        /// <summary>
         /// Freeze a character
         /// </summary>
         [TestMethod]

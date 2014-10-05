@@ -11,10 +11,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// 
     /// <b>Battlecry:</b> Change an enemy minion's Attack to 1.
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
-    public class AldorPeacekeeper : BaseMinion
+    public class AldorPeacekeeper : BaseMinion, IBattlecry
     {
         private const int MANA_COST = 3;
         private const int ATTACK_POWER = 3;
@@ -30,6 +27,23 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
 			this.Type = CardType.NORMAL_MINION;
+        }
+
+        public void Battlecry(IDamageableEntity subTarget)
+        {
+            var targetMinion = subTarget as BaseMinion;
+            if (targetMinion == null)
+            {
+                throw new InvalidOperationException("Target needs to be a minion!");
+            }
+
+            if (!GameEngine.GameState.WaitingPlayerPlayZone.Contains(targetMinion))
+            {
+                throw new InvalidOperationException("Target must be an enemy");
+            }
+
+            var attackToSubtract = targetMinion.CurrentAttackPower - 1;
+            targetMinion.TakeBuff(-attackToSubtract, 0);
         }
     }
 }
