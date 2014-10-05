@@ -15,11 +15,6 @@ namespace HearthAnalyzer.Core.Tests
     [TestClass]
     public class DeathrattleTests : BaseTestSuite
     {
-        private BaseMinion yeti1;
-        private BaseMinion yeti2;
-        private BaseMinion yeti3;
-        private BaseMinion yeti4;
-        private BaseMinion abom1;
         private BasePlayer player;
         private BasePlayer opponent;
 
@@ -29,38 +24,7 @@ namespace HearthAnalyzer.Core.Tests
             player = HearthEntityFactory.CreatePlayer<Warlock>();
             opponent = HearthEntityFactory.CreatePlayer<Warlock>();
 
-            yeti1 = HearthEntityFactory.CreateCard<ChillwindYeti>();
-            yeti2 = HearthEntityFactory.CreateCard<ChillwindYeti>();
-            yeti3 = HearthEntityFactory.CreateCard<ChillwindYeti>();
-            yeti4 = HearthEntityFactory.CreateCard<ChillwindYeti>();
-            abom1 = HearthEntityFactory.CreateCard<Abomination>();
-
-            var gameBoard = new GameBoard()
-            {
-                PlayerPlayZone = new List<BaseCard>()
-                {
-                    yeti1,
-                    yeti2,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-                },
-
-                OpponentPlayZone = new List<BaseCard>()
-                {
-                    yeti3,
-                    yeti4,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-                }
-            };
-
-            GameEngine.Initialize(player, opponent, gameBoard, 0, player);
+            GameEngine.Initialize(player, opponent, null, 0, player);
         }
 
         [TestCleanup]
@@ -72,8 +36,20 @@ namespace HearthAnalyzer.Core.Tests
         [TestMethod]
         public void DeathrattleDamageAllMinions()
         {
+            var yeti1 = HearthEntityFactory.CreateCard<ChillwindYeti>();
+            var yeti2 = HearthEntityFactory.CreateCard<ChillwindYeti>();
+            var yeti3 = HearthEntityFactory.CreateCard<ChillwindYeti>();
+            var yeti4 = HearthEntityFactory.CreateCard<ChillwindYeti>();
+            var abom1 = HearthEntityFactory.CreateCard<Abomination>();
+
             abom1.CurrentManaCost = 0;
             player.Hand.Add(abom1);
+            
+            GameEngine.GameState.CurrentPlayerPlayZone[0] = yeti1;
+            GameEngine.GameState.CurrentPlayerPlayZone[1] = yeti2;
+            GameEngine.GameState.WaitingPlayerPlayZone[0] = yeti3;
+            GameEngine.GameState.WaitingPlayerPlayZone[1] = yeti4;
+
             player.PlayCard(abom1, null);
 
             GameEngine.EndTurn();

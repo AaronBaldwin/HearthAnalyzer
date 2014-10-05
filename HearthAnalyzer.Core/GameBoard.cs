@@ -35,11 +35,35 @@ namespace HearthAnalyzer.Core
         /// <summary>
         /// Removes a card from the baord
         /// </summary>
-        /// <param name="card"></param>
+        /// <param name="card">The card to remove</param>
         public void RemoveCard(BaseCard card)
         {
-            this.PlayerPlayZone.Remove(card);
-            this.OpponentPlayZone.Remove(card);
+            // First figure out which play zone it's in
+            List<BaseCard> playZone;
+            if (this.PlayerPlayZone.Contains(card))
+            {
+                playZone = this.PlayerPlayZone;
+            }
+            else if (this.OpponentPlayZone.Contains(card))
+            {
+                playZone = this.OpponentPlayZone;
+            }
+            else
+            {
+                Logger.Instance.DebugFormat("{0} was not found on the board. Perhaps it was removed already?", card);
+                return;
+            }
+
+            // Next, remove the card and shift any cards necessary
+            var index = playZone.IndexOf(card);
+            playZone[index] = null;
+
+            for (int i = index; i < Constants.MAX_CARDS_ON_BOARD - 1; i++)
+            {
+                playZone[i] = playZone[i + 1];
+            }
+
+            playZone[Constants.MAX_CARDS_ON_BOARD - 1] = null;
         }
     }
 }

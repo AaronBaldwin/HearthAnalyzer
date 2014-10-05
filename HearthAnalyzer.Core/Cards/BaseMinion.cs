@@ -157,7 +157,6 @@ namespace HearthAnalyzer.Core.Cards
             GameEngine.DeadMinionsThisTurn.Add(this);
 
             // Let GameEngine clean up minions from the baord
-
         }
 
         public int GetCurrentAttackPower()
@@ -201,7 +200,7 @@ namespace HearthAnalyzer.Core.Cards
         /// <summary>
         /// Resets the number of attacks this minion has performed this turn.
         /// </summary>
-        public void ResetAttacksThisRun()
+        public void ResetAttacksThisTurn()
         {
             this.attacksThisTurn = 0;
         }

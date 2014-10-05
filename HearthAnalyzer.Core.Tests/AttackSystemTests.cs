@@ -14,33 +14,16 @@ namespace HearthAnalyzer.Core.Tests
     [TestClass]
     public class AttackSystemTests : BaseTestSuite
     {
-        private ChillwindYeti yeti1;
-        private ChillwindYeti yeti2;
-        private BloodfenRaptor raptor1;
-        private FieryWarAxe fieryWarAxe;
-        private Gorehowl gorehowl;
-
-        private Warlock player;
+        private BasePlayer player;
+        private BasePlayer opponent;
 
         [TestInitialize]
         public void Setup()
         {
-            yeti1 = new ChillwindYeti(1);
-            yeti2 = new ChillwindYeti(2);
-            raptor1 = new BloodfenRaptor(3);
+            player = HearthEntityFactory.CreatePlayer<Warlock>();
+            opponent = HearthEntityFactory.CreatePlayer<Warlock>();
 
-            fieryWarAxe = new FieryWarAxe(4);
-            gorehowl = new Gorehowl(5);
-
-            player = new Warlock()
-            {
-                Health = 30,
-                Weapon = fieryWarAxe
-            };
-
-            fieryWarAxe.WeaponOwner = player;
-
-            GameEngine.Initialize(player, null, null);
+            GameEngine.Initialize(player, opponent, null, 0, player);
         }
 
         [TestCleanup]
@@ -52,41 +35,62 @@ namespace HearthAnalyzer.Core.Tests
         [TestMethod]
         public void BasicMinionsAttacking()
         {
+            var yeti1 = HearthEntityFactory.CreateCard<ChillwindYeti>();
+            var yeti2 = HearthEntityFactory.CreateCard<ChillwindYeti>();
+            var raptor = HearthEntityFactory.CreateCard<BloodfenRaptor>();
+
+            GameEngine.GameState.CurrentPlayerPlayZone[0] = yeti1;
+            GameEngine.GameState.CurrentPlayerPlayZone[1] = raptor;
+            GameEngine.GameState.WaitingPlayerPlayZone[0] = yeti2;
+
             // 4/5 attacking into another 4/5 should yeild two 4/1s
             yeti1.Attack(yeti2);
 
             Assert.AreEqual(1, yeti1.CurrentHealth, "Verify Yeti_1 is at 1 health.");
             Assert.AreEqual(1, yeti2.CurrentHealth, "Verify Yeti_2 is at 1 health.");
 
-            // Now, kill yeti 1 with raptor 1. This should kill both the yeti and the raptor
-            raptor1.Attack(yeti1);
+            // Now, kill yeti 2 with raptor 1. This should kill both the yeti and the raptor
+            raptor.Attack(yeti2);
 
-            Assert.IsTrue(GameEngine.DeadMinionsThisTurn.Contains(yeti1), "Verify Yeti_1 is dead");
-            Assert.IsTrue(GameEngine.DeadMinionsThisTurn.Contains(raptor1), "Verify Raptor_1 is dead");
-            Assert.AreEqual(-2, yeti1.CurrentHealth, "Verify Yeti_1 is at -2 health");
-            Assert.AreEqual(-2, raptor1.CurrentHealth, "Verify Raptor_2 is at -2 health");
+            Assert.IsTrue(GameEngine.DeadMinionsThisTurn.Contains(yeti2), "Verify Yeti_2 is dead");
+            Assert.IsTrue(GameEngine.DeadMinionsThisTurn.Contains(raptor), "Verify Raptor_1 is dead");
+            Assert.AreEqual(-2, yeti2.CurrentHealth, "Verify Yeti_2 is at -2 health");
+            Assert.AreEqual(-2, raptor.CurrentHealth, "Verify Raptor_2 is at -2 health");
         }
 
         [TestMethod]
         public void BasicWeaponsAttacking()
         {
-            player.Attack(yeti1);
-            Assert.AreEqual(2, yeti1.CurrentHealth, "Verify Yeti_1 is at 2 health");
-            Assert.AreEqual(26, player.Health, "Verify the player is now at 26 health");
-            Assert.AreEqual(1, fieryWarAxe.Durability, "Verify the war axe is now at 1 durability");
+            var warAxe = HearthEntityFactory.CreateCard<FieryWarAxe>();
+            player.Weapon = warAxe;
+            warAxe.WeaponOwner = player;
 
-            player.Attack(yeti1);
-            Assert.AreEqual(-1, yeti1.CurrentHealth, "Verify Yeti_1 is at -1 health");
+            var yeti = HearthEntityFactory.CreateCard<ChillwindYeti>();
+
+            GameEngine.GameState.WaitingPlayerPlayZone[0] = yeti;
+
+            player.Attack(yeti);
+            Assert.AreEqual(2, yeti.CurrentHealth, "Verify Yeti_1 is at 2 health");
+            Assert.AreEqual(26, player.Health, "Verify the player is now at 26 health");
+            Assert.AreEqual(1, warAxe.Durability, "Verify the war axe is now at 1 durability");
+
+            player.Attack(yeti);
+            Assert.AreEqual(-1, yeti.CurrentHealth, "Verify Yeti_1 is at -1 health");
             Assert.AreEqual(22, player.Health, "Verify the player is now at 22 health");
-            Assert.AreEqual(0, fieryWarAxe.Durability, "Verify the war axe is now at 0 durability");
+            Assert.AreEqual(0, warAxe.Durability, "Verify the war axe is now at 0 durability");
 
             Assert.IsNull(player.Weapon, "Verify that the player no longer has the weapon equipped");
-            Assert.IsTrue(player.Graveyard.Contains(fieryWarAxe), "Verify that the war axe is now in the graveyard");
+            Assert.IsTrue(player.Graveyard.Contains(warAxe), "Verify that the war axe is now in the graveyard");
         }
 
         [TestMethod]
         public void Gorehowl()
         {
+            var yeti1 = HearthEntityFactory.CreateCard<ChillwindYeti>();
+            var gorehowl = HearthEntityFactory.CreateCard<Gorehowl>();
+
+            GameEngine.GameState.WaitingPlayerPlayZone[0] = yeti1;
+
             // Make a super 4/28 yeti
             yeti1.TakeBuff(0, 23);
 
@@ -108,6 +112,9 @@ namespace HearthAnalyzer.Core.Tests
                 Assert.AreEqual(yetiHealth, yeti1.CurrentHealth, "Verify that the yeti's health is {0}", yetiHealth);
                 Assert.AreEqual(gorehowlAttack, gorehowl.CurrentAttackPower, "Verify that gorehowl's current attack power is {0}", gorehowlAttack);
                 Assert.AreEqual(playerHealth, player.Health, "Verify that the player is at {0} health", playerHealth);
+
+                // Unexhaust the player
+                player.RemoveStatusEffects(PlayerStatusEffects.EXHAUSTED);
             }
 
             Assert.IsNull(player.Weapon, "Verify that gorehowl broke");
@@ -117,6 +124,10 @@ namespace HearthAnalyzer.Core.Tests
         [TestMethod]
         public void MinionsAttackingHero()
         {
+            var yeti1 = HearthEntityFactory.CreateCard<ChillwindYeti>();
+
+            GameEngine.GameState.CurrentPlayerPlayZone[0] = yeti1;
+
             yeti1.Attack(player);
 
             Assert.AreEqual(5, yeti1.CurrentHealth, "Verify yeti is at full health");

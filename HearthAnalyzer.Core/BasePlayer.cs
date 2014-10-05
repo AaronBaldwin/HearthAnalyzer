@@ -14,6 +14,8 @@ namespace HearthAnalyzer.Core
     /// </summary>
     public abstract class BasePlayer : IDamageableEntity, IAttacker, IEquatable<BasePlayer>
     {
+        internal int attacksThisTurn = 0;
+
         protected BasePlayer(int id = -1)
         {
             this.Id = id;
@@ -114,7 +116,9 @@ namespace HearthAnalyzer.Core
         /// <param name="card">The card to play</param>
         /// <param name="subTarget">The sub target for this card, usually for targeting batlle cry spells</param>
         /// <param name="gameboardPos">The position on the gameboard to place the card (if applicable)</param>
-        public void PlayCard(BaseCard card, IDamageableEntity subTarget, int gameboardPos = 0)
+        /// <param name="forceSummoned">Whether or not this minion was force summoned. This means no battlecry</param>
+        /// <param name="fromDeck">Whether or not it's from the player's deck, used in conjunction with forceSummoned</param>
+        public void PlayCard(BaseCard card, IDamageableEntity subTarget, int gameboardPos = 0, bool forceSummoned = false, bool fromDeck = false)
         {
             // Is it even our turn to play?
             var gameState = GameEngine.GameState;
@@ -124,14 +128,24 @@ namespace HearthAnalyzer.Core
             }
 
             // Check if it exists in the player's hand
-            var cardInHand = this.Hand.FirstOrDefault(c => c.Equals(card));
+            BaseCard cardInHand;
+            if (forceSummoned && fromDeck)
+            {
+                // It was force summoned from the player's deck so check if it was there
+                cardInHand = this.Deck.Cards.FirstOrDefault(c => c.Equals(card));
+            }
+            else
+            {
+                cardInHand = this.Hand.FirstOrDefault(c => c.Equals(card));    
+            }
+            
             if (cardInHand == null)
             {
-                throw new InvalidOperationException(string.Format("You can't play a card that's not in hand! {0}", card));
+                throw new InvalidOperationException(string.Format("You can't play a card that's not in hand (or deck if force summoned from there)! {0}", card));
             }
 
             // Check if we have enough mana to make the play
-            if (this.Mana < cardInHand.CurrentManaCost)
+            if (!forceSummoned && this.Mana < cardInHand.CurrentManaCost)
             {
                 throw new InvalidOperationException(string.Format("Not enough mana {0} to play that card {1}!", this.Mana, card.CurrentManaCost));
             }
@@ -170,7 +184,8 @@ namespace HearthAnalyzer.Core
         /// <param name="minion">The minion to be played on the game board</param>
         /// <param name="subTarget">The sub target for this card, usually for targetting battle cry spells</param>
         /// <param name="gameboardPos">The position on the gameboard to place the card</param>
-        public void PlayMinion(BaseMinion minion, IDamageableEntity subTarget, int gameboardPos = 0)
+        /// <param name="forceSummoned">Whether or not this card was force summoned. This means no battle cry</param>
+        public void PlayMinion(BaseMinion minion, IDamageableEntity subTarget, int gameboardPos = 0, bool forceSummoned = false)
         {
             var gameState = GameEngine.GameState;
 
@@ -200,7 +215,7 @@ namespace HearthAnalyzer.Core
                 minion.ApplyStatusEffects(MinionStatusEffects.EXHAUSTED);
             }
 
-            minion.ResetAttacksThisRun();
+            minion.ResetAttacksThisTurn();
 
             // Place the minion on the board
             playZone[gameboardPos] = minion;
@@ -212,7 +227,10 @@ namespace HearthAnalyzer.Core
             this.Mana -= minion.CurrentManaCost;
 
             // Fire minion placed event
-            GameEventManager.MinionPlaced(minion);
+            if (!forceSummoned)
+            {
+                GameEventManager.MinionPlaced(minion);
+            }
 
             // Register deathrattle if applicable
             var deathrattleCard = minion as IDeathrattler;
@@ -221,11 +239,14 @@ namespace HearthAnalyzer.Core
                 deathrattleCard.RegisterDeathrattle();
             }
 
-            // call the card's battlecry 
-            var battlecryCard = minion as IBattlecry;
-            if (battlecryCard != null)
+            if (!forceSummoned)
             {
-                battlecryCard.Battlecry(subTarget);
+                // call the card's battlecry 
+                var battlecryCard = minion as IBattlecry;
+                if (battlecryCard != null)
+                {
+                    battlecryCard.Battlecry(subTarget);
+                }
             }
 
             // Fire card played event
@@ -351,6 +372,15 @@ namespace HearthAnalyzer.Core
         }
 
         /// <summary>
+        /// Removes the provided effects from the player
+        /// </summary>
+        /// <param name="effects">The effects to remove</param>
+        public void RemoveStatusEffects(PlayerStatusEffects effects)
+        {
+            this.StatusEffects = this.StatusEffects & ~effects;
+        }
+
+        /// <summary>
         /// This kills the player
         /// </summary>
         public void Die()
@@ -379,14 +409,14 @@ namespace HearthAnalyzer.Core
         public bool IsImmuneToDamage { get { return this.StatusEffects.HasFlag(PlayerStatusEffects.IMMUNE_TO_DAMAGE); } }
 
         /// <summary>
-        /// Status effects for the player
+        /// Returns whether or not the player has windfury
         /// </summary>
-        [Flags]
-        public enum PlayerStatusEffects
-        {
-            FROZEN = 0,
-            IMMUNE_TO_DAMAGE = 1
-        }
+        public bool HasWindfury { get { return this.StatusEffects.HasFlag(PlayerStatusEffects.WINDFURY); } }
+
+        /// <summary>
+        /// Returns whether or not the player can attack
+        /// </summary>
+        public bool CanAttack { get { return !this.StatusEffects.HasFlag(PlayerStatusEffects.EXHAUSTED); } }
 
         #region IAttacker
 
@@ -411,6 +441,21 @@ namespace HearthAnalyzer.Core
             {
                 throw new InvalidOperationException("Player has no attack damage to attack with!");
             }
+
+            this.attacksThisTurn++;
+
+            if (this.HasWindfury && this.attacksThisTurn >= 2)
+            {
+                this.ApplyStatusEffects(PlayerStatusEffects.EXHAUSTED);
+            }
+        }
+        
+        /// <summary>
+        /// Resets the number of attacks this minion has performed this turn.
+        /// </summary>
+        public void ResetAttacksThisTurn()
+        {
+            this.attacksThisTurn = 0;
         }
 
         #endregion
@@ -486,5 +531,17 @@ namespace HearthAnalyzer.Core
         }
 
         #endregion
+    }
+
+    /// <summary>
+    /// Status effects for the player
+    /// </summary>
+    [Flags]
+    public enum PlayerStatusEffects
+    {
+        FROZEN = 1,
+        IMMUNE_TO_DAMAGE = 2,
+        EXHAUSTED = 4,
+        WINDFURY = 8
     }
 }

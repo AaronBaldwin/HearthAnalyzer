@@ -44,6 +44,9 @@ namespace HearthAnalyzer.Core
 
             SpellCasting += OnSpellCasting;
             _spellCastingListeners = new List<Tuple<BaseCard, SpellCastingEventHandler>>();
+
+            TurnStart += OnTurnStart;
+            _turnStartListeners = new List<Tuple<BaseCard, TurnStartEventHandler>>();
         }
 
         public static void Uninitialize()
@@ -53,6 +56,7 @@ namespace HearthAnalyzer.Core
             MinionPlaced -= OnMinionPlaced;
             MinionPlayed -= OnMinionPlayed;
             SpellCasting -= OnSpellCasting;
+            TurnStart -= OnTurnStart;
         }
 
         #region Event Definitions
@@ -106,7 +110,15 @@ namespace HearthAnalyzer.Core
         /// <param name="shouldAbort">Whether or not the spell should abort casting</param>
         public delegate void SpellCastingEventHandler(BaseSpell spell, IDamageableEntity target, out bool shouldAbort);
         public static SpellCastingEventHandler SpellCasting;
-        internal static List<Tuple<BaseCard, SpellCastingEventHandler>> _spellCastingListeners; 
+        internal static List<Tuple<BaseCard, SpellCastingEventHandler>> _spellCastingListeners;
+
+        /// <summary>
+        /// Handler for when a turn starts (before card draw)
+        /// </summary>
+        /// <param name="player">The player who is starting their turn</param>
+        public delegate void TurnStartEventHandler(BasePlayer player);
+        public static TurnStartEventHandler TurnStart;
+        internal static List<Tuple<BaseCard, TurnStartEventHandler>> _turnStartListeners; 
 
         #endregion
 
@@ -142,6 +154,11 @@ namespace HearthAnalyzer.Core
             _spellCastingListeners.Add(new Tuple<BaseCard, SpellCastingEventHandler>(self, callback));
         }
 
+        public static void RegisterForEvent(BaseCard self, TurnStartEventHandler callback)
+        {
+            _turnStartListeners.Add(new Tuple<BaseCard, TurnStartEventHandler>(self, callback));
+        }
+
         /// <summary>
         /// Unregister from all events
         /// </summary>
@@ -153,6 +170,7 @@ namespace HearthAnalyzer.Core
             _minionPlacedListeners.RemoveAll(kvp => kvp.Item1.Id == self.Id);
             _minionPlayedListeners.RemoveAll(kvp => kvp.Item1.Id == self.Id);
             _spellCastingListeners.RemoveAll(kvp => kvp.Item1.Id == self.Id);
+            _turnStartListeners.RemoveAll(kvp => kvp.Item1.Id == self.Id);
         }
 
         #endregion
@@ -233,6 +251,18 @@ namespace HearthAnalyzer.Core
             foreach (var handler in sortedListeners.Select(kvp => kvp.Item2))
             {
                 handler(spell, target, out shouldAbort);
+            }
+        }
+
+        public static void OnTurnStart(BasePlayer player)
+        {
+            if (!_turnStartListeners.Any()) return;
+
+            // Listeners for this are called in the order in which they were played on the board
+            var sortedListeners = _turnStartListeners.OrderBy(kvp => kvp.Item1.TimePlayed).ToList();
+            foreach (var handler in sortedListeners.Select(kvp => kvp.Item2))
+            {
+                handler(player);
             }
         }
 

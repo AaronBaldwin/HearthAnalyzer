@@ -373,7 +373,7 @@ namespace HearthAnalyzer.Core
             // Set the mana to max - overload
             currentPlayer.Mana = currentPlayer.MaxMana - currentPlayer.Overload;
 
-            // TODO: Fire Turn Start event
+            GameEventManager.TurnStart(player);
 
             // Draw a card
             currentPlayer.DrawCard();
@@ -399,7 +399,7 @@ namespace HearthAnalyzer.Core
                 if (minion != null)
                 {
                     ((BaseMinion)minion).RemoveStatusEffects(MinionStatusEffects.EXHAUSTED);
-                    ((BaseMinion)minion).ResetAttacksThisRun();
+                    ((BaseMinion)minion).ResetAttacksThisTurn();
                     minion.TemporaryAttackBuff = 0;
                 }
             }
@@ -414,6 +414,10 @@ namespace HearthAnalyzer.Core
 
             GameEngine.GameState.CurrentPlayer.TemporaryAttackBuff = 0;
             GameEngine.GameState.WaitingPlayer.TemporaryAttackBuff = 0;
+
+            // Unexhaust players
+            GameEngine.GameState.CurrentPlayer.ResetAttacksThisTurn();
+            GameEngine.GameState.CurrentPlayer.RemoveStatusEffects(PlayerStatusEffects.EXHAUSTED);
 
             // Start the turn for the next player
             GameEngine.StartTurn(GameEngine.GameState.WaitingPlayer);

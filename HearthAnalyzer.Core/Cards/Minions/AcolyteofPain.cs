@@ -31,7 +31,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
 
         public void RegisterEffect()
         {
-            GameEventManager.DamageDealt += this.OnDamagedEffect;
+            GameEventManager.RegisterForEvent(this, (GameEventManager.DamageDealtEventHandler)OnDamagedEffect);
         }
 
         internal void OnDamagedEffect(IDamageableEntity target, int damageDealt)

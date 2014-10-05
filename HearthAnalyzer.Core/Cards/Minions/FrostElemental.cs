@@ -38,7 +38,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
             }
             else if (targetPlayer != null)
             {
-                targetPlayer.ApplyStatusEffects(BasePlayer.PlayerStatusEffects.FROZEN);
+                targetPlayer.ApplyStatusEffects(PlayerStatusEffects.FROZEN);
             }
         }
     }
