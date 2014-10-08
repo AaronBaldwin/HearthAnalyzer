@@ -65,5 +65,35 @@ namespace HearthAnalyzer.Core.Tests
             Assert.AreEqual(3, yeti2.CurrentHealth, "Verify that the other yetis are hurt from the deathrattle");
             Assert.AreEqual(3, yeti4.CurrentHealth, "Verify that the other yetis are hurt from the deathrattle");
         }
+
+        /// <summary>
+        /// Verify a random friendly minion was returned to the hand
+        /// </summary>
+        [TestMethod]
+        public void DeathRattleReturnFriendlyMinion()
+        {
+            var ambusher = HearthEntityFactory.CreateCard<AnubarAmbusher>();
+            ambusher.Owner = player;
+            ambusher.CurrentManaCost = 0;
+
+            var yeti = HearthEntityFactory.CreateCard<ChillwindYeti>();
+            var faerie = HearthEntityFactory.CreateCard<FaerieDragon>();
+            var giant = HearthEntityFactory.CreateCard<SeaGiant>();
+
+            GameEngine.GameState.CurrentPlayerPlayZone[0] = yeti;
+            GameEngine.GameState.CurrentPlayerPlayZone[1] = faerie;
+            GameEngine.GameState.WaitingPlayerPlayZone[0] = giant;
+
+            player.Hand.Add(ambusher);
+
+            player.PlayCard(ambusher, null);
+
+            GameEngine.EndTurn();
+            giant.Attack(ambusher);
+
+            // Ambusher should die and return a random friendly minion back to the owner's hand
+            Assert.IsTrue(GameEngine.DeadMinionsThisTurn.Contains(ambusher), "Verify ambusher died");
+            Assert.IsTrue(player.Hand.Contains(yeti) || player.Hand.Contains(faerie), "Verify minion returned to hand");
+        }
     }
 }

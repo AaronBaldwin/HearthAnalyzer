@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HearthAnalyzer.Core.Deathrattles;
 
 namespace HearthAnalyzer.Core.Cards.Minions
 {
@@ -11,10 +12,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// 
     /// <b>Deathrattle:</b> Return a random friendly minion to your hand.
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
-    public class AnubarAmbusher : BaseMinion
+    public class AnubarAmbusher : BaseMinion, IDeathrattler
     {
         private const int MANA_COST = 4;
         private const int ATTACK_POWER = 5;
@@ -30,6 +28,11 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
 			this.Type = CardType.NORMAL_MINION;
+        }
+
+        public void RegisterDeathrattle()
+        {
+            GameEngine.RegisterDeathrattle(this, new DeathrattleReturnFriendlyMinion(this.Owner));
         }
     }
 }
