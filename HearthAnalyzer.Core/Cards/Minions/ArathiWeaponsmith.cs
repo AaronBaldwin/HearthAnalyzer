@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HearthAnalyzer.Core.Cards.Weapons;
 
 namespace HearthAnalyzer.Core.Cards.Minions
 {
@@ -11,10 +12,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// 
     /// <b>Battlecry:</b> Equip a 2/2 weapon.
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
-    public class ArathiWeaponsmith : BaseMinion
+    public class ArathiWeaponsmith : BaseMinion, IBattlecry
     {
         private const int MANA_COST = 4;
         private const int ATTACK_POWER = 3;
@@ -30,6 +28,21 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
 			this.Type = CardType.NORMAL_MINION;
+        }
+
+        public void Battlecry(IDamageableEntity subTarget)
+        {
+            var battleAxe = HearthEntityFactory.CreateCard<BattleAxe>();
+
+            // kill the old weapon
+            if (this.Owner.Weapon != null)
+            {
+                this.Owner.Weapon.Die();
+            }
+
+            this.Owner.Weapon = battleAxe;
+            battleAxe.Owner = this.Owner;
+            battleAxe.WeaponOwner = this.Owner;
         }
     }
 }

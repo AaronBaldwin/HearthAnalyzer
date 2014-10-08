@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using HearthAnalyzer.Core.Cards;
+using HearthAnalyzer.Core.Cards.Weapons;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using HearthAnalyzer.Core.Cards.Minions;
@@ -59,8 +60,8 @@ namespace HearthAnalyzer.Core.Tests
             yeti3.Attack(abom1);
 
             // The rest of the yetis should have taken 2 damage from the abom deathrattle
-            Assert.IsTrue(GameEngine.DeadMinionsThisTurn.Contains(abom1));
-            Assert.IsTrue(GameEngine.DeadMinionsThisTurn.Contains(yeti3));
+            Assert.IsTrue(GameEngine.DeadCardsThisTurn.Contains(abom1));
+            Assert.IsTrue(GameEngine.DeadCardsThisTurn.Contains(yeti3));
             Assert.AreEqual(3, yeti1.CurrentHealth, "Verify that the other yetis are hurt from the deathrattle");
             Assert.AreEqual(3, yeti2.CurrentHealth, "Verify that the other yetis are hurt from the deathrattle");
             Assert.AreEqual(3, yeti4.CurrentHealth, "Verify that the other yetis are hurt from the deathrattle");
@@ -92,8 +93,52 @@ namespace HearthAnalyzer.Core.Tests
             giant.Attack(ambusher);
 
             // Ambusher should die and return a random friendly minion back to the owner's hand
-            Assert.IsTrue(GameEngine.DeadMinionsThisTurn.Contains(ambusher), "Verify ambusher died");
+            Assert.IsTrue(GameEngine.DeadCardsThisTurn.Contains(ambusher), "Verify ambusher died");
             Assert.IsTrue(player.Hand.Contains(yeti) || player.Hand.Contains(faerie), "Verify minion returned to hand");
+        }
+
+        /// <summary>
+        /// Verify that if Death's Bite (weapon) dies or gets replaced, it triggers its death rattle
+        /// </summary>
+        [TestMethod]
+        public void DeathsBite()
+        {
+            var deathsbite = HearthEntityFactory.CreateCard<DeathsBite>();
+            deathsbite.CurrentManaCost = 0;
+
+            var yeti = HearthEntityFactory.CreateCard<ChillwindYeti>();
+
+            GameEngine.GameState.CurrentPlayerPlayZone[0] = yeti;
+
+            player.Hand.Add(deathsbite);
+            player.ApplyStatusEffects(PlayerStatusEffects.WINDFURY);
+
+            player.PlayCard(deathsbite, null);
+
+            deathsbite.Attack(opponent);
+            deathsbite.Attack(opponent);
+
+            Assert.IsTrue(GameEngine.DeadCardsThisTurn.Contains(deathsbite), "Verify the weapon broke");
+            Assert.AreEqual(yeti.MaxHealth - 1, yeti.CurrentHealth, "Verify yeti took damage due to deathrattle");
+
+            // Now, if Death's Bite was replaced, it should also trigger the deathrattle
+            deathsbite = HearthEntityFactory.CreateCard<DeathsBite>();
+            deathsbite.CurrentManaCost = 0;
+
+            player.Hand.Add(deathsbite);
+            player.PlayCard(deathsbite, null);
+
+            var weaponsmith = HearthEntityFactory.CreateCard<ArathiWeaponsmith>();
+            weaponsmith.CurrentManaCost = 0;
+            weaponsmith.Owner = player;
+
+            player.Hand.Add(weaponsmith);
+            player.PlayCard(weaponsmith, null);
+
+            // death rattle should trigger, damaging the yeti and the weaponsmith
+            Assert.IsTrue(GameEngine.DeadCardsThisTurn.Contains(deathsbite), "Verify the weapon broke");
+            Assert.AreEqual(yeti.MaxHealth - 2, yeti.CurrentHealth, "Verify yeti got hit again");
+            Assert.AreEqual(weaponsmith.MaxHealth - 1, weaponsmith.CurrentHealth, "Verify weaponsmith got hit");
         }
     }
 }

@@ -28,6 +28,7 @@ function GenerateCodeFile($card)
     $attack = @{$true=0;$false=$card.attack}[$card.attack -eq $null]
     $health = @{$true=0;$false=$card.health}[$card.health -eq $null]
     $mana = @{$true=0;$false=$card.cost}[$card.cost -eq $null]
+	$durability = @{$true=0;$false=$card.durability}[$card.durability -eq $null]
 
     if ($card.type -eq 'minion')
     {
@@ -70,7 +71,7 @@ function GenerateCodeFile($card)
             Replace("_MANA_COST_", $mana). `
 			Replace("_CARD_TEXT_", $card.text). `
             Replace("_ATTACK_POWER_", $attack). `
-            Replace("_DURABILITY_", $health)
+            Replace("_DURABILITY_", $durability)
         } | Set-Content $filePath
     }
 	elseif ($card.type -eq 'spell')

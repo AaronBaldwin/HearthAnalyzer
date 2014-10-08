@@ -185,6 +185,9 @@ namespace HearthAnalyzer.Core
                 triggeredEffectCard.RegisterEffect();
             }
 
+            // Trigger any deathrattles
+            GameEngine.TriggerDeathrattles();
+
             GameEngine.CheckForGameEnd();
         }
 

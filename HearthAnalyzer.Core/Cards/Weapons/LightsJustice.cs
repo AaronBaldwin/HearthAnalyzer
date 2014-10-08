@@ -18,7 +18,7 @@ namespace HearthAnalyzer.Core.Cards.Weapons
     {
         private const int MANA_COST = 1;
         private const int ATTACK_POWER = 1;
-        private const int DURABILITY = 0;
+        private const int DURABILITY = 4;
 
         public LightsJustice(int id = -1)
         {

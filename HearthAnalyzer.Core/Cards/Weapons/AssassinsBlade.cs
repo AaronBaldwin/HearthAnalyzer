@@ -18,7 +18,7 @@ namespace HearthAnalyzer.Core.Cards.Weapons
     {
         private const int MANA_COST = 5;
         private const int ATTACK_POWER = 3;
-        private const int DURABILITY = 0;
+        private const int DURABILITY = 4;
 
         public AssassinsBlade(int id = -1)
         {

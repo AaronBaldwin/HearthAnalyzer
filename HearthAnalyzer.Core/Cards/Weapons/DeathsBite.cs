@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HearthAnalyzer.Core.Deathrattles;
 
 namespace HearthAnalyzer.Core.Cards.Weapons
 {
@@ -11,14 +12,12 @@ namespace HearthAnalyzer.Core.Cards.Weapons
     /// 
     /// <b>Deathrattle:</b> Deal 1 damage to all minions.
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
-    public class DeathsBite : BaseWeapon
+    public class DeathsBite : BaseWeapon, IDeathrattler
     {
         private const int MANA_COST = 4;
         private const int ATTACK_POWER = 4;
-        private const int DURABILITY = 0;
+        private const int DURABILITY = 2;
+        private const int DEATHRATTLE_DAMAGE = 1;
 
         public DeathsBite(int id = -1)
         {
@@ -31,6 +30,11 @@ namespace HearthAnalyzer.Core.Cards.Weapons
             this.OriginalAttackPower = ATTACK_POWER;
 
             this.Durability = DURABILITY;
+        }
+
+        public void RegisterDeathrattle()
+        {
+            GameEngine.RegisterDeathrattle(this, new DeathrattleDamageAllMinions(DEATHRATTLE_DAMAGE));
         }
     }
 }

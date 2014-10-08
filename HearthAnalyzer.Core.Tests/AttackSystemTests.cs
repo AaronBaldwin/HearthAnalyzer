@@ -52,8 +52,8 @@ namespace HearthAnalyzer.Core.Tests
             // Now, kill yeti 2 with raptor 1. This should kill both the yeti and the raptor
             raptor.Attack(yeti2);
 
-            Assert.IsTrue(GameEngine.DeadMinionsThisTurn.Contains(yeti2), "Verify Yeti_2 is dead");
-            Assert.IsTrue(GameEngine.DeadMinionsThisTurn.Contains(raptor), "Verify Raptor_1 is dead");
+            Assert.IsTrue(GameEngine.DeadCardsThisTurn.Contains(yeti2), "Verify Yeti_2 is dead");
+            Assert.IsTrue(GameEngine.DeadCardsThisTurn.Contains(raptor), "Verify Raptor_1 is dead");
             Assert.AreEqual(-2, yeti2.CurrentHealth, "Verify Yeti_2 is at -2 health");
             Assert.AreEqual(-2, raptor.CurrentHealth, "Verify Raptor_2 is at -2 health");
         }

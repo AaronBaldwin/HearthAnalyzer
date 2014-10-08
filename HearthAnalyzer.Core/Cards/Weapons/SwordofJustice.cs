@@ -18,7 +18,7 @@ namespace HearthAnalyzer.Core.Cards.Weapons
     {
         private const int MANA_COST = 3;
         private const int ATTACK_POWER = 1;
-        private const int DURABILITY = 0;
+        private const int DURABILITY = 5;
 
         public SwordofJustice(int id = -1)
         {

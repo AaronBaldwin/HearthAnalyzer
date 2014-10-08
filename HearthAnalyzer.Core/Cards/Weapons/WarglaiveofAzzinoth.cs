@@ -18,7 +18,7 @@ namespace HearthAnalyzer.Core.Cards.Weapons
     {
         private const int MANA_COST = 2;
         private const int ATTACK_POWER = 2;
-        private const int DURABILITY = 0;
+        private const int DURABILITY = 2;
 
         public WarglaiveofAzzinoth(int id = -1)
         {

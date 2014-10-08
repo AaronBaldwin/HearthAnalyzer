@@ -226,6 +226,23 @@ namespace HearthAnalyzer.Core.Tests
         }
 
         /// <summary>
+        /// Equip a 2/2 battle axe
+        /// </summary>
+        [TestMethod]
+        public void ArathiWeaponsmith()
+        {
+            var weaponsmith = HearthEntityFactory.CreateCard<ArathiWeaponsmith>();
+            weaponsmith.Owner = player;
+            weaponsmith.CurrentManaCost = 0;
+
+            player.Hand.Add(weaponsmith);
+            player.PlayCard(weaponsmith, null);
+
+            Assert.IsNotNull(player.Weapon, "Verify player has a weapon");
+            Assert.IsTrue(player.Weapon is BattleAxe, "Verify the player's weapon is a battle axe");
+        }
+
+        /// <summary>
         /// Freeze a character
         /// </summary>
         [TestMethod]
@@ -270,7 +287,7 @@ namespace HearthAnalyzer.Core.Tests
 
             player.PlayCard(commando, raptor, 0);
             Assert.AreEqual(commando, GameEngine.GameState.Board.PlayerPlayZone[0], "Verify that the commando was placed on the board");
-            Assert.IsTrue(GameEngine.DeadMinionsThisTurn.Contains(raptor), "Verify the raptor died due to battlecry");
+            Assert.IsTrue(GameEngine.DeadCardsThisTurn.Contains(raptor), "Verify the raptor died due to battlecry");
         }
     }
 }

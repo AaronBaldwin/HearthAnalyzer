@@ -199,7 +199,11 @@ namespace HearthAnalyzer.Core
                 GameEngine.ApplyAttackDamage(attacker, target, isRetaliation);
 
                 // Time to trigger deathrattles
-                GameEngine.TriggerDeathrattles();
+                // If it was a weapon attacking, wait until after the weapon has taken durability hit
+                if (!(attacker is BaseWeapon))
+                {
+                    GameEngine.TriggerDeathrattles();
+                }
             }
         }
 

@@ -36,6 +36,9 @@ namespace HearthAnalyzer.Core.Cards
 
             this.WeaponOwner.Weapon = null;
             this.WeaponOwner = null;
+
+            GameEventManager.UnregisterForEvents(this);
+            GameEngine.DeadCardsThisTurn.Add(this);
         }
 
         #region IAttacker
@@ -55,6 +58,7 @@ namespace HearthAnalyzer.Core.Cards
             {
                 // Use up a durability charge
                 this.TakeDamage(1);
+                GameEngine.TriggerDeathrattles();
             }
         }
 

@@ -55,9 +55,9 @@ namespace HearthAnalyzer.Core
             Random = randomSeed != 0 ? new Random(randomSeed) : new Random();
 
             GameEventManager.Initialize();
-            Deathrattles = new Dictionary<BaseMinion, BaseDeathrattle>();
+            Deathrattles = new Dictionary<BaseCard, BaseDeathrattle>();
             GameState = new GameState(player, opponent, board, turnNumber, currentPlayer);
-            DeadMinionsThisTurn = new List<BaseMinion>();
+            DeadCardsThisTurn = new List<BaseCard>();
             DeadPlayersThisTurn = new List<BasePlayer>();
         }
 
@@ -69,7 +69,7 @@ namespace HearthAnalyzer.Core
             HearthEntityFactory.Reset();
             GameEventManager.Uninitialize();
             GameState = null;
-            DeadMinionsThisTurn = null;
+            DeadCardsThisTurn = null;
             DeadPlayersThisTurn = null;
             Deathrattles = null;
             PlayerMulliganed = false;
@@ -84,7 +84,7 @@ namespace HearthAnalyzer.Core
         /// <summary>
         /// The list of dead minions this turn
         /// </summary>
-        public static List<BaseMinion> DeadMinionsThisTurn { get; private set; }
+        public static List<BaseCard> DeadCardsThisTurn { get; private set; }
 
         /// <summary>
         /// The list of dead players this turn
@@ -94,7 +94,7 @@ namespace HearthAnalyzer.Core
         /// <summary>
         /// The list of deathrattles active on the board
         /// </summary>
-        public static Dictionary<BaseMinion, BaseDeathrattle> Deathrattles { get; private set; } 
+        public static Dictionary<BaseCard, BaseDeathrattle> Deathrattles { get; private set; } 
 
         /// <summary>
         /// The GameEngine's random number generator
@@ -241,9 +241,9 @@ namespace HearthAnalyzer.Core
         /// </summary>
         /// <param name="source">The triggering card</param>
         /// <param name="baseDeathrattle">The baseDeathrattle to perform</param>
-        public static void RegisterDeathrattle(BaseMinion source, BaseDeathrattle baseDeathrattle)
+        public static void RegisterDeathrattle(BaseCard source, BaseDeathrattle baseDeathrattle)
         {
-            GameEngine.Deathrattles.Add(source, baseDeathrattle);
+            GameEngine.Deathrattles[source] = baseDeathrattle;
         }
 
         /// <summary>
@@ -264,21 +264,21 @@ namespace HearthAnalyzer.Core
             if (GameEngine.CheckForGameEnd()) return;
 
             // Remove dead minions from the board so the deathrattle doesn't trigger on itself
-            GameEngine.DeadMinionsThisTurn.ForEach(card => GameEngine.GameState.Board.RemoveCard(card));
+            GameEngine.DeadCardsThisTurn.ForEach(card => GameEngine.GameState.Board.RemoveCard(card));
 
             // Deathrattles trigger by TimePlayed first.
-            var sortedDeadMinions = GameEngine.DeadMinionsThisTurn.OrderBy(minion => minion.TimePlayed).ToList();
+            var sortedDeadCards = GameEngine.DeadCardsThisTurn.OrderBy(card => card.TimePlayed).ToList();
 
             bool deathrattleTriggered = false;
-            foreach (var minion in sortedDeadMinions)
+            foreach (var card in sortedDeadCards)
             {
-                if (GameEngine.Deathrattles.ContainsKey(minion))
+                if (GameEngine.Deathrattles.ContainsKey(card))
                 {
-                    GameEngine.Deathrattles[minion].Deathrattle();
+                    GameEngine.Deathrattles[card].Deathrattle();
 
                     deathrattleTriggered = true;
 
-                    GameEngine.Deathrattles.Remove(minion);
+                    GameEngine.Deathrattles.Remove(card);
                 }
             }
 
@@ -391,7 +391,7 @@ namespace HearthAnalyzer.Core
             currentPlayer.Overload = 0;
 
             // Clear GameEngine graveyards
-            DeadMinionsThisTurn.Clear();
+            DeadCardsThisTurn.Clear();
 
             // Unexhaust all player owned minions and remove temporary boons
             foreach (var minion in GameEngine.GameState.CurrentPlayerPlayZone)

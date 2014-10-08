@@ -160,7 +160,7 @@ namespace HearthAnalyzer.Core.Cards
             GameEventManager.UnregisterForEvents(this);
 
             // Add to GameEngine's list of minion's dead for deathrattle handling
-            GameEngine.DeadMinionsThisTurn.Add(this);
+            GameEngine.DeadCardsThisTurn.Add(this);
 
             // Let GameEngine clean up minions from the baord
         }

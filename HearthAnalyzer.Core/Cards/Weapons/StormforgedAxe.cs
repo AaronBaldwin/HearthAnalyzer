@@ -13,7 +13,7 @@ namespace HearthAnalyzer.Core.Cards.Weapons
     {
         private const int MANA_COST = 2;
         private const int ATTACK_POWER = 2;
-        private const int DURABILITY = 0;
+        private const int DURABILITY = 3;
         private const int OVERLOAD_COST = 1;
 
         public StormforgedAxe(int id = -1)
