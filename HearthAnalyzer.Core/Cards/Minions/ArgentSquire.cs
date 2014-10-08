@@ -11,9 +11,6 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// 
     /// <b>Divine Shield</b>
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
     public class ArgentSquire : BaseMinion
     {
         private const int MANA_COST = 1;
@@ -30,6 +27,8 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
 			this.Type = CardType.NORMAL_MINION;
+
+            this.ApplyStatusEffects(MinionStatusEffects.DIVINE_SHIELD);
         }
     }
 }

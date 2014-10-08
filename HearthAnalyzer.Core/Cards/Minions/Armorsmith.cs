@@ -11,10 +11,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// 
     /// Whenever a friendly minion takes damage, gain 1 Armor.
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
-    public class Armorsmith : BaseMinion
+    public class Armorsmith : BaseMinion, ITriggeredEffectOwner
     {
         private const int MANA_COST = 2;
         private const int ATTACK_POWER = 1;
@@ -30,6 +27,20 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
 			this.Type = CardType.NORMAL_MINION;
+        }
+
+        public void RegisterEffect()
+        {
+            GameEventManager.RegisterForEvent(this, (GameEventManager.DamageDealtEventHandler)this.OnDamageDealt);
+        }
+
+        private void OnDamageDealt(IDamageableEntity target, int damageDealt)
+        {
+            var targetMinion = target as BaseMinion;
+            if (targetMinion != null && GameEngine.GameState.CurrentPlayerPlayZone.Contains(targetMinion))
+            {
+                this.Owner.Armor++;
+            }
         }
     }
 }

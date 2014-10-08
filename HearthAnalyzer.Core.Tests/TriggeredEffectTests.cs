@@ -139,5 +139,30 @@ namespace HearthAnalyzer.Core.Tests
             Assert.IsNotNull(newFireball, "Verify player got a new card in hand");
             Assert.IsFalse(newFireball.Id == fireball.Id, "Verify it is a new fireball");
         }
+
+        /// <summary>
+        /// Verify that when a friendly minion is damaged, gain +1 armor
+        /// </summary>
+        [TestMethod]
+        public void Armorsmith()
+        {
+            var armorsmith = HearthEntityFactory.CreateCard<Armorsmith>();
+            armorsmith.CurrentManaCost = 0;
+
+            var yeti = HearthEntityFactory.CreateCard<ChillwindYeti>();
+            var faerie = HearthEntityFactory.CreateCard<FaerieDragon>();
+
+            GameEngine.GameState.CurrentPlayerPlayZone[0] = yeti;
+            GameEngine.GameState.CurrentPlayerPlayZone[1] = faerie;
+
+            player.AddCardToHand(armorsmith);
+            player.PlayCard(armorsmith, null);
+
+            // Deal damage to yeti and faerie
+            yeti.TakeDamage(1);
+            faerie.TakeDamage(1);
+
+            Assert.AreEqual(2, player.Armor, "Verify player gained armor");
+        }
     }
 }
