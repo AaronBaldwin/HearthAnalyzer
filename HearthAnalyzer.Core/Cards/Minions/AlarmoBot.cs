@@ -48,7 +48,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
                 GameEventManager.UnregisterForEvents(this);
 
                 var firstEmptySlot = GameEngine.GameState.CurrentPlayerPlayZone.FindIndex(card => card == null);
-                player.PlayCard(randomMinion, null, firstEmptySlot, forceSummoned: true);
+                player.PlayCard(randomMinion, null, firstEmptySlot, CardEffect.NONE, forceSummoned: true);
             }
         }
     }

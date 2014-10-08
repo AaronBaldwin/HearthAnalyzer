@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using HearthAnalyzer.Core.Cards;
 using HearthAnalyzer.Core.Deathrattles;
+using HearthAnalyzer.Core.Interfaces;
 
 namespace HearthAnalyzer.Core
 {
@@ -123,10 +124,11 @@ namespace HearthAnalyzer.Core
         /// </summary>
         /// <param name="card">The card to play</param>
         /// <param name="subTarget">The sub target for this card, usually for targeting batlle cry spells</param>
+        /// <param name="cardEffect">The card effect to use</param>
         /// <param name="gameboardPos">The position on the gameboard to place the card (if applicable)</param>
         /// <param name="forceSummoned">Whether or not this minion was force summoned. This means no battlecry</param>
         /// <param name="fromDeck">Whether or not it's from the player's deck, used in conjunction with forceSummoned</param>
-        public void PlayCard(BaseCard card, IDamageableEntity subTarget, int gameboardPos = 0, bool forceSummoned = false, bool fromDeck = false)
+        public void PlayCard(BaseCard card, IDamageableEntity subTarget, int gameboardPos = 0, CardEffect cardEffect = CardEffect.NONE, bool forceSummoned = false, bool fromDeck = false)
         {
             // Is it even our turn to play?
             var gameState = GameEngine.GameState;
@@ -161,13 +163,13 @@ namespace HearthAnalyzer.Core
             var minionCard = cardInHand as BaseMinion;
             if (minionCard != null)
             {
-                this.PlayMinion(minionCard, subTarget, gameboardPos);
+                this.PlayMinion(minionCard, subTarget, gameboardPos, cardEffect, forceSummoned);
             }
 
             var spellCard = cardInHand as BaseSpell;
             if (spellCard != null)
             {
-                this.PlaySpell(spellCard, subTarget);
+                this.PlaySpell(spellCard, subTarget, cardEffect);
             }
 
             var weaponCard = cardInHand as BaseWeapon;
@@ -191,9 +193,10 @@ namespace HearthAnalyzer.Core
         /// </summary>
         /// <param name="minion">The minion to be played on the game board</param>
         /// <param name="subTarget">The sub target for this card, usually for targetting battle cry spells</param>
+        /// <param name="cardEffect">The card effect to use</param>
         /// <param name="gameboardPos">The position on the gameboard to place the card</param>
         /// <param name="forceSummoned">Whether or not this card was force summoned. This means no battle cry</param>
-        public void PlayMinion(BaseMinion minion, IDamageableEntity subTarget, int gameboardPos = 0, bool forceSummoned = false)
+        public void PlayMinion(BaseMinion minion, IDamageableEntity subTarget, int gameboardPos = 0, CardEffect cardEffect = CardEffect.NONE, bool forceSummoned = false)
         {
             var gameState = GameEngine.GameState;
 
@@ -234,6 +237,13 @@ namespace HearthAnalyzer.Core
             // Remove mana from the player
             this.Mana -= minion.CurrentManaCost;
 
+            // Call the card's card effect
+            var multiCard = minion as IMultiCardEffectMinion;
+            if (multiCard != null && !forceSummoned)
+            {
+                multiCard.UseCardEffect(cardEffect, subTarget);
+            }
+
             // Fire minion placed event
             if (!forceSummoned)
             {
@@ -266,7 +276,8 @@ namespace HearthAnalyzer.Core
         /// </summary>
         /// <param name="spell">The spell to play</param>
         /// <param name="subTarget">The sub target for this spell card if applicable</param>
-        public void PlaySpell(BaseSpell spell, IDamageableEntity subTarget = null)
+        /// <param name="cardEffect">The card effect to use</param>
+        public void PlaySpell(BaseSpell spell, IDamageableEntity subTarget = null, CardEffect cardEffect = CardEffect.NONE)
         {
             if (subTarget != null && subTarget is BaseMinion)
             {
@@ -289,7 +300,7 @@ namespace HearthAnalyzer.Core
             // Check if we need to abort the spell or redirect
             if (!shouldAbort)
             {
-                spell.Activate(subTarget);
+                spell.Activate(subTarget, cardEffect);
             }
 
             // Fire spell casted event (if we need to)

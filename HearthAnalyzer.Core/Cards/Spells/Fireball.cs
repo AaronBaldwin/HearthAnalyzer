@@ -26,7 +26,7 @@ namespace HearthAnalyzer.Core.Cards.Spells
             this.CurrentManaCost = MANA_COST;
         }
 
-        public override void Activate(IDamageableEntity target = null)
+        public override void Activate(IDamageableEntity target = null, CardEffect cardEffect = CardEffect.NONE)
         {
             if (target == null)
             {

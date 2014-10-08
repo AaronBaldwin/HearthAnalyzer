@@ -7,6 +7,16 @@ using System.Threading.Tasks;
 namespace HearthAnalyzer.Core.Cards
 {
     /// <summary>
+    /// Represents a card effect
+    /// </summary>
+    public enum CardEffect
+    {
+        NONE,
+        FIRST,
+        SECOND
+    }
+
+    /// <summary>
     /// Represents the base card type
     /// </summary>
     public abstract class BaseCard : IEquatable<BaseCard>

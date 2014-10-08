@@ -612,6 +612,7 @@
     <Compile Include="Heroes\Warlock.cs" />
     <Compile Include="Interfaces\IAttacker.cs" />
     <Compile Include="Interfaces\IEnragable.cs" />
+    <Compile Include="Interfaces\IMultiCardEffectMinion.cs" />
     <Compile Include="Interfaces\ITriggeredEffectOwner.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

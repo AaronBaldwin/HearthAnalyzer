@@ -26,7 +26,7 @@ namespace HearthAnalyzer.Core.Cards.Spells
             this.CurrentManaCost = MANA_COST;
         }
 
-        public override void Activate(IDamageableEntity target = null)
+        public override void Activate(IDamageableEntity target = null, CardEffect cardEffect = CardEffect.NONE)
         {
             int totalSpellDamage = MAX_SPELL_POWER + this.BonusSpellPower;
             GameEngine.GameState.CurrentPlayer.TakeDamage(totalSpellDamage);
