@@ -11,10 +11,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// 
     /// <b>Battlecry:</b> Give a friendly minion <b>Divine Shield</b>.
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
-    public class ArgentProtector : BaseMinion
+    public class ArgentProtector : BaseMinion, IBattlecry
     {
         private const int MANA_COST = 2;
         private const int ATTACK_POWER = 2;
@@ -30,6 +27,30 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
 			this.Type = CardType.NORMAL_MINION;
+        }
+
+        public void Battlecry(IDamageableEntity subTarget)
+        {
+            var playZone = GameEngine.GameState.CurrentPlayerPlayZone;
+            if (playZone.Any(card => card != null) && subTarget == null)
+            {
+                throw new InvalidOperationException("There are friendly minions on the board, you must target one!");
+            }
+
+            if (playZone.All(card => card == null) && subTarget != null)
+            {
+                throw new InvalidOperationException("There are no other friendly minions on the board so you can't target something!");
+            }
+
+            if (subTarget != null)
+            {
+                if (!(subTarget is BaseMinion))
+                {
+                    throw new InvalidOperationException("You must target a minion!");
+                }
+
+                ((BaseMinion)subTarget).ApplyStatusEffects(MinionStatusEffects.DIVINE_SHIELD);
+            }
         }
     }
 }

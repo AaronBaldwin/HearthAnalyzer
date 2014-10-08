@@ -261,6 +261,25 @@ namespace HearthAnalyzer.Core.Tests
         }
 
         /// <summary>
+        /// Give a friendly minion divine shield
+        /// </summary>
+        [TestMethod]
+        public void ArgentProtector()
+        {
+            var protector = HearthEntityFactory.CreateCard<ArgentProtector>();
+            protector.CurrentManaCost = 0;
+
+            var yeti = HearthEntityFactory.CreateCard<ChillwindYeti>();
+
+            GameEngine.GameState.CurrentPlayerPlayZone[0] = yeti;
+
+            player.AddCardToHand(protector);
+            player.PlayCard(protector, yeti);
+
+            Assert.IsTrue(yeti.HasDivineShield, "Verify divine shield");
+        }
+
+        /// <summary>
         /// Freeze a character
         /// </summary>
         [TestMethod]

@@ -11,9 +11,6 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// 
     /// <b>Charge</b>, <b>Divine Shield</b>
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
     public class ArgentCommander : BaseMinion
     {
         private const int MANA_COST = 6;
@@ -30,6 +27,8 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
 			this.Type = CardType.NORMAL_MINION;
+
+            this.ApplyStatusEffects(MinionStatusEffects.CHARGE | MinionStatusEffects.DIVINE_SHIELD);
         }
     }
 }
