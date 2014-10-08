@@ -11,9 +11,6 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// 
     /// Can't Attack.
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
     public class AncientWatcher : BaseMinion
     {
         private const int MANA_COST = 2;
@@ -30,6 +27,8 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
 			this.Type = CardType.NORMAL_MINION;
+
+            this.ApplyStatusEffects(MinionStatusEffects.CANT_ATTACK);
         }
     }
 }

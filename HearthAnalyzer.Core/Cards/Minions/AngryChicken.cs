@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HearthAnalyzer.Core.Interfaces;
 
 namespace HearthAnalyzer.Core.Cards.Minions
 {
@@ -11,14 +12,12 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// 
     /// <b>Enrage:</b> +5 Attack.
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
-    public class AngryChicken : BaseMinion
+    public class AngryChicken : BaseMinion, IEnragable
     {
         private const int MANA_COST = 1;
         private const int ATTACK_POWER = 1;
         private const int HEALTH = 1;
+        private const int ATTACK_BUFF = 5;
 
         public AngryChicken(int id = -1)
         {
@@ -30,6 +29,16 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
 			this.Type = CardType.BEAST;
+        }
+
+        public void Enrage()
+        {
+            this.TakeBuff(ATTACK_BUFF, 0);
+        }
+
+        public void Derage()
+        {
+            this.TakeBuff(-ATTACK_BUFF, 0);
         }
     }
 }

@@ -48,5 +48,23 @@ namespace HearthAnalyzer.Core.Tests
 
             Assert.AreEqual(amani.OriginalAttackPower, amani.CurrentAttackPower, "Verify amani chilled out");
         }
+
+        /// <summary>
+        /// +5 attack
+        /// </summary>
+        [TestMethod]
+        public void AngryChicken()
+        {
+            var chicken = HearthEntityFactory.CreateCard<AngryChicken>();
+
+            // Give the chicken some more health so we can enrage it
+            chicken.TakeBuff(0, 10);
+
+            chicken.TakeDamage(1);
+            Assert.AreEqual(chicken.OriginalAttackPower + 5, chicken.CurrentAttackPower, "Verify attack");
+
+            chicken.TakeHealing(1);
+            Assert.AreEqual(chicken.OriginalAttackPower, chicken.CurrentAttackPower, "Verify unenraged chicken");
+        }
     }
 }

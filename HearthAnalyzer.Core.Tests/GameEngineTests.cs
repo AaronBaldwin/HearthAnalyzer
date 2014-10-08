@@ -322,6 +322,39 @@ namespace HearthAnalyzer.Core.Tests
         }
 
         /// <summary>
+        /// Verify can't attack modifier
+        /// </summary>
+        [TestMethod]
+        public void CantAttack()
+        {
+            GameEngine.GameState.CurrentPlayer = player;
+
+            var ancientWatcher = HearthEntityFactory.CreateCard<AncientWatcher>();
+            ancientWatcher.CurrentManaCost = 0;
+            ancientWatcher.Owner = player;
+
+            player.Hand.Add(ancientWatcher);
+            player.PlayCard(ancientWatcher, null);
+
+            GameEngine.EndTurn();
+            GameEngine.EndTurn();
+
+            try
+            {
+                ancientWatcher.Attack(opponent);
+                Assert.Fail("Ancient watcher shouldn't be able to attack yet!");
+            }
+            catch (InvalidOperationException)
+            {
+            }
+
+            ancientWatcher.Silence();
+            ancientWatcher.Attack(opponent);
+
+            Assert.AreEqual(30 - ancientWatcher.CurrentAttackPower, opponent.Health, "Verify opponent got hit");
+        }
+
+        /// <summary>
         /// Triggered when the game has ended
         /// </summary>
         /// <param name="result"></param>
