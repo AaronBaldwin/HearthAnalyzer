@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using HearthAnalyzer.Core.Cards;
@@ -41,7 +42,7 @@ namespace HearthAnalyzer.Core.Tests
         public void AncientOfLore()
         {
             // Verify invalid playing of card
-            var lore = HearthEntityFactory.CreateCard<AncientofLore>();
+            var lore = HearthEntityFactory.CreateCard<AncientOfLore>();
             lore.CurrentManaCost = 0;
             lore.Owner = player;
 
@@ -72,6 +73,33 @@ namespace HearthAnalyzer.Core.Tests
             player.PlayCard(lore, opponent, 0, CardEffect.SECOND);
 
             Assert.AreEqual(30, opponent.Health, "Verify the opponent got healed");
+        }
+
+        /// <summary>
+        /// Effect one: Attack +5
+        /// Effect two: Health +5 and Taunt
+        /// </summary>
+        [TestMethod]
+        public void AncientOfWar()
+        {
+            var war = HearthEntityFactory.CreateCard<AncientOfWar>();
+            war.CurrentManaCost = 0;
+            war.Owner = player;
+
+            player.Hand.Add(war);
+
+            // Verify Attack Buff
+            player.PlayCard(war, null, 0, CardEffect.FIRST);
+            Assert.AreEqual(war.OriginalAttackPower + 5, war.CurrentAttackPower, "Verify attack buff");
+
+            GameEngine.GameState.Board.RemoveCard(war);
+            player.Hand.Add(war);
+
+            // Verify health and taunt
+            player.PlayCard(war, null, 0, CardEffect.SECOND);
+            Assert.AreEqual(10, war.MaxHealth, "Verify max health");
+            Assert.AreEqual(war.MaxHealth, war.CurrentHealth, "Verify current health");
+            Assert.IsTrue(war.HasTaunt, "Verify taunt");
         }
     }
 }

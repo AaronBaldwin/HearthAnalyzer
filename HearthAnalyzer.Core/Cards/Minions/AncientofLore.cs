@@ -12,7 +12,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// 
     /// <b>Choose One -</b> Draw 2 cards; or Restore 5 Health.
     /// </summary>
-    public class AncientofLore : BaseMinion, IMultiCardEffectMinion
+    public class AncientOfLore : BaseMinion, IMultiCardEffectMinion
     {
         private const int MANA_COST = 7;
         private const int ATTACK_POWER = 5;
@@ -20,7 +20,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
         private const int DRAW_COUNT = 2;
         private const int HEAL_AMOUNT = 5;
 
-        public AncientofLore(int id = -1)
+        public AncientOfLore(int id = -1)
         {
             this.Id = id;
             this.Name = "Ancient of Lore";
