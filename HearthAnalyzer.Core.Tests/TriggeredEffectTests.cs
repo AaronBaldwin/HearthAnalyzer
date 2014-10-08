@@ -113,5 +113,31 @@ namespace HearthAnalyzer.Core.Tests
             Assert.IsTrue(GameEngine.GameState.CurrentPlayerPlayZone.Contains(azureDrake), "Verify azure drake was summoned");
             Assert.IsTrue(player.Hand.Count < handSize + 2, "Verify an extra card wasn't drawn from azure drake being summoned");
         }
+
+        /// <summary>
+        /// Verify that when a spell is casted, a fireball is added to the player's hand
+        /// </summary>
+        [TestMethod]
+        public void ArchmageAntonidas()
+        {
+            var antonidas = HearthEntityFactory.CreateCard<ArchmageAntonidas>();
+            antonidas.Owner = player;
+            antonidas.CurrentManaCost = 0;
+
+            var fireball = HearthEntityFactory.CreateCard<Fireball>();
+            fireball.CurrentManaCost = 0;
+
+            player.AddCardToHand(antonidas);
+            player.AddCardToHand(fireball);
+
+            player.PlayCard(antonidas, null);
+            player.PlayCard(fireball, opponent);
+
+            // Yo dawg, I heard you liked fireballs...
+            var newFireball = player.Hand.FirstOrDefault();
+
+            Assert.IsNotNull(newFireball, "Verify player got a new card in hand");
+            Assert.IsFalse(newFireball.Id == fireball.Id, "Verify it is a new fireball");
+        }
     }
 }

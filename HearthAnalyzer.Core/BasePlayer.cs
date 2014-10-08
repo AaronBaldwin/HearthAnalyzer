@@ -369,17 +369,8 @@ namespace HearthAnalyzer.Core
                 }
                 else
                 {
-                    // If the hand is full, mill the card (graveyard it)
-                    if (this.Hand.Count >= Constants.MAX_CARDS_IN_HAND)
-                    {
-                        Logger.Instance.Info(string.Format("{0}: {1} was milled because the hand is too full!", this.LogString(), drawnCard));
-                        this.Graveyard.Add(drawnCard);
-                    }
-                    else
-                    {
-                        Logger.Instance.Info(string.Format("{0}: Drew {1}", this.LogString(), drawnCard));
-                        this.Hand.Add(drawnCard);
-                    }
+                    Logger.Instance.Info(string.Format("{0}: Drew {1}", this.LogString(), drawnCard));
+                    this.AddCardToHand(drawnCard);
                 }
             }
         }
@@ -480,9 +471,31 @@ namespace HearthAnalyzer.Core
             this.attacksThisTurn = 0;
         }
 
+        /// <summary>
+        /// Adds a mana crystal to the player up to a maximum
+        /// </summary>
         public void AddManaCrystal()
         {
             this.MaxMana = Math.Min(this.MaxMana + 1, Constants.MAX_MANA_CAPACITY);
+        }
+
+        /// <summary>
+        /// Adds a card to the player's hand if it's not full.
+        /// If it is full, then the card is destroyed
+        /// </summary>
+        /// <param name="card">The card to add</param>
+        public void AddCardToHand(BaseCard card)
+        {
+            if (this.Hand.Count >= Constants.MAX_CARDS_IN_HAND)
+            {
+                Logger.Instance.Info(string.Format("{0}: {1} was milled because the hand is too full!", this.LogString(), card));
+                this.Graveyard.Add(card);
+            }
+            else
+            {
+                this.Hand.Add(card);
+                card.Owner = this;
+            }
         }
 
         #endregion

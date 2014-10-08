@@ -49,7 +49,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
             }
 
             GameEngine.GameState.Board.RemoveCard(targetMinion);
-            this.Owner.Hand.Add(targetMinion);
+            this.Owner.AddCardToHand(targetMinion);
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HearthAnalyzer.Core.Cards.Spells;
 
 namespace HearthAnalyzer.Core.Cards.Minions
 {
@@ -11,10 +12,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// 
     /// Whenever you cast a spell, add a 'Fireball' spell to your hand.
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
-    public class ArchmageAntonidas : BaseMinion
+    public class ArchmageAntonidas : BaseMinion, ITriggeredEffectOwner
     {
         private const int MANA_COST = 7;
         private const int ATTACK_POWER = 5;
@@ -30,6 +28,19 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
 			this.Type = CardType.NORMAL_MINION;
+        }
+
+        public void RegisterEffect()
+        {
+            GameEventManager.RegisterForEvent(this, (GameEventManager.SpellCastingEventHandler)this.OnSpellCasting);
+        }
+
+        private void OnSpellCasting(BaseSpell spell, IDamageableEntity target, out bool shouldAbort)
+        {
+            var fireball = HearthEntityFactory.CreateCard<Fireball>();
+            this.Owner.AddCardToHand(fireball);
+
+            shouldAbort = false;
         }
     }
 }

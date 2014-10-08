@@ -44,7 +44,7 @@ namespace HearthAnalyzer.Core.Deathrattles
                 }
 
                 GameEngine.GameState.Board.RemoveCard(randomMinion);
-                this._owner.Hand.Add(randomMinion);
+                this._owner.AddCardToHand(randomMinion);
             }
         }
     }

@@ -347,7 +347,7 @@ namespace HearthAnalyzer.Core
             {
                 var theCoin = HearthEntityFactory.CreateCard<TheCoin>();
                 Logger.Instance.InfoFormat("Giving {0} {1}", GameEngine.GameState.WaitingPlayer.LogString(), theCoin);
-                GameEngine.GameState.WaitingPlayer.Hand.Add(theCoin);
+                GameEngine.GameState.WaitingPlayer.AddCardToHand(theCoin);
                 GameEngine.StartTurn(GameEngine.GameState.CurrentPlayer);
             }
         }

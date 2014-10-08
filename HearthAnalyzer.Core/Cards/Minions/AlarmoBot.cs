@@ -44,7 +44,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
                 var randomMinion = minionsInHand[randomMinionIndex] as BaseMinion;
 
                 GameEngine.GameState.Board.RemoveCard(this);
-                player.Hand.Add(this);
+                player.AddCardToHand(this);
                 GameEventManager.UnregisterForEvents(this);
 
                 var firstEmptySlot = GameEngine.GameState.CurrentPlayerPlayZone.FindIndex(card => card == null);
