@@ -480,6 +480,11 @@ namespace HearthAnalyzer.Core
             this.attacksThisTurn = 0;
         }
 
+        public void AddManaCrystal()
+        {
+            this.MaxMana = Math.Min(this.MaxMana + 1, Constants.MAX_MANA_CAPACITY);
+        }
+
         #endregion
 
         #region IDamageableEntity

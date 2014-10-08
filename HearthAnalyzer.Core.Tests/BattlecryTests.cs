@@ -243,6 +243,24 @@ namespace HearthAnalyzer.Core.Tests
         }
 
         /// <summary>
+        /// Give opponent a mana crystal
+        /// </summary>
+        [TestMethod]
+        public void ArcaneGolem()
+        {
+            var arcaneGolem = HearthEntityFactory.CreateCard<ArcaneGolem>();
+            arcaneGolem.CurrentManaCost = 0;
+            arcaneGolem.Owner = player;
+
+            var opponentCurrentMaxMana = opponent.MaxMana;
+
+            player.Hand.Add(arcaneGolem);
+            player.PlayCard(arcaneGolem, null);
+
+            Assert.AreEqual(opponentCurrentMaxMana + 1, opponent.MaxMana, "Verify opponent max mana increased");
+        }
+
+        /// <summary>
         /// Freeze a character
         /// </summary>
         [TestMethod]
