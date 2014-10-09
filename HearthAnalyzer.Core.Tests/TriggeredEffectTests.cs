@@ -164,5 +164,54 @@ namespace HearthAnalyzer.Core.Tests
 
             Assert.AreEqual(2, player.Armor, "Verify player gained armor");
         }
+
+        /// <summary>
+        /// Verify that heals do damage instead
+        /// </summary>
+        [TestMethod]
+        public void AuchenaiSoulpriest()
+        {
+            var auchenai = HearthEntityFactory.CreateCard<AuchenaiSoulpriest>();
+            auchenai.CurrentManaCost = 0;
+
+            var circleOfHealing = HearthEntityFactory.CreateCard<CircleofHealing>();
+
+            var yeti = HearthEntityFactory.CreateCard<ChillwindYeti>();
+            GameEngine.GameState.WaitingPlayerPlayZone[0] = yeti;
+
+            player.AddCardToHand(auchenai);
+            player.AddCardToHand(circleOfHealing);
+
+            player.PlayCard(auchenai, null);
+            player.PlayCard(circleOfHealing, null);
+
+            Assert.AreEqual(auchenai.MaxHealth - 4, auchenai.CurrentHealth, "Verify friendly minion took damage instead of heal");
+            Assert.AreEqual(yeti.MaxHealth - 4, yeti.CurrentHealth, "Verify enemy minion took damage instead of heal");
+        }
+
+        /// <summary>
+        /// Verify that heals do damage instead and that healing spells are affected by spell power
+        /// </summary>
+        [TestMethod]
+        public void AuchenaiSoulpriestWithSpellPower()
+        {
+            var auchenai = HearthEntityFactory.CreateCard<AuchenaiSoulpriest>();
+            auchenai.CurrentManaCost = 0;
+            auchenai.BonusSpellPower = 1;
+
+            var circleOfHealing = HearthEntityFactory.CreateCard<CircleofHealing>();
+
+            var yeti = HearthEntityFactory.CreateCard<ChillwindYeti>();
+            GameEngine.GameState.WaitingPlayerPlayZone[0] = yeti;
+
+            player.AddCardToHand(auchenai);
+            player.AddCardToHand(circleOfHealing);
+
+            player.PlayCard(auchenai, null);
+            player.PlayCard(circleOfHealing, null);
+
+            Assert.AreEqual(auchenai.MaxHealth - 5, auchenai.CurrentHealth, "Verify friendly minion took damage instead of heal");
+            Assert.AreEqual(yeti.MaxHealth - 5, yeti.CurrentHealth, "Verify enemy minion took damage instead of heal");
+        }
     }
 }

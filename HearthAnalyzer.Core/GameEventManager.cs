@@ -36,6 +36,12 @@ namespace HearthAnalyzer.Core
             DamageDealt += OnDamageDealt;
             _damageDealtListeners = new List<Tuple<BaseCard, DamageDealtEventHandler>>();
 
+            Healing += OnHealing;
+            _healingListeners = new List<Tuple<BaseCard, HealingEventHandler>>();
+
+            HealingDealt += OnHealingDealt;
+            _healingDealtListeners = new List<Tuple<BaseCard, HealingDealtEventHandler>>();
+
             MinionPlaced += OnMinionPlaced;
             _minionPlacedListeners = new List<Tuple<BaseCard, MinionPlacedEventHandler>>();
 
@@ -53,6 +59,8 @@ namespace HearthAnalyzer.Core
         {
             Attacking -= OnAttacking;
             DamageDealt -= OnDamageDealt;
+            Healing -= OnHealing;
+            HealingDealt -= OnHealingDealt;
             MinionPlaced -= OnMinionPlaced;
             MinionPlayed -= OnMinionPlayed;
             SpellCasting -= OnSpellCasting;
@@ -82,6 +90,26 @@ namespace HearthAnalyzer.Core
         public delegate void DamageDealtEventHandler(IDamageableEntity target, int damageDealt);
         public static DamageDealtEventHandler DamageDealt;
         internal static List<Tuple<BaseCard, DamageDealtEventHandler>> _damageDealtListeners;
+
+        /// <summary>
+        /// Handler for when healing is happening (but target has not been healed yet)
+        /// </summary>
+        /// <param name="healer">The player doing the healing</param>
+        /// <param name="target">The target of the heal</param>
+        /// <param name="healAmount">The amount to heal for</param>
+        /// <param name="shouldAbort">Whether or not it should be aborted</param>
+        public delegate void HealingEventHandler(BasePlayer healer, IDamageableEntity target, int healAmount, out bool shouldAbort);
+        public static HealingEventHandler Healing;
+        internal static List<Tuple<BaseCard, HealingEventHandler>> _healingListeners;
+
+        /// <summary>
+        /// Handler for when healing has been dealt
+        /// </summary>
+        /// <param name="target">The target of the heal</param>
+        /// <param name="healAmount">The amount of heals dealt</param>
+        public delegate void HealingDealtEventHandler(IDamageableEntity target, int healAmount);
+        public static HealingDealtEventHandler HealingDealt;
+        internal static List<Tuple<BaseCard, HealingDealtEventHandler>> _healingDealtListeners; 
 
         /// <summary>
         /// Handler for when a minion is placed (before his battle cry)
@@ -139,6 +167,16 @@ namespace HearthAnalyzer.Core
             _damageDealtListeners.Add(new Tuple<BaseCard, DamageDealtEventHandler>(self, callback));
         }
 
+        public static void RegisterForEvent(BaseCard self, HealingEventHandler callback)
+        {
+            _healingListeners.Add(new Tuple<BaseCard, HealingEventHandler>(self, callback));
+        }
+
+        public static void RegisterForEvent(BaseCard self, HealingDealtEventHandler callback)
+        {
+            _healingDealtListeners.Add(new Tuple<BaseCard, HealingDealtEventHandler>(self, callback));
+        }
+
         public static void RegisterForEvent(BaseCard self, MinionPlacedEventHandler callback)
         {
             _minionPlacedListeners.Add(new Tuple<BaseCard, MinionPlacedEventHandler>(self, callback));
@@ -167,6 +205,8 @@ namespace HearthAnalyzer.Core
         {
             _minionAttackingListeners.RemoveAll(kvp => kvp.Item1.Id == self.Id);
             _damageDealtListeners.RemoveAll(kvp => kvp.Item1.Id == self.Id);
+            _healingListeners.RemoveAll(kvp => kvp.Item1.Id == self.Id);
+            _healingDealtListeners.RemoveAll(kvp => kvp.Item1.Id == self.Id);
             _minionPlacedListeners.RemoveAll(kvp => kvp.Item1.Id == self.Id);
             _minionPlayedListeners.RemoveAll(kvp => kvp.Item1.Id == self.Id);
             _spellCastingListeners.RemoveAll(kvp => kvp.Item1.Id == self.Id);
@@ -216,6 +256,31 @@ namespace HearthAnalyzer.Core
             foreach (var handler in sortedListeners.Select(kvp => kvp.Item2))
             {
                 handler(target, damageDealt);
+            }
+        }
+
+        public static void OnHealing(BasePlayer healer, IDamageableEntity target, int healAmount, out bool shouldAbort)
+        {
+            shouldAbort = false;
+            if (!_healingListeners.Any()) return;
+
+            // Listeners for this are called in the order in which they were played on the board
+            var sortedListeners = _healingListeners.OrderBy(kvp => kvp.Item1.TimePlayed).ToList();
+            foreach (var handler in sortedListeners.Select(kvp => kvp.Item2))
+            {
+                handler(healer, target, healAmount, out shouldAbort);
+            }
+        }
+
+        public static void OnHealingDealt(IDamageableEntity target, int healAmount)
+        {
+            if (!_healingDealtListeners.Any()) return;
+
+            // Listeners for this are called in the order in which they were played on the board
+            var sortedListeners = _healingDealtListeners.OrderBy(kvp => kvp.Item1.TimePlayed).ToList();
+            foreach (var handler in sortedListeners.Select(kvp => kvp.Item2))
+            {
+                handler(target, healAmount);
             }
         }
 

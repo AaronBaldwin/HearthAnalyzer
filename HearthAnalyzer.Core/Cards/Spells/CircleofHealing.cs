@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HearthAnalyzer.Core.Cards.Minions;
 
 namespace HearthAnalyzer.Core.Cards.Spells
 {
@@ -11,14 +12,11 @@ namespace HearthAnalyzer.Core.Cards.Spells
     /// 
     /// Restore #4 Health to ALL minions.
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
     public class CircleofHealing : BaseSpell
     {
         private const int MANA_COST = 0;
-        private const int MIN_SPELL_POWER = 0;
-        private const int MAX_SPELL_POWER = 0;
+        private const int MIN_SPELL_POWER = 4;
+        private const int MAX_SPELL_POWER = 4;
 
         public CircleofHealing(int id = -1)
         {
@@ -31,7 +29,8 @@ namespace HearthAnalyzer.Core.Cards.Spells
 
         public override void Activate(IDamageableEntity target = null, CardEffect cardEffect = CardEffect.NONE)
         {
-            throw new NotImplementedException();
+            GameEngine.GameState.WaitingPlayerPlayZone.ForEach(minion => this.HealTarget((BaseMinion)minion, MAX_SPELL_POWER));
+            GameEngine.GameState.CurrentPlayerPlayZone.ForEach(minion => this.HealTarget((BaseMinion)minion, MAX_SPELL_POWER));
         }
     }
 }

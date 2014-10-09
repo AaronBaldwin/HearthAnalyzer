@@ -12,9 +12,10 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// Your cards and powers that restore Health now deal damage instead.
     /// </summary>
     /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
+    /// Technically, this card isn't implemented in Hearthstone as a triggered effect card but for our purposes,
+    /// it's simpler to do it this way and it should be functionally equivalent.
     /// </remarks>
-    public class AuchenaiSoulpriest : BaseMinion
+    public class AuchenaiSoulpriest : BaseMinion, ITriggeredEffectOwner
     {
         private const int MANA_COST = 4;
         private const int ATTACK_POWER = 3;
@@ -30,6 +31,23 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
 			this.Type = CardType.NORMAL_MINION;
+        }
+
+        public void RegisterEffect()
+        {
+            GameEventManager.RegisterForEvent(this, (GameEventManager.HealingEventHandler)this.OnHealing);
+        }
+
+        private void OnHealing(BasePlayer healer, IDamageableEntity target, int healAmount, out bool shouldAbort)
+        {
+            shouldAbort = false;
+
+            if (healer == this.Owner)
+            {
+                shouldAbort = true;
+                // Instead, do damage!
+                target.TakeDamage(healAmount);
+            }
         }
     }
 }

@@ -35,6 +35,35 @@ namespace HearthAnalyzer.Core.Tests
         }
 
         /// <summary>
+        /// Verify circle of healing mechanics
+        /// </summary>
+        [TestMethod]
+        public void CircleOfHealing()
+        {
+            var circleOfHealing = HearthEntityFactory.CreateCard<CircleofHealing>();
+            circleOfHealing.CurrentManaCost = 0;
+
+            var playerYeti = HearthEntityFactory.CreateCard<ChillwindYeti>();
+            playerYeti.BonusSpellPower = 1;
+            playerYeti.MaxHealth = 10;
+            playerYeti.CurrentHealth = 1;
+
+            var opponentYeti = HearthEntityFactory.CreateCard<ChillwindYeti>();
+            opponentYeti.MaxHealth = 10;
+            opponentYeti.CurrentHealth = 1;
+
+            GameEngine.GameState.CurrentPlayerPlayZone[0] = playerYeti;
+            GameEngine.GameState.WaitingPlayerPlayZone[0] = opponentYeti;
+
+            player.AddCardToHand(circleOfHealing);
+            player.PlayCard(circleOfHealing, null);
+
+            // Circle of healing shouldn't be affected by spell power so it should just heal for 4
+            Assert.AreEqual(5, playerYeti.CurrentHealth, "Verify player yeti was healed");
+            Assert.AreEqual(5, opponentYeti.CurrentHealth, "Verify opponent yeti was healed");
+        }
+
+        /// <summary>
         /// Validate basic spell damage card Fireball
         /// </summary>
         [TestMethod]

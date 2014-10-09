@@ -53,7 +53,13 @@ namespace HearthAnalyzer.Core.Cards.Minions
                     throw new InvalidOperationException("Needs to have a target!");
                 }
 
-                target.TakeHealing(HEAL_AMOUNT);
+                bool shouldAbort;
+                GameEventManager.Healing(this.Owner, target, HEAL_AMOUNT, out shouldAbort);
+
+                if (!shouldAbort)
+                {
+                    target.TakeHealing(HEAL_AMOUNT);
+                }
             }
             else
             {
