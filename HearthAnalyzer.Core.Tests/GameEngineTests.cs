@@ -355,6 +355,67 @@ namespace HearthAnalyzer.Core.Tests
         }
 
         /// <summary>
+        /// Verify stealthed mechanics
+        /// </summary>
+        [TestMethod]
+        public void Stealth()
+        {
+            var bloodImp = HearthEntityFactory.CreateCard<BloodImp>();
+
+            GameEngine.GameState.WaitingPlayerPlayZone[0] = bloodImp;
+
+            var fireball = HearthEntityFactory.CreateCard<Fireball>();
+            fireball.CurrentManaCost = 0;
+
+            var yeti = HearthEntityFactory.CreateCard<ChillwindYeti>();
+            yeti.ApplyStatusEffects(MinionStatusEffects.CHARGE);
+
+            GameEngine.GameState.CurrentPlayerPlayZone[0] = yeti;
+
+            player.AddCardToHand(fireball);
+            
+            // Can't target stealthed minion directly with spell
+            try
+            {
+                player.PlayCard(fireball, bloodImp);
+                Assert.Fail("Can't target stealthed minion!");
+            }
+            catch (InvalidOperationException)
+            {
+            }
+
+            // Can't attack stealthed minions with minion
+            try
+            {
+                yeti.Attack(bloodImp);
+                Assert.Fail("Can't target stealthed minion!");
+            }
+            catch (InvalidOperationException)
+            {
+            }
+
+            // Can't battlecry target stealthed minions
+            var commando = HearthEntityFactory.CreateCard<StormpikeCommando>();
+            commando.CurrentManaCost = 0;
+
+            player.AddCardToHand(commando);
+            try
+            {
+                player.PlayCard(commando, bloodImp);
+                Assert.Fail("Can't target stealthed minion!");
+            }
+            catch (InvalidOperationException)
+            {
+            }
+
+            // Attacking with stealtehd minion breaks stealth
+            GameEngine.EndTurn();
+            bloodImp.Attack(player);
+
+            Assert.IsFalse(bloodImp.IsStealthed, "Verify blood imp is no longer stealthed");
+        }
+
+        /// <summary>
         /// Triggered when the game has ended
         /// </summary>
         /// <param name="result"></param>

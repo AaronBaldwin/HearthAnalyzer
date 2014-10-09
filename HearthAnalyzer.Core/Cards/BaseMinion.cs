@@ -191,6 +191,16 @@ namespace HearthAnalyzer.Core.Cards
                 throw new InvalidOperationException("Can't attack through taunt!");
             }
 
+            if (targetMinion != null && targetMinion.IsStealthed)
+            {
+                throw new InvalidOperationException("Can't attack a minion that is stealthed!");
+            }
+
+            if (this.IsStealthed)
+            {
+                this.RemoveStatusEffects(MinionStatusEffects.STEALTHED);
+            }
+
             this.attacksThisTurn++;
 
             // Fire attacking event

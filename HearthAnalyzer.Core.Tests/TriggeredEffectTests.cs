@@ -256,7 +256,6 @@ namespace HearthAnalyzer.Core.Tests
             opponentAbom.ApplyStatusEffects(MinionStatusEffects.CHARGE);
             opponentAbom.CurrentManaCost = 0;
 
-
             GameEngine.GameState.CurrentPlayerPlayZone[0] = baron;
 
             player.AddCardToHand(playerAbom);
@@ -272,6 +271,37 @@ namespace HearthAnalyzer.Core.Tests
 
             Assert.AreEqual(baron.MaxHealth - 4, baron.CurrentHealth, "Verify baron got hit by deathrattle twice");
             Assert.AreEqual(6, opponentAbom.CurrentHealth, "Verify opponent abom took 4 damage from retaliation and 4 from double deathrattle");
+        }
+
+        /// <summary>
+        /// At end of turn, give another random friendly minion +1 health
+        /// </summary>
+        [TestMethod]
+        public void BloodImp()
+        {
+            var imp = HearthEntityFactory.CreateCard<BloodImp>();
+            imp.CurrentManaCost = 0;
+
+            var yeti = HearthEntityFactory.CreateCard<ChillwindYeti>();
+            var faerie = HearthEntityFactory.CreateCard<FaerieDragon>();
+            
+            player.AddCardToHand(imp);
+            player.PlayCard(imp, null);
+
+            GameEngine.EndTurn();
+
+            Assert.AreEqual(1, imp.MaxHealth, "Verify imp didn't buff itself");
+
+            GameEngine.GameState.CurrentPlayerPlayZone[0] = yeti;
+            GameEngine.GameState.CurrentPlayerPlayZone[1] = faerie;
+
+            GameEngine.EndTurn();
+            GameEngine.EndTurn();
+
+            if (yeti.MaxHealth != 6 && faerie.MaxHealth != 3)
+            {
+                Assert.Fail("No other minion got bonus health.");
+            }
         }
     }
 }

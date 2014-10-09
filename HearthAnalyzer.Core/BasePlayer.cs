@@ -266,6 +266,11 @@ namespace HearthAnalyzer.Core
                 var battlecryCard = minion as IBattlecry;
                 if (battlecryCard != null)
                 {
+                    if (subTarget is BaseMinion && ((BaseMinion) subTarget).IsStealthed)
+                    {
+                        throw new InvalidOperationException("Can't target stealthed minions");
+                    }
+
                     battlecryCard.Battlecry(subTarget);
                 }
             }
@@ -284,9 +289,9 @@ namespace HearthAnalyzer.Core
         {
             if (subTarget != null && subTarget is BaseMinion)
             {
-                if (((BaseMinion) subTarget).IsImmuneToSpellTarget)
+                if (((BaseMinion) subTarget).IsImmuneToSpellTarget || ((BaseMinion) subTarget).IsStealthed)
                 {
-                    throw new InvalidOperationException("Can't target minion that is immune to spell targeting");
+                    throw new InvalidOperationException("Can't target minion that is immune to spell targeting or is stealthed");
                 }
             }
 
