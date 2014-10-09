@@ -384,10 +384,12 @@ namespace HearthAnalyzer.Core
         /// </summary>
         public static void EndTurn()
         {
-            // TODO: Fire Turn End event
+            var currentPlayer = GameEngine.GameState.CurrentPlayer;
+
+            // Fire turn end event
+            GameEventManager.TurnEnd(currentPlayer);
 
             // Clear any overloads
-            var currentPlayer = GameEngine.GameState.CurrentPlayer;
             currentPlayer.Overload = 0;
 
             // Clear GameEngine graveyards

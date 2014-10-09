@@ -213,5 +213,31 @@ namespace HearthAnalyzer.Core.Tests
             Assert.AreEqual(auchenai.MaxHealth - 5, auchenai.CurrentHealth, "Verify friendly minion took damage instead of heal");
             Assert.AreEqual(yeti.MaxHealth - 5, yeti.CurrentHealth, "Verify enemy minion took damage instead of heal");
         }
+
+        /// <summary>
+        /// At end of turn, deal 2 damage to all other characters
+        /// </summary>
+        [TestMethod]
+        public void BaronGeddon()
+        {
+            var baron = HearthEntityFactory.CreateCard<BaronGeddon>();
+            baron.CurrentManaCost = 0;
+
+            var playerYeti = HearthEntityFactory.CreateCard<ChillwindYeti>();
+            var opponentYeti = HearthEntityFactory.CreateCard<ChillwindYeti>();
+
+            GameEngine.GameState.CurrentPlayerPlayZone[0] = playerYeti;
+            GameEngine.GameState.WaitingPlayerPlayZone[0] = opponentYeti;
+
+            player.AddCardToHand(baron);
+            player.PlayCard(baron, null);
+
+            GameEngine.EndTurn();
+
+            Assert.AreEqual(28, player.Health, "Verify player took damage");
+            Assert.AreEqual(27, opponent.Health, "Verify opponent took damage"); // One extra damage from drawing fatigue
+            Assert.AreEqual(playerYeti.MaxHealth - 2, playerYeti.CurrentHealth, "Verify player yeti took damage");
+            Assert.AreEqual(opponentYeti.MaxHealth - 2, opponentYeti.CurrentHealth, "Verify opponent yeti took damage");
+        }
     }
 }

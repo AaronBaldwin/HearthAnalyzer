@@ -11,14 +11,12 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// 
     /// At the end of your turn, deal 2 damage to ALL other characters.
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
-    public class BaronGeddon : BaseMinion
+    public class BaronGeddon : BaseMinion, ITriggeredEffectOwner
     {
         private const int MANA_COST = 7;
         private const int ATTACK_POWER = 7;
         private const int HEALTH = 5;
+        private const int EFFECT_POWER = 2;
 
         public BaronGeddon(int id = -1)
         {
@@ -30,6 +28,24 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
 			this.Type = CardType.NORMAL_MINION;
+        }
+
+        public void RegisterEffect()
+        {
+            GameEventManager.RegisterForEvent(this, (GameEventManager.TurnEndEventHandler)this.OnTurnEnd);
+        }
+
+        private void OnTurnEnd(BasePlayer player)
+        {
+            GameEngine.GameState.WaitingPlayer.TakeDamage(EFFECT_POWER);
+            GameEngine.GameState.WaitingPlayerPlayZone.Where(card => card != null)
+                .ToList()
+                .ForEach(card => ((BaseMinion) card).TakeDamage(EFFECT_POWER));
+
+            GameEngine.GameState.CurrentPlayer.TakeDamage(EFFECT_POWER);
+            GameEngine.GameState.CurrentPlayerPlayZone.Where(card => card != null && card != this)
+                .ToList()
+                .ForEach(card => ((BaseMinion) card).TakeDamage(EFFECT_POWER));
         }
     }
 }

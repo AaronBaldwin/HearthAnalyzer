@@ -8,12 +8,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
 {
     /// <summary>
     /// Implements the Baine Bloodhoof
-    /// 
-    /// 
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
     public class BaineBloodhoof : BaseMinion
     {
         private const int MANA_COST = 4;
