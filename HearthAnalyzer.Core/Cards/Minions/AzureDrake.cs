@@ -11,10 +11,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// 
     /// <b>Spell Damage +1</b>. <b>Battlecry:</b> Draw a card.
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
-    public class AzureDrake : BaseMinion
+    public class AzureDrake : BaseMinion, IBattlecry
     {
         private const int MANA_COST = 5;
         private const int ATTACK_POWER = 4;
@@ -32,6 +29,11 @@ namespace HearthAnalyzer.Core.Cards.Minions
 			this.Type = CardType.DRAGON;
 
             this.BonusSpellPower = 1;
+        }
+
+        public void Battlecry(IDamageableEntity subTarget)
+        {
+            this.Owner.DrawCard();
         }
     }
 }

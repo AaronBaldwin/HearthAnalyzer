@@ -11,16 +11,13 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// 
     /// <i>You lost the coin flip, but gained a friend.</i>
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
-    public class AvataroftheCoin : BaseMinion
+    public class AvatarOfTheCoin : BaseMinion
     {
         private const int MANA_COST = 0;
         private const int ATTACK_POWER = 1;
         private const int HEALTH = 1;
 
-        public AvataroftheCoin(int id = -1)
+        public AvatarOfTheCoin(int id = -1)
         {
             this.Id = id;
             this.Name = "Avatar of the Coin";

@@ -280,6 +280,22 @@ namespace HearthAnalyzer.Core.Tests
         }
 
         /// <summary>
+        /// Draw a card
+        /// </summary>
+        [TestMethod]
+        public void AzureDrake()
+        {
+            var azureDrake = HearthEntityFactory.CreateCard<AzureDrake>();
+            azureDrake.CurrentManaCost = 0;
+
+            player.AddCardToHand(azureDrake);
+            player.PlayCard(azureDrake, null);
+
+            Assert.AreEqual(1, player.BonusSpellPower, "Verify bonus spell power");
+            Assert.AreEqual(29, player.Health, "Verify player drew a fatigue card");
+        }
+
+        /// <summary>
         /// Freeze a character
         /// </summary>
         [TestMethod]
