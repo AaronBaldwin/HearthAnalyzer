@@ -88,6 +88,52 @@ namespace HearthAnalyzer.Core.Tests
         }
 
         /// <summary>
+        /// Gives 2 mana this turn only
+        /// </summary>
+        [TestMethod]
+        public void Innervate()
+        {
+            var innervate = HearthEntityFactory.CreateCard<Innervate>();
+
+            player.MaxMana = Constants.MAX_MANA_CAPACITY;
+            player.Mana = Constants.MAX_MANA_CAPACITY - 2;
+
+            player.AddCardToHand(innervate);
+            player.PlayCard(innervate, null);
+
+            Assert.AreEqual(Constants.MAX_MANA_CAPACITY, player.Mana, "Verify player got 2 mana");
+
+            player.Mana = Constants.MAX_MANA_CAPACITY - 1;
+            player.AddCardToHand(innervate);
+            player.PlayCard(innervate, null);
+
+            Assert.AreEqual(Constants.MAX_MANA_CAPACITY, player.Mana, "Verify mana can't go above maximum");
+        }
+
+        /// <summary>
+        /// Gives 1 mana this turn only
+        /// </summary>
+        [TestMethod]
+        public void TheCoin()
+        {
+            var theCoin = HearthEntityFactory.CreateCard<TheCoin>();
+
+            player.MaxMana = Constants.MAX_MANA_CAPACITY;
+            player.Mana = Constants.MAX_MANA_CAPACITY - 1;
+
+            player.AddCardToHand(theCoin);
+            player.PlayCard(theCoin, null);
+
+            Assert.AreEqual(Constants.MAX_MANA_CAPACITY, player.Mana, "Verify player got 1 mana");
+
+            player.Mana = Constants.MAX_MANA_CAPACITY;
+            player.AddCardToHand(theCoin);
+            player.PlayCard(theCoin, null);
+
+            Assert.AreEqual(Constants.MAX_MANA_CAPACITY, player.Mana, "Verify mana can't go above maximum");
+        }
+
+        /// <summary>
         /// Validate bonus spell power
         /// </summary>
         [TestMethod]
