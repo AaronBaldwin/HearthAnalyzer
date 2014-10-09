@@ -32,7 +32,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
         public void Battlecry(IDamageableEntity subTarget)
         {
             var playZone = GameEngine.GameState.CurrentPlayerPlayZone;
-            if (playZone.Any(card => card != null) && subTarget == null)
+            if (playZone.Any(card => card != null && card != this) && subTarget == null)
             {
                 throw new InvalidOperationException("There are friendly minions on the board, you must target one!");
             }

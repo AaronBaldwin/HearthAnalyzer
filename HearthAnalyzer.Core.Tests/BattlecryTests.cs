@@ -296,6 +296,82 @@ namespace HearthAnalyzer.Core.Tests
         }
 
         /// <summary>
+        /// Destroy a minion with 7 attack or more
+        /// </summary>
+        [TestMethod]
+        public void BigGameHunter()
+        {
+            var hunter = HearthEntityFactory.CreateCard<BigGameHunter>();
+            hunter.CurrentManaCost = 0;
+
+            var yeti = HearthEntityFactory.CreateCard<ChillwindYeti>();
+            yeti.TakeBuff(10, 0);
+
+            var faerie = HearthEntityFactory.CreateCard<FaerieDragon>();
+
+            // No valid target, no supplied target
+            player.AddCardToHand(hunter);
+            player.PlayCard(hunter, null);
+            Assert.IsTrue(GameEngine.GameState.CurrentPlayerPlayZone.Contains(hunter));
+
+            GameEngine.GameState.Board.RemoveCard(hunter);
+            player.AddCardToHand(hunter);
+
+            // No valid target, supplied target
+            try
+            {
+                player.PlayCard(hunter, yeti);
+                Assert.Fail("Shouldn't be able to mark yeti as target");
+            }
+            catch (InvalidOperationException)
+            {
+            }
+            finally
+            {
+                GameEngine.GameState.Board.RemoveCard(hunter);
+                player.AddCardToHand(hunter);
+            }
+
+            GameEngine.GameState.WaitingPlayerPlayZone[0] = yeti;
+            GameEngine.GameState.WaitingPlayerPlayZone[1] = faerie;
+
+            // Valid target, no supplied target
+            try
+            {
+                player.PlayCard(hunter, null);
+                Assert.Fail("Can't play without a target");
+            }
+            catch (InvalidOperationException)
+            {
+            }
+            finally
+            {
+                GameEngine.GameState.Board.RemoveCard(hunter);
+                player.AddCardToHand(hunter);
+            }
+
+            // Valid target on board, invalid supplied target
+            try
+            {
+                player.PlayCard(hunter, faerie);
+                Assert.Fail("Shouldn't be able to target invalid minions");
+            }
+            catch (InvalidOperationException)
+            {
+            }
+            finally
+            {
+                GameEngine.GameState.Board.RemoveCard(hunter);
+                player.AddCardToHand(hunter);
+            }
+
+            // Valid target, supplied target
+            player.PlayCard(hunter, yeti);
+
+            Assert.IsTrue(GameEngine.DeadCardsThisTurn.Contains(yeti), "Verify yeti died");
+        }
+
+        /// <summary>
         /// Freeze a character
         /// </summary>
         [TestMethod]

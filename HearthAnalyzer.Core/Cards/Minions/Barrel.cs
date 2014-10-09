@@ -11,9 +11,6 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// 
     /// Is something in this barrel?
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
     public class Barrel : BaseMinion
     {
         private const int MANA_COST = 0;
