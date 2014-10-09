@@ -27,6 +27,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.OriginalManaCost = MANA;
             this.CurrentManaCost = MANA;
             this.OriginalAttackPower = ATTACK;
+            this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
 
             this.ApplyStatusEffects(MinionStatusEffects.TAUNT);

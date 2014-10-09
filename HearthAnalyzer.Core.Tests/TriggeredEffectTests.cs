@@ -239,5 +239,39 @@ namespace HearthAnalyzer.Core.Tests
             Assert.AreEqual(playerYeti.MaxHealth - 2, playerYeti.CurrentHealth, "Verify player yeti took damage");
             Assert.AreEqual(opponentYeti.MaxHealth - 2, opponentYeti.CurrentHealth, "Verify opponent yeti took damage");
         }
+
+        /// <summary>
+        /// Your minions trigger their deathrattles twice
+        /// </summary>
+        [TestMethod]
+        public void BaronRivendare()
+        {
+            var baron = HearthEntityFactory.CreateCard<BaronRivendare>();
+
+            var playerAbom = HearthEntityFactory.CreateCard<Abomination>();
+            playerAbom.CurrentManaCost = 0;
+
+            var opponentAbom = HearthEntityFactory.CreateCard<Abomination>();
+            opponentAbom.TakeBuff(0, 10); // Just so it doesn't die to double player abom deathrattle
+            opponentAbom.ApplyStatusEffects(MinionStatusEffects.CHARGE);
+            opponentAbom.CurrentManaCost = 0;
+
+
+            GameEngine.GameState.CurrentPlayerPlayZone[0] = baron;
+
+            player.AddCardToHand(playerAbom);
+            opponent.AddCardToHand(opponentAbom);
+
+            player.PlayCard(playerAbom, null);
+
+            GameEngine.EndTurn();
+
+            // Kill the player Abom which should trigger its deathrattle twice doing 4 damage to everybody
+            opponent.PlayCard(opponentAbom, null);
+            opponentAbom.Attack(playerAbom);
+
+            Assert.AreEqual(baron.MaxHealth - 4, baron.CurrentHealth, "Verify baron got hit by deathrattle twice");
+            Assert.AreEqual(6, opponentAbom.CurrentHealth, "Verify opponent abom took 4 damage from retaliation and 4 from double deathrattle");
+        }
     }
 }

@@ -49,7 +49,7 @@ namespace HearthAnalyzer.Core.Cards
             int actualHealAmount = healAmount;
 
             var playZone = GameEngine.GameState.CurrentPlayerPlayZone;
-            if (playZone.Any(card => card is AuchenaiSoulpriest))
+            if (playZone.Any(card => card is AuchenaiSoulpriest && !((BaseMinion)card).IsSilenced))
             {
                 actualHealAmount += this.BonusSpellPower;
             }

@@ -12,7 +12,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// Your minions trigger their <b>Deathrattles</b> twice.
     /// </summary>
     /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
+    /// Implemented the effect in GameEngine.TriggerDeathrattles() as a special check
     /// </remarks>
     public class BaronRivendare : BaseMinion
     {

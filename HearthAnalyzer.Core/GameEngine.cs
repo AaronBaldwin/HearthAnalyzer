@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Common.Logging;
 using HearthAnalyzer.Core.Cards;
+using HearthAnalyzer.Core.Cards.Minions;
 using HearthAnalyzer.Core.Cards.Spells;
 using HearthAnalyzer.Core.Deathrattles;
 
@@ -55,7 +56,7 @@ namespace HearthAnalyzer.Core
             Random = randomSeed != 0 ? new Random(randomSeed) : new Random();
 
             GameEventManager.Initialize();
-            Deathrattles = new Dictionary<BaseCard, BaseDeathrattle>();
+            Deathrattles = new Dictionary<BaseCard, List<BaseDeathrattle>>();
             GameState = new GameState(player, opponent, board, turnNumber, currentPlayer);
             DeadCardsThisTurn = new List<BaseCard>();
             DeadPlayersThisTurn = new List<BasePlayer>();
@@ -94,7 +95,7 @@ namespace HearthAnalyzer.Core
         /// <summary>
         /// The list of deathrattles active on the board
         /// </summary>
-        public static Dictionary<BaseCard, BaseDeathrattle> Deathrattles { get; private set; } 
+        public static Dictionary<BaseCard, List<BaseDeathrattle>> Deathrattles { get; private set; } 
 
         /// <summary>
         /// The GameEngine's random number generator
@@ -243,7 +244,14 @@ namespace HearthAnalyzer.Core
         /// <param name="baseDeathrattle">The baseDeathrattle to perform</param>
         public static void RegisterDeathrattle(BaseCard source, BaseDeathrattle baseDeathrattle)
         {
-            GameEngine.Deathrattles[source] = baseDeathrattle;
+            if (!GameEngine.Deathrattles.ContainsKey(source))
+            {
+                GameEngine.Deathrattles[source] = new List<BaseDeathrattle>(){baseDeathrattle};
+            }
+            else
+            {
+                GameEngine.Deathrattles[source].Add(baseDeathrattle);    
+            }
         }
 
         /// <summary>
@@ -274,8 +282,24 @@ namespace HearthAnalyzer.Core
             {
                 if (GameEngine.Deathrattles.ContainsKey(card))
                 {
-                    GameEngine.Deathrattles[card].Deathrattle();
+                    GameEngine.Deathrattles[card].ForEach(deathrattle => deathrattle.Deathrattle());
 
+                    // If the triggering card's player has a Baron Rivendare on the board, trigger again
+                    List<BaseCard> cardPlayZone;
+                    if (card.Owner == GameEngine.GameState.CurrentPlayer)
+                    {
+                        cardPlayZone = GameEngine.GameState.CurrentPlayerPlayZone;
+                    }
+                    else
+                    {
+                        cardPlayZone = GameEngine.GameState.WaitingPlayerPlayZone;
+                    }
+
+                    if (cardPlayZone.Any(minion => minion is BaronRivendare && !((BaseMinion)minion).IsSilenced))
+                    {
+                        GameEngine.Deathrattles[card].ForEach(deathrattle => deathrattle.Deathrattle());
+                    }
+                    
                     deathrattleTriggered = true;
 
                     GameEngine.Deathrattles.Remove(card);
