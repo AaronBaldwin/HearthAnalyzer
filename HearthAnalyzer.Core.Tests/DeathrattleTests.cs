@@ -44,7 +44,7 @@ namespace HearthAnalyzer.Core.Tests
             var abom1 = HearthEntityFactory.CreateCard<Abomination>();
 
             abom1.CurrentManaCost = 0;
-            player.Hand.Add(abom1);
+            player.AddCardToHand(abom1);
             
             GameEngine.GameState.CurrentPlayerPlayZone[0] = yeti1;
             GameEngine.GameState.CurrentPlayerPlayZone[1] = yeti2;
@@ -85,7 +85,7 @@ namespace HearthAnalyzer.Core.Tests
             GameEngine.GameState.CurrentPlayerPlayZone[1] = faerie;
             GameEngine.GameState.WaitingPlayerPlayZone[0] = giant;
 
-            player.Hand.Add(ambusher);
+            player.AddCardToHand(ambusher);
 
             player.PlayCard(ambusher, null);
 
@@ -110,7 +110,7 @@ namespace HearthAnalyzer.Core.Tests
 
             GameEngine.GameState.CurrentPlayerPlayZone[0] = yeti;
 
-            player.Hand.Add(deathsbite);
+            player.AddCardToHand(deathsbite);
             player.ApplyStatusEffects(PlayerStatusEffects.WINDFURY);
 
             player.PlayCard(deathsbite, null);
@@ -125,14 +125,14 @@ namespace HearthAnalyzer.Core.Tests
             deathsbite = HearthEntityFactory.CreateCard<DeathsBite>();
             deathsbite.CurrentManaCost = 0;
 
-            player.Hand.Add(deathsbite);
+            player.AddCardToHand(deathsbite);
             player.PlayCard(deathsbite, null);
 
             var weaponsmith = HearthEntityFactory.CreateCard<ArathiWeaponsmith>();
             weaponsmith.CurrentManaCost = 0;
             weaponsmith.Owner = player;
 
-            player.Hand.Add(weaponsmith);
+            player.AddCardToHand(weaponsmith);
             player.PlayCard(weaponsmith, null);
 
             // death rattle should trigger, damaging the yeti and the weaponsmith

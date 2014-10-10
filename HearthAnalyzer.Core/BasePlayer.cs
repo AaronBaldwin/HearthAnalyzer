@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,11 +17,12 @@ namespace HearthAnalyzer.Core
     public abstract class BasePlayer : IDamageableEntity, IAttacker, IEquatable<BasePlayer>
     {
         internal int attacksThisTurn = 0;
+        internal List<BaseCard> hand; 
 
         protected BasePlayer(int id = -1)
         {
             this.Id = id;
-            this.Hand = new List<BaseCard>();
+            this.hand = new List<BaseCard>();
             this.Deck = new Deck();
             this.Health = 30;
             this.Armor = 0;
@@ -49,7 +51,10 @@ namespace HearthAnalyzer.Core
         /// <summary>
         /// The players hand
         /// </summary>
-        public List<BaseCard> Hand;
+        public ReadOnlyCollection<BaseCard> Hand
+        {
+            get { return this.hand.AsReadOnly(); }
+        }
 
         /// <summary>
         /// The player's deck
@@ -235,7 +240,7 @@ namespace HearthAnalyzer.Core
             playZone[gameboardPos] = minion;
 
             // Remove it from the player's hand
-            this.Hand.Remove(minion);
+            this.hand.Remove(minion);
 
             // Remove mana from the player
             this.Mana -= minion.CurrentManaCost;
@@ -296,7 +301,7 @@ namespace HearthAnalyzer.Core
             }
 
             // Remove it from the player's hand
-            this.Hand.Remove(spell);
+            this.hand.Remove(spell);
 
             // Remove mana from the player
             this.Mana -= spell.CurrentManaCost;
@@ -321,7 +326,7 @@ namespace HearthAnalyzer.Core
         /// <param name="subTarget">The sub target for this weapon if applicable</param>
         public void PlayWeapon(BaseWeapon weapon, IDamageableEntity subTarget = null)
         {
-            this.Hand.Remove(weapon);
+            this.hand.Remove(weapon);
 
             this.Mana -= weapon.CurrentManaCost;
 
@@ -498,9 +503,32 @@ namespace HearthAnalyzer.Core
             }
             else
             {
-                this.Hand.Add(card);
+                this.hand.Add(card);
                 card.Owner = this;
             }
+        }
+
+        /// <summary>
+        /// Adds a list of cards to the player's hand
+        /// </summary>
+        /// <param name="cards">The cards to add</param>
+        public void AddCardsToHand(List<BaseCard> cards)
+        {
+            cards.ForEach(this.AddCardToHand);
+        }
+
+        /// <summary>
+        /// Removes a card from the player's hand
+        /// </summary>
+        /// <param name="card">The card to remove</param>
+        public void RemoveCardFromHand(BaseCard card)
+        {
+            if (!this.hand.Contains(card))
+            {
+                throw new InvalidOperationException(string.Format("Card {0} was not found in hand!", card));
+            }
+
+            this.hand.Remove(card);
         }
 
         #endregion

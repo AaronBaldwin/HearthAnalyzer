@@ -169,7 +169,7 @@ namespace HearthAnalyzer.Core
             switch (srcZone)
             {
                 case Zones.FRIENDLY_HAND:
-                    srcZoneContainer = GameState.Player.Hand;
+                    srcZoneContainer = GameState.Player.hand;
                     cardToMove = GameState.Player.Hand.ElementAtOrDefault(srcPos);
                     break;
 
@@ -179,7 +179,7 @@ namespace HearthAnalyzer.Core
                     break;
 
                 case Zones.OPPOSING_HAND:
-                    srcZoneContainer = GameState.Opponent.Hand;
+                    srcZoneContainer = GameState.Opponent.hand;
                     cardToMove = GameState.Opponent.Hand.ElementAtOrDefault(srcPos);
                     break;
 
@@ -206,7 +206,7 @@ namespace HearthAnalyzer.Core
                     break;
 
                 case Zones.FRIENDLY_HAND:
-                    destZoneContainer = GameState.Player.Hand;
+                    destZoneContainer = GameState.Player.hand;
                     break;
 
                 case Zones.FRIENDLY_GRAVEYARD:
@@ -218,7 +218,7 @@ namespace HearthAnalyzer.Core
                     break;
 
                 case Zones.OPPOSING_HAND:
-                    destZoneContainer = GameState.Opponent.Hand;
+                    destZoneContainer = GameState.Opponent.hand;
                     break;
 
                 case Zones.OPPOSING_GRAVEYARD:
@@ -324,8 +324,8 @@ namespace HearthAnalyzer.Core
 
             // Deal cards to the players and give them a chance to mulligan
             // First player gets 3 cards, second player gets 4 cards
-            GameState.CurrentPlayer.Hand.AddRange(GameState.CurrentPlayer.Deck.DrawCards(3));
-            GameState.WaitingPlayer.Hand.AddRange(GameState.WaitingPlayer.Deck.DrawCards(4));
+            GameState.CurrentPlayer.AddCardsToHand(GameState.CurrentPlayer.Deck.DrawCards(3));
+            GameState.WaitingPlayer.AddCardsToHand(GameState.WaitingPlayer.Deck.DrawCards(4));
         }
 
         /// <summary>
@@ -347,7 +347,7 @@ namespace HearthAnalyzer.Core
                     }
 
                     Logger.Instance.InfoFormat("{0} is mulliganing {1}", player.LogString(), card);
-                    player.Hand.Remove(card);
+                    player.RemoveCardFromHand(card);
                 }
 
                 // Draw new cards equal to the amount mulliganed

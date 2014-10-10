@@ -46,7 +46,7 @@ namespace HearthAnalyzer.Core.Tests
             acolyte.Owner = player;
             acolyte.CurrentManaCost = 0;
 
-            player.Hand.Add(acolyte);
+            player.AddCardToHand(acolyte);
             player.PlayCard(acolyte, null);
 
             acolyte.TakeDamage(1);
@@ -75,7 +75,7 @@ namespace HearthAnalyzer.Core.Tests
             var weapon = HearthEntityFactory.CreateCard<FieryWarAxe>();
             var fireball = HearthEntityFactory.CreateCard<Fireball>();
 
-            player.Hand.AddRange(new List<BaseCard>() {yeti, rag, azureDrake, weapon, fireball, alarmo});
+            player.AddCardsToHand(new List<BaseCard>() {yeti, rag, azureDrake, weapon, fireball, alarmo});
 
             player.PlayCard(alarmo, null);
 
@@ -100,7 +100,7 @@ namespace HearthAnalyzer.Core.Tests
 
             var azureDrake = HearthEntityFactory.CreateCard<AzureDrake>();
 
-            player.Hand.AddRange(new List<BaseCard>() {alarmo, azureDrake});
+            player.AddCardsToHand(new List<BaseCard>() {alarmo, azureDrake});
 
             player.PlayCard(alarmo, null);
 

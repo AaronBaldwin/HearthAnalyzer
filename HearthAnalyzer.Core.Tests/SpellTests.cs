@@ -73,7 +73,7 @@ namespace HearthAnalyzer.Core.Tests
             fireball.Owner = player;
             fireball.CurrentManaCost = 0;
 
-            player.Hand.Add(fireball);
+            player.AddCardToHand(fireball);
 
             var rag = new RagnarostheFirelord(3);
             GameEngine.GameState.Board.OpponentPlayZone.Add(rag);
@@ -82,7 +82,7 @@ namespace HearthAnalyzer.Core.Tests
 
             Assert.AreEqual(2, rag.CurrentHealth, "Verify rag took 6 damage");
 
-            player.Hand.Add(fireball);
+            player.AddCardToHand(fireball);
             player.PlayCard(fireball, opponent);
             Assert.AreEqual(24, opponent.Health, "Verify the opponent took 6 damage");
         }
@@ -149,7 +149,7 @@ namespace HearthAnalyzer.Core.Tests
             GameEngine.GameState.CurrentPlayerPlayZone[0] = yeti;
             GameEngine.GameState.CurrentPlayerPlayZone[1] = azureDrake;
 
-            player.Hand.Add(ancientMage);
+            player.AddCardToHand(ancientMage);
             player.PlayCard(ancientMage, null, 1);
 
             // Yeti should have +1 SP and Azure Drake should have +2
@@ -161,7 +161,7 @@ namespace HearthAnalyzer.Core.Tests
             fireball.Owner = player;
             fireball.CurrentManaCost = 0;
 
-            player.Hand.Add(fireball);
+            player.AddCardToHand(fireball);
 
             // Fireball should do 6 + 3 damage
             player.PlayCard(fireball, opponent);

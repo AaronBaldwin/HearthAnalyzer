@@ -46,7 +46,7 @@ namespace HearthAnalyzer.Core.Tests
             lore.CurrentManaCost = 0;
             lore.Owner = player;
 
-            player.Hand.Add(lore);
+            player.AddCardToHand(lore);
             try
             {
                 player.PlayCard(lore, null);
@@ -58,7 +58,7 @@ namespace HearthAnalyzer.Core.Tests
             finally
             {
                 GameEngine.GameState.Board.RemoveCard(lore);
-                player.Hand.Add(lore);
+                player.AddCardToHand(lore);
             }
 
             // Verify draw 2 cards
@@ -66,7 +66,7 @@ namespace HearthAnalyzer.Core.Tests
             Assert.AreEqual(27, player.Health, "Verify the player drew two fatigue cards");
 
             GameEngine.GameState.Board.RemoveCard(lore);
-            player.Hand.Add(lore);
+            player.AddCardToHand(lore);
 
             // Verify heal character
             opponent.Health = 25;
@@ -86,14 +86,14 @@ namespace HearthAnalyzer.Core.Tests
             war.CurrentManaCost = 0;
             war.Owner = player;
 
-            player.Hand.Add(war);
+            player.AddCardToHand(war);
 
             // Verify Attack Buff
             player.PlayCard(war, null, 0, CardEffect.FIRST);
             Assert.AreEqual(war.OriginalAttackPower + 5, war.CurrentAttackPower, "Verify attack buff");
 
             GameEngine.GameState.Board.RemoveCard(war);
-            player.Hand.Add(war);
+            player.AddCardToHand(war);
 
             // Verify health and taunt
             player.PlayCard(war, null, 0, CardEffect.SECOND);

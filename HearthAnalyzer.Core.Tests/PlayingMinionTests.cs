@@ -21,7 +21,7 @@ namespace HearthAnalyzer.Core.Tests
             player = new Warlock();
             for (int i = 0; i < 10; i++)
             {
-                player.Hand.Add(new ChillwindYeti(i));
+                player.AddCardToHand(new ChillwindYeti(i));
             }
 
             GameEngine.Initialize(player, null);
@@ -42,7 +42,7 @@ namespace HearthAnalyzer.Core.Tests
         public void PlaceMinionsUntilFull()
         {
             // For this test's purpose, we don't care about mana
-            player.Hand.ForEach(yeti => yeti.CurrentManaCost = 0);
+            player.hand.ForEach(yeti => yeti.CurrentManaCost = 0);
 
             for (int i = 0; i < 7; i++)
             {
@@ -96,7 +96,7 @@ namespace HearthAnalyzer.Core.Tests
         public void MinionShifting()
         {
             // Don't care about mana cost for this test
-            player.Hand.ForEach(card => card.CurrentManaCost = 0);
+            player.hand.ForEach(card => card.CurrentManaCost = 0);
 
             GameEngine.GameState.Board.PlayerPlayZone = new List<BaseCard>(Constants.MAX_CARDS_ON_BOARD)
             {

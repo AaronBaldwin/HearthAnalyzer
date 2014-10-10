@@ -51,19 +51,19 @@ namespace HearthAnalyzer.Core.Tests
 
             // Verify buffing friendly minion
             sergeant.CurrentManaCost = 0;
-            player.Hand.Add(sergeant);
+            player.AddCardToHand(sergeant);
             player.PlayCard(sergeant, yeti);
 
             Assert.AreEqual(yeti.OriginalAttackPower + 2, yeti.CurrentAttackPower, "Verify yeti got an attack buff");
 
             // Verify buffing enemy minion
-            player.Hand.Add(sergeant);
+            player.AddCardToHand(sergeant);
             player.PlayCard(sergeant, faerie);
 
             Assert.AreEqual(faerie.OriginalAttackPower + 2, faerie.CurrentAttackPower, "Verify faerie got an attack buff");
 
             // Verify can't buff players
-            player.Hand.Add(sergeant);
+            player.AddCardToHand(sergeant);
             try
             {
                 player.PlayCard(sergeant, player);
@@ -88,13 +88,13 @@ namespace HearthAnalyzer.Core.Tests
             opponent.Weapon = weapon;
             opponent.Weapon.WeaponOwner = opponent;
 
-            player.Hand.Add(ooze);
+            player.AddCardToHand(ooze);
             player.PlayCard(ooze, null);
 
             Assert.IsNull(opponent.Weapon, "Verify opponent weapon got destroyed");
 
             // Just make sure it doesn't poop itself if there are no weapons to destroy
-            player.Hand.Add(ooze);
+            player.AddCardToHand(ooze);
             player.PlayCard(ooze, null);
         }
 
@@ -111,7 +111,7 @@ namespace HearthAnalyzer.Core.Tests
 
             GameEngine.GameState.WaitingPlayerPlayZone[0] = rag;
 
-            player.Hand.Add(aldor);
+            player.AddCardToHand(aldor);
             player.PlayCard(aldor, rag);
 
             Assert.AreEqual(1, rag.CurrentAttackPower, "Verify rag's attack is changed to 1");
@@ -126,12 +126,12 @@ namespace HearthAnalyzer.Core.Tests
             var alex = HearthEntityFactory.CreateCard<Alexstrasza>();
             alex.CurrentManaCost = 0;
 
-            player.Hand.Add(alex);
+            player.AddCardToHand(alex);
             player.PlayCard(alex, opponent);
 
             Assert.AreEqual(15, opponent.Health, "Verify opponent health is set to 15");
 
-            player.Hand.Add(alex);
+            player.AddCardToHand(alex);
             player.PlayCard(alex, player);
 
             Assert.AreEqual(15, player.Health, "Verify player health is set to 15");
@@ -150,7 +150,7 @@ namespace HearthAnalyzer.Core.Tests
             var yeti = HearthEntityFactory.CreateCard<ChillwindYeti>();
 
             // Verify exception when playing on an empty board with a target
-            player.Hand.Add(brewmaster);
+            player.AddCardToHand(brewmaster);
 
             try
             {
@@ -163,7 +163,7 @@ namespace HearthAnalyzer.Core.Tests
             finally
             {
                 GameEngine.GameState.Board.RemoveCard(brewmaster);
-                player.Hand.Add(brewmaster);
+                player.AddCardToHand(brewmaster);
             }
 
             // Verify playing on an empty board with no target is valid
@@ -176,7 +176,7 @@ namespace HearthAnalyzer.Core.Tests
             // Verify playing brewmaster returns the friendly minion back to the hand
             GameEngine.GameState.CurrentPlayerPlayZone[0] = yeti;
 
-            player.Hand.Add(brewmaster);
+            player.AddCardToHand(brewmaster);
             player.PlayCard(brewmaster, yeti);
 
             Assert.IsTrue(player.Hand.Contains(yeti), "Verify yeti was returned to the owner's hand");
@@ -186,9 +186,9 @@ namespace HearthAnalyzer.Core.Tests
             GameEngine.GameState.Board.RemoveCard(brewmaster);
 
             // Verify playing brewmaster and targeting an enemy minion is not valid
-            player.Hand.Remove(yeti);
+            player.RemoveCardFromHand(yeti);
             GameEngine.GameState.WaitingPlayerPlayZone[0] = yeti;
-            player.Hand.Add(brewmaster);
+            player.AddCardToHand(brewmaster);
 
             try
             {
@@ -216,7 +216,7 @@ namespace HearthAnalyzer.Core.Tests
             GameEngine.GameState.CurrentPlayerPlayZone[0] = yeti;
             GameEngine.GameState.CurrentPlayerPlayZone[1] = azureDrake;
 
-            player.Hand.Add(ancientMage);
+            player.AddCardToHand(ancientMage);
             player.PlayCard(ancientMage, null, 1);
 
             // Yeti should have +1 SP and Azure Drake should have +2
@@ -235,7 +235,7 @@ namespace HearthAnalyzer.Core.Tests
             weaponsmith.Owner = player;
             weaponsmith.CurrentManaCost = 0;
 
-            player.Hand.Add(weaponsmith);
+            player.AddCardToHand(weaponsmith);
             player.PlayCard(weaponsmith, null);
 
             Assert.IsNotNull(player.Weapon, "Verify player has a weapon");
@@ -254,7 +254,7 @@ namespace HearthAnalyzer.Core.Tests
 
             var opponentCurrentMaxMana = opponent.MaxMana;
 
-            player.Hand.Add(arcaneGolem);
+            player.AddCardToHand(arcaneGolem);
             player.PlayCard(arcaneGolem, null);
 
             Assert.AreEqual(opponentCurrentMaxMana + 1, opponent.MaxMana, "Verify opponent max mana increased");
@@ -383,7 +383,7 @@ namespace HearthAnalyzer.Core.Tests
             // Verify targeting a minion on the board
             GameEngine.GameState.WaitingPlayerPlayZone[0] = faerie;
 
-            player.Hand.Add(frostElemental);
+            player.AddCardToHand(frostElemental);
             frostElemental.CurrentManaCost = 0;
 
             player.PlayCard(frostElemental, faerie);
@@ -392,7 +392,7 @@ namespace HearthAnalyzer.Core.Tests
 
             // Verify targeting a character
             frostElemental = HearthEntityFactory.CreateCard<FrostElemental>();
-            player.Hand.Add(frostElemental);
+            player.AddCardToHand(frostElemental);
             frostElemental.CurrentManaCost = 0;
 
             player.PlayCard(frostElemental, opponent);
@@ -411,7 +411,7 @@ namespace HearthAnalyzer.Core.Tests
 
             GameEngine.GameState.WaitingPlayerPlayZone[0] = raptor;
 
-            player.Hand.Add(commando);
+            player.AddCardToHand(commando);
             commando.CurrentManaCost = 0;
 
             player.PlayCard(commando, raptor, 0);

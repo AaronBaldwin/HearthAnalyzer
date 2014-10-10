@@ -59,7 +59,7 @@ namespace HearthAnalyzer.Core.Tests
             // Mulligan the player's hand completely
             var handCount = player.Hand.Count;
             BaseCard[] originalHand = new BaseCard[handCount];
-            player.Hand.CopyTo(originalHand);
+            player.Hand.CopyTo(originalHand, 0);
             GameEngine.Mulligan(player, originalHand);
 
             // Verify that the player's hand don't contain the same cards
@@ -71,7 +71,7 @@ namespace HearthAnalyzer.Core.Tests
             // For the opponent, choose not to mulligan any cards
             var opponentHandCount = opponent.Hand.Count;
             BaseCard[] opponentOriginalHand = new BaseCard[opponentHandCount];
-            opponent.Hand.CopyTo(opponentOriginalHand);
+            opponent.Hand.CopyTo(opponentOriginalHand, 0);
             GameEngine.Mulligan(opponent, null);
 
             // Verify that the opponent's hand contains the same cards
@@ -186,7 +186,7 @@ namespace HearthAnalyzer.Core.Tests
             var hellfire = HearthEntityFactory.CreateCard<Hellfire>();
             hellfire.Owner = player;
             hellfire.CurrentManaCost = 0;
-            player.Hand.Add(hellfire);
+            player.AddCardToHand(hellfire);
             player.PlayCard(hellfire, null);
 
             Task.Factory.StartNew(() => this.WaitUntilGameEnded(250, 8)).Wait();
@@ -204,7 +204,7 @@ namespace HearthAnalyzer.Core.Tests
             opponent.Health = 1;
             var stormpikeCommando = HearthEntityFactory.CreateCard<StormpikeCommando>();
             stormpikeCommando.CurrentManaCost = 0;
-            player.Hand.Add(stormpikeCommando);
+            player.AddCardToHand(stormpikeCommando);
 
             GameEngine.GameState.CurrentPlayer = player;
             player.PlayCard(stormpikeCommando, opponent);
@@ -224,7 +224,7 @@ namespace HearthAnalyzer.Core.Tests
             player.MaxMana = Constants.MAX_MANA_CAPACITY;
             var stormAxe = HearthEntityFactory.CreateCard<StormforgedAxe>();
             stormAxe.CurrentManaCost = 0;
-            player.Hand.Add(stormAxe);
+            player.AddCardToHand(stormAxe);
 
             GameEngine.GameState.CurrentPlayer = player;
             player.PlayCard(stormAxe, null);
@@ -277,7 +277,7 @@ namespace HearthAnalyzer.Core.Tests
             alakir.CurrentManaCost = 0;
 
             GameEngine.GameState.CurrentPlayer = player;
-            player.Hand.Add(alakir);
+            player.AddCardToHand(alakir);
 
             player.PlayCard(alakir, null);
             alakir.Attack(opponent);
@@ -333,7 +333,7 @@ namespace HearthAnalyzer.Core.Tests
             ancientWatcher.CurrentManaCost = 0;
             ancientWatcher.Owner = player;
 
-            player.Hand.Add(ancientWatcher);
+            player.AddCardToHand(ancientWatcher);
             player.PlayCard(ancientWatcher, null);
 
             GameEngine.EndTurn();
