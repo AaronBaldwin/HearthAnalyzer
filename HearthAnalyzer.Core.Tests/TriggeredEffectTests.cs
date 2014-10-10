@@ -69,6 +69,17 @@ namespace HearthAnalyzer.Core.Tests
             alarmo.CurrentManaCost = 0;
             alarmo.Owner = player;
 
+            // First check base case where the hand does not contain any valid minions
+            player.AddCardToHand(alarmo);
+            player.PlayCard(alarmo, null);
+            
+            GameEngine.EndTurn();
+            GameEngine.EndTurn();
+
+            Assert.IsTrue(GameEngine.GameState.CurrentPlayerPlayZone.Contains(alarmo), "Verify alarmobot is still on the board");
+
+            GameEngine.GameState.Board.RemoveCard(alarmo);
+
             var yeti = HearthEntityFactory.CreateCard<ChillwindYeti>();
             var rag = HearthEntityFactory.CreateCard<RagnarostheFirelord>();
             var azureDrake = HearthEntityFactory.CreateCard<AzureDrake>();

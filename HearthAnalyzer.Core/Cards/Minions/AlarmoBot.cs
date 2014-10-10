@@ -40,15 +40,18 @@ namespace HearthAnalyzer.Core.Cards.Minions
             if (player == this.Owner)
             {
                 var minionsInHand = this.Owner.Hand.Where(card => card is BaseMinion).ToList();
-                int randomMinionIndex = GameEngine.Random.Next(minionsInHand.Count());
-                var randomMinion = minionsInHand[randomMinionIndex] as BaseMinion;
+                if (minionsInHand.Count() > 0)
+                {
+                    int randomMinionIndex = GameEngine.Random.Next(minionsInHand.Count());
+                    var randomMinion = minionsInHand[randomMinionIndex] as BaseMinion;
 
-                GameEngine.GameState.Board.RemoveCard(this);
-                player.AddCardToHand(this);
-                GameEventManager.UnregisterForEvents(this);
+                    GameEngine.GameState.Board.RemoveCard(this);
+                    player.AddCardToHand(this);
+                    GameEventManager.UnregisterForEvents(this);
 
-                var firstEmptySlot = GameEngine.GameState.CurrentPlayerPlayZone.FindIndex(card => card == null);
-                player.PlayCard(randomMinion, null, firstEmptySlot, CardEffect.NONE, forceSummoned: true);
+                    var firstEmptySlot = GameEngine.GameState.CurrentPlayerPlayZone.FindIndex(card => card == null);
+                    player.PlayCard(randomMinion, null, firstEmptySlot, CardEffect.NONE, forceSummoned: true);
+                }
             }
         }
     }
