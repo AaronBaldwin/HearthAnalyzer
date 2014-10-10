@@ -11,14 +11,12 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// 
     /// <b>Battlecry:</b> All minions lose <b>Divine Shield</b>. Gain +3/+3 for each Shield lost.
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
-    public class BloodKnight : BaseMinion
+    public class BloodKnight : BaseMinion, IBattlecry
     {
-        private const int MANA_COST = 3;
-        private const int ATTACK_POWER = 3;
-        private const int HEALTH = 3;
+        internal const int MANA_COST = 3;
+        internal const int ATTACK_POWER = 3;
+        internal const int HEALTH = 3;
+        internal const int BATTLECRY_POWER = 3;
 
         public BloodKnight(int id = -1)
         {
@@ -30,6 +28,25 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
 			this.Type = CardType.NORMAL_MINION;
+        }
+
+        public void Battlecry(IDamageableEntity subTarget)
+        {
+            GameEngine.GameState.CurrentPlayerPlayZone.ForEach(card => this.RemoveDivineShieldAndBuffBloodKnight((BaseMinion)card));
+            GameEngine.GameState.WaitingPlayerPlayZone.ForEach(card => this.RemoveDivineShieldAndBuffBloodKnight((BaseMinion)card));
+        }
+
+        /// <summary>
+        /// Removes divine shield from the minion if it has it and buff's the blood knight
+        /// </summary>
+        /// <param name="minion">The minion to remove divine shield from</param>
+        private void RemoveDivineShieldAndBuffBloodKnight(BaseMinion minion)
+        {
+            if (minion == null) return;
+            if (!minion.HasDivineShield) return;
+
+            minion.RemoveStatusEffects(MinionStatusEffects.DIVINE_SHIELD);
+            this.TakeBuff(BATTLECRY_POWER, BATTLECRY_POWER);
         }
     }
 }

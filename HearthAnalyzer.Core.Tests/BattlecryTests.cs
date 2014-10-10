@@ -5,10 +5,10 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using HearthAnalyzer.Core.Cards;
+using HearthAnalyzer.Core.Cards.Minions;
 using HearthAnalyzer.Core.Cards.Weapons;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using HearthAnalyzer.Core.Cards.Minions;
 using HearthAnalyzer.Core.Heroes;
 
 namespace HearthAnalyzer.Core.Tests
@@ -369,6 +369,40 @@ namespace HearthAnalyzer.Core.Tests
             player.PlayCard(hunter, yeti);
 
             Assert.IsTrue(GameEngine.DeadCardsThisTurn.Contains(yeti), "Verify yeti died");
+        }
+
+        /// <summary>
+        /// All minions lose divine shield. Gain +3/3 for each divine shield lost.
+        /// </summary>
+        [TestMethod]
+        public void BloodKnight()
+        {
+            var bloodKnight = HearthEntityFactory.CreateCard<BloodKnight>();
+            bloodKnight.CurrentManaCost = 0;
+
+            // No divine shields
+            player.AddCardToHand(bloodKnight);
+            player.PlayCard(bloodKnight, null);
+
+            Assert.AreEqual(Cards.Minions.BloodKnight.ATTACK_POWER, bloodKnight.CurrentAttackPower, "Verify attack unchanged");
+            Assert.AreEqual(Cards.Minions.BloodKnight.HEALTH, bloodKnight.MaxHealth, "Verify health unchanged");
+
+            GameEngine.GameState.Board.RemoveCard(bloodKnight);
+            player.AddCardToHand(bloodKnight);
+
+            // Multiple divine shields
+            var playerArgentSquire = HearthEntityFactory.CreateCard<ArgentSquire>();
+            var opponentArgentSquire = HearthEntityFactory.CreateCard<ArgentSquire>();
+
+            GameEngine.GameState.CurrentPlayerPlayZone[0] = playerArgentSquire;
+            GameEngine.GameState.WaitingPlayerPlayZone[0] = opponentArgentSquire;
+
+            player.PlayCard(bloodKnight, null);
+
+            Assert.IsFalse(playerArgentSquire.HasDivineShield, "Verify player argent squire lost divine shield");
+            Assert.IsFalse(opponentArgentSquire.HasDivineShield, "Verify opponent argent squire lost divine shield");
+            Assert.AreEqual(Cards.Minions.BloodKnight.ATTACK_POWER + 6, bloodKnight.CurrentAttackPower, "Verify bloodknight attack was buffed");
+            Assert.AreEqual(Cards.Minions.BloodKnight.HEALTH + 6, bloodKnight.MaxHealth, "Verify bloodknight health was buffed");
         }
 
         /// <summary>
