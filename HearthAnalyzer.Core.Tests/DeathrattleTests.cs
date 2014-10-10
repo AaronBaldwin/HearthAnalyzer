@@ -98,6 +98,28 @@ namespace HearthAnalyzer.Core.Tests
         }
 
         /// <summary>
+        /// Verfiies cards are drawn
+        /// </summary>
+        [TestMethod]
+        public void DeathrattleDrawCard()
+        {
+            var thalnos = HearthEntityFactory.CreateCard<BloodmageThalnos>();
+            thalnos.CurrentManaCost = 0;
+
+            player.AddCardToHand(thalnos);
+            player.PlayCard(thalnos, null);
+
+            var yeti = HearthEntityFactory.CreateCard<ChillwindYeti>();
+            GameEngine.GameState.WaitingPlayerPlayZone[0] = yeti;
+
+            GameEngine.EndTurn();
+
+            yeti.Attack(thalnos);
+
+            Assert.AreEqual(29, player.Health, "Verify player drew one fatigue card");
+        }
+
+        /// <summary>
         /// Verify that if Death's Bite (weapon) dies or gets replaced, it triggers its death rattle
         /// </summary>
         [TestMethod]

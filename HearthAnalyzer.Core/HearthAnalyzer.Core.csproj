@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Deathrattles\DeathrattleDrawCard.cs" />
     <Compile Include="Deathrattles\DeathrattleReturnFriendlyMinion.cs" />
     <Compile Include="Interfaces\IDeathrattler.cs" />
     <Compile Include="HearthEntityFactory.cs" />

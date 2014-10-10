@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HearthAnalyzer.Core.Deathrattles;
 
 namespace HearthAnalyzer.Core.Cards.Minions
 {
@@ -11,14 +12,12 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// 
     /// <b>Spell Damage +1</b>. <b>Deathrattle:</b> Draw a card.
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
-    public class BloodmageThalnos : BaseMinion
+    public class BloodmageThalnos : BaseMinion, IDeathrattler
     {
-        private const int MANA_COST = 2;
-        private const int ATTACK_POWER = 1;
-        private const int HEALTH = 1;
+        internal const int MANA_COST = 2;
+        internal const int ATTACK_POWER = 1;
+        internal const int HEALTH = 1;
+        internal const int BONUS_SPELL_POWER = 1;
 
         public BloodmageThalnos(int id = -1)
         {
@@ -30,6 +29,13 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
 			this.Type = CardType.NORMAL_MINION;
+
+            this.BonusSpellPower = BONUS_SPELL_POWER;
+        }
+
+        public void RegisterDeathrattle()
+        {
+            GameEngine.RegisterDeathrattle(this, new DeathrattleDrawCard(this.Owner, 1));
         }
     }
 }
