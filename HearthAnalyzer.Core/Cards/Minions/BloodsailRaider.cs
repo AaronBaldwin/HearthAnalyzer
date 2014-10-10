@@ -11,14 +11,11 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// 
     /// <b>Battlecry:</b> Gain Attack equal to the Attack of your weapon.
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
-    public class BloodsailRaider : BaseMinion
+    public class BloodsailRaider : BaseMinion, IBattlecry
     {
-        private const int MANA_COST = 2;
-        private const int ATTACK_POWER = 2;
-        private const int HEALTH = 3;
+        internal const int MANA_COST = 2;
+        internal const int ATTACK_POWER = 2;
+        internal const int HEALTH = 3;
 
         public BloodsailRaider(int id = -1)
         {
@@ -30,6 +27,14 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
 			this.Type = CardType.PIRATE;
+        }
+
+        public void Battlecry(IDamageableEntity subTarget)
+        {
+            if (this.Owner.Weapon != null)
+            {
+                this.TakeBuff(this.Owner.Weapon.CurrentAttackPower, 0);
+            }
         }
     }
 }

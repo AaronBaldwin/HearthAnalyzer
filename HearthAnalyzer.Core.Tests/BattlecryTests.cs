@@ -437,6 +437,25 @@ namespace HearthAnalyzer.Core.Tests
         }
 
         /// <summary>
+        /// Gain attack equal the attack of your weapon
+        /// </summary>
+        [TestMethod]
+        public void BloodsailRaiderTest()
+        {
+            var raider = HearthEntityFactory.CreateCard<BloodsailRaider>();
+            raider.CurrentManaCost = 0;
+
+            var gorehowl = HearthEntityFactory.CreateCard<Gorehowl>();
+            gorehowl.WeaponOwner = player;
+            player.Weapon = gorehowl;
+
+            player.AddCardToHand(raider);
+            player.PlayCard(raider, null);
+
+            Assert.AreEqual(BloodsailRaider.ATTACK_POWER + gorehowl.CurrentAttackPower, raider.CurrentAttackPower, "Verify raider got buffed");
+        }
+
+        /// <summary>
         /// Freeze a character
         /// </summary>
         [TestMethod]
