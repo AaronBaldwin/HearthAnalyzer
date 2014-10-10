@@ -11,9 +11,9 @@ namespace HearthAnalyzer.Core.Cards.Weapons
     /// </summary>
     public class FieryWarAxe : BaseWeapon
     {
-        private const int MANA_COST = 2;
-        private const int ATTACK_POWER = 3;
-        private const int DURABILITY = 2;
+        internal const int MANA_COST = 2;
+        internal const int ATTACK_POWER = 3;
+        internal const int DURABILITY = 2;
 
         public FieryWarAxe(int id = -1)
         {

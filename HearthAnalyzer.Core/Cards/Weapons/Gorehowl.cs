@@ -9,7 +9,7 @@ namespace HearthAnalyzer.Core.Cards.Weapons
     /// <summary>
     /// Implements the Gorehowl weapon
     /// </summary>
-    public class Gorehowl : BaseWeapon, IAttacker, IDamageableEntity
+    public class Gorehowl : BaseWeapon
     {
         private const int MANA_COST = 7;
         private const int ATTACK_POWER = 7;
@@ -37,6 +37,22 @@ namespace HearthAnalyzer.Core.Cards.Weapons
             {
                 this.Die();
             }
+        }
+
+        /// <summary>
+        /// Allows the caller to force use the base implementation of TakeDamage
+        /// </summary>
+        /// <param name="damage">The damage to deal</param>
+        /// <param name="forceUseBaseImplementation">Whether or not to use base implementation</param>
+        public void TakeDamage(int damage, bool forceUseBaseImplementation)
+        {
+            if (forceUseBaseImplementation)
+            {
+                base.TakeDamage(damage);
+                return;
+            }
+
+            this.TakeDamage(damage);
         }
     }
 }

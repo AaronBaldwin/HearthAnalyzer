@@ -406,6 +406,37 @@ namespace HearthAnalyzer.Core.Tests
         }
 
         /// <summary>
+        /// Remove one durability from opponent's weapon
+        /// </summary>
+        [TestMethod]
+        public void BloodsailCorsairTest()
+        {
+            var bloodsail = HearthEntityFactory.CreateCard<BloodsailCorsair>();
+            bloodsail.CurrentManaCost = 0;
+
+            var gorehowl = HearthEntityFactory.CreateCard<Gorehowl>();
+            opponent.Weapon = gorehowl;
+            gorehowl.WeaponOwner = opponent;
+
+            player.AddCardToHand(bloodsail);
+            player.PlayCard(bloodsail, null);
+
+            Assert.IsNull(opponent.Weapon, "Verify opponent weapon got destroyed");
+            Assert.IsTrue(GameEngine.DeadCardsThisTurn.Contains(gorehowl), "Verify gorehowl got destroyed");
+
+            var fieryWarAxe = HearthEntityFactory.CreateCard<FieryWarAxe>();
+            opponent.Weapon = fieryWarAxe;
+            fieryWarAxe.WeaponOwner = opponent;
+
+            GameEngine.GameState.Board.RemoveCard(bloodsail);
+            player.AddCardToHand(bloodsail);
+
+            player.PlayCard(bloodsail, null);
+
+            Assert.AreEqual(FieryWarAxe.DURABILITY - 1, fieryWarAxe.Durability, "Verify fiery war axe lost a durability");
+        }
+
+        /// <summary>
         /// Freeze a character
         /// </summary>
         [TestMethod]
