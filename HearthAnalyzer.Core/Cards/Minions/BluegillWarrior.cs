@@ -11,9 +11,6 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// 
     /// <b>Charge</b>
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
     public class BluegillWarrior : BaseMinion
     {
         private const int MANA_COST = 2;
@@ -30,6 +27,8 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
 			this.Type = CardType.MURLOC;
+
+            this.ApplyStatusEffects(MinionStatusEffects.CHARGE);
         }
     }
 }

@@ -8,12 +8,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
 {
     /// <summary>
     /// Implements the Boulderfist Ogre
-    /// 
-    /// 
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
     public class BoulderfistOgre : BaseMinion
     {
         private const int MANA_COST = 6;

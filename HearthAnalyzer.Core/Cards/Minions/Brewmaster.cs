@@ -8,12 +8,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
 {
     /// <summary>
     /// Implements the Brewmaster
-    /// 
-    /// 
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
     public class Brewmaster : BaseMinion
     {
         private const int MANA_COST = 4;
