@@ -37,13 +37,17 @@ namespace HearthAnalyzer.Core.Cards.Minions
             if (indexOfMage - 1 >= 0)
             {
                 var leftMinion = playZone[indexOfMage - 1] as BaseMinion;
-                leftMinion.BonusSpellPower += BATTLE_CRY_POWER;
+                if (leftMinion != null) {
+					leftMinion.BonusSpellPower += BATTLE_CRY_POWER;
+				}
             }
 
             if (indexOfMage + 1 < Constants.MAX_CARDS_ON_BOARD)
             {
-                var rightMinion = playZone[indexOfMage + 1] as BaseMinion;
-                rightMinion.BonusSpellPower += BATTLE_CRY_POWER;
+                var rightMinion = playZone [indexOfMage + 1] as BaseMinion;
+                if (rightMinion != null) {
+					rightMinion.BonusSpellPower += BATTLE_CRY_POWER;
+                }
             }
         }
     }
