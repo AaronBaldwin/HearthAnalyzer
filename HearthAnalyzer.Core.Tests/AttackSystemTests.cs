@@ -154,6 +154,9 @@ namespace HearthAnalyzer.Core.Tests
             yeti.Attack(opponent);
             Assert.IsTrue(yeti.IsExhausted, "Verify the yeti is now exhausted again");
             Assert.IsFalse(yeti.CanAttack, "Verify the yeti can't attack");
+
+            GameEngine.EndTurn();
+            Assert.IsFalse(yeti.IsExhausted, "Verify the yeti is unexhausted after the turn ends");
         }
 
         /// <summary>
@@ -178,6 +181,9 @@ namespace HearthAnalyzer.Core.Tests
             player.Attack(opponent);
             Assert.IsTrue(player.IsExhausted, "Verify the player is exhausted");
             Assert.IsFalse(player.CanAttack, "Verify the player can't attack");
+
+            GameEngine.EndTurn();
+            Assert.IsFalse(player.IsExhausted, "Verify the player is unexhausted after the turn ends");
         }
     }
 }
