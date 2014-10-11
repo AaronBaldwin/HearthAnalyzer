@@ -10,7 +10,6 @@ using HearthAnalyzer.Core.Cards.Minions;
 
 namespace HearthAnalyzer.Core.Tests
 {
-
     [TestClass]
     public class AttackSystemTests : BaseTestSuite
     {
@@ -132,6 +131,53 @@ namespace HearthAnalyzer.Core.Tests
 
             Assert.AreEqual(5, yeti1.CurrentHealth, "Verify yeti is at full health");
             Assert.AreEqual(26, player.Health, "Verify the player took damage");
+        }
+
+        /// <summary>
+        /// Verify minions are exhausted after attacking
+        /// </summary>
+        [TestMethod]
+        public void MinionExhaustion()
+        {
+            var yeti = HearthEntityFactory.CreateCard<ChillwindYeti>();
+            yeti.ApplyStatusEffects(MinionStatusEffects.CHARGE);
+
+            GameEngine.GameState.CurrentPlayerPlayZone[0] = yeti;
+            yeti.Attack(opponent);
+
+            Assert.IsTrue(yeti.IsExhausted, "Verify the yeti is now exhausted");
+            Assert.IsFalse(yeti.CanAttack, "Verify the yeti can't attack");
+
+            yeti.ApplyStatusEffects(MinionStatusEffects.WINDFURY);
+            Assert.IsFalse(yeti.IsExhausted, "Verify the minion is no longer exhausted");
+
+            yeti.Attack(opponent);
+            Assert.IsTrue(yeti.IsExhausted, "Verify the yeti is now exhausted again");
+            Assert.IsFalse(yeti.CanAttack, "Verify the yeti can't attack");
+        }
+
+        /// <summary>
+        /// Verify the player gets exhausted after attacking
+        /// </summary>
+        [TestMethod]
+        public void PlayerExhaustion()
+        {
+            var fieryWarAxe = HearthEntityFactory.CreateCard<FieryWarAxe>();
+            fieryWarAxe.CurrentManaCost = 0;
+
+            player.AddCardToHand(fieryWarAxe);
+            player.PlayCard(fieryWarAxe, null);
+
+            player.Attack(opponent);
+            Assert.IsTrue(player.IsExhausted, "Verify the player is exhausted");
+            Assert.IsFalse(player.CanAttack, "Verify the player can't attack");
+
+            player.ApplyStatusEffects(PlayerStatusEffects.WINDFURY);
+            Assert.IsFalse(player.IsExhausted, "Verify the player is unexhausted now");
+
+            player.Attack(opponent);
+            Assert.IsTrue(player.IsExhausted, "Verify the player is exhausted");
+            Assert.IsFalse(player.CanAttack, "Verify the player can't attack");
         }
     }
 }

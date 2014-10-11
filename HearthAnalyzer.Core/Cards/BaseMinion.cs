@@ -56,6 +56,11 @@ namespace HearthAnalyzer.Core.Cards
         public bool IsFrozen { get { return this.StatusEffects.HasFlag(MinionStatusEffects.FROZEN); } }
 
         /// <summary>
+        /// Whether or not this minion is exhausted
+        /// </summary>
+        public bool IsExhausted { get { return this.StatusEffects.HasFlag(MinionStatusEffects.EXHAUSTED); } }
+
+        /// <summary>
         /// Whether or not this minion can attack
         /// </summary>
         public bool CanAttack 
@@ -64,7 +69,7 @@ namespace HearthAnalyzer.Core.Cards
             {
                 return !this.IsFrozen
                     && !this.StatusEffects.HasFlag(MinionStatusEffects.CANT_ATTACK)
-                    && !this.StatusEffects.HasFlag(MinionStatusEffects.EXHAUSTED);
+                    && !this.IsExhausted;
             }
         }
 
@@ -114,6 +119,16 @@ namespace HearthAnalyzer.Core.Cards
         /// <param name="effects">The effects to apply</param>
         public void ApplyStatusEffects(MinionStatusEffects effects)
         {
+            if (effects.HasFlag(MinionStatusEffects.WINDFURY))
+            {
+                // If we're applying windfury, we need to unexhaust the minion if it has
+                // only attacked once so far this turn
+                if (this.attacksThisTurn < 2)
+                {
+                    this.RemoveStatusEffects(MinionStatusEffects.EXHAUSTED);
+                }
+            }
+
             this.StatusEffects |= effects;
         }
 
@@ -207,7 +222,7 @@ namespace HearthAnalyzer.Core.Cards
             bool shouldAbort;
             GameEventManager.Attacking(this, target, isRetaliation: false, shouldAbort: out shouldAbort);
 
-            if (this.HasWindfury && this.attacksThisTurn >= 2)
+            if (!this.HasWindfury || (this.HasWindfury && this.attacksThisTurn >= 2))
             {
                 this.ApplyStatusEffects(MinionStatusEffects.EXHAUSTED);
             }

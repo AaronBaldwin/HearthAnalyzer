@@ -391,6 +391,16 @@ namespace HearthAnalyzer.Core
         /// <param name="effects">The effects to apply to the player</param>
         public void ApplyStatusEffects(PlayerStatusEffects effects)
         {
+            if (effects.HasFlag(PlayerStatusEffects.WINDFURY))
+            {
+                // If we're applying windfury, we need to unexhaust the player if it has
+                // only attacked once so far this turn
+                if (this.attacksThisTurn < 2)
+                {
+                    this.RemoveStatusEffects(PlayerStatusEffects.EXHAUSTED);
+                }
+            }
+
             this.StatusEffects |= effects;
         }
 
@@ -437,9 +447,14 @@ namespace HearthAnalyzer.Core
         public bool HasWindfury { get { return this.StatusEffects.HasFlag(PlayerStatusEffects.WINDFURY); } }
 
         /// <summary>
+        /// Returns whether or not the player is exhausted
+        /// </summary>
+        public bool IsExhausted { get { return this.StatusEffects.HasFlag(PlayerStatusEffects.EXHAUSTED); } }
+
+        /// <summary>
         /// Returns whether or not the player can attack
         /// </summary>
-        public bool CanAttack { get { return !this.StatusEffects.HasFlag(PlayerStatusEffects.EXHAUSTED); } }
+        public bool CanAttack { get { return !this.IsFrozen && !this.IsExhausted; } }
 
         #region IAttacker
 
@@ -467,7 +482,7 @@ namespace HearthAnalyzer.Core
 
             this.attacksThisTurn++;
 
-            if (this.HasWindfury && this.attacksThisTurn >= 2)
+            if (!this.HasWindfury || (this.HasWindfury && this.attacksThisTurn >= 2))
             {
                 this.ApplyStatusEffects(PlayerStatusEffects.EXHAUSTED);
             }
